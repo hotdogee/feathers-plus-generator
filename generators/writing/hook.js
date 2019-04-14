@@ -1,16 +1,16 @@
 
-const makeDebug = require('debug');
-const { inspect } = require('util');
-const { generatorFs } = require('../../lib/generator-fs');
+const makeDebug = require('debug')
+const { inspect } = require('util')
+const { generatorFs } = require('../../lib/generator-fs')
 
-const debug = makeDebug('generator-feathers-plus:writing:hook');
+const debug = makeDebug('generator-feathers-plus:writing:hook')
 
 module.exports = {
-  hook,
-};
+  hook
+}
 
 function hook (generator, name, props, specs, context, state) {
-  debug('hook()');
+  debug('hook()')
 
   const {
     // Expanded definitions.
@@ -37,7 +37,7 @@ function hook (generator, name, props, specs, context, state) {
     merge,
     EOL,
     stringifyPlus
-  } = context;
+  } = context
 
   const {
     // File writing functions.
@@ -48,33 +48,33 @@ function hook (generator, name, props, specs, context, state) {
     // Other abbreviations using in building 'todos'.
     libDir,
     // Constants.
-    WRITE_IF_NEW,
-  } = state;
+    WRITE_IF_NEW
+  } = state
 
-  const hookSpec = specs.hooks[name];
-  const hookFile = hookSpec.fileName;
-  let todos;
+  const hookSpec = specs.hooks[name]
+  const hookFile = hookSpec.fileName
+  let todos
 
   if (hookSpec.ifMulti !== 'y') {
-    const specsService = specs.services[hookSpec.singleService];
-    const sn = specsService.fileName;
-    const sfa = generator.getNameSpace(specsService.subFolder)[1];
+    const specsService = specs.services[hookSpec.singleService]
+    const sn = specsService.fileName
+    const sfa = generator.getNameSpace(specsService.subFolder)[1]
 
     todos = [
-      tmpl([namePath, 'hooks', 'hook.ejs'], [libDir,  'services', ...sfa, sn, 'hooks', `${hookFile}.${js}`], WRITE_IF_NEW ),
-    ];
+      tmpl([namePath, 'hooks', 'hook.ejs'], [libDir, 'services', ...sfa, sn, 'hooks', `${hookFile}.${js}`], WRITE_IF_NEW)
+    ]
   } else {
     todos = [
-      tmpl([srcPath,  'hooks', 'hook.ejs'], [libDir,  'hooks', `${hookFile}.${js}`],                     WRITE_IF_NEW ),
-    ];
+      tmpl([srcPath, 'hooks', 'hook.ejs'], [libDir, 'hooks', `${hookFile}.${js}`], WRITE_IF_NEW)
+    ]
   }
 
   // Generate modules
-  generatorFs(generator, context, todos);
+  generatorFs(generator, context, todos)
 }
 
 // eslint-disable-next-line no-unused-vars
-function inspector(desc, obj, depth = 6) {
-  console.log(desc);
-  console.log(inspect(obj, { colors: true, depth }));
+function inspector (desc, obj, depth = 6) {
+  console.log(desc)
+  console.log(inspect(obj, { colors: true, depth }))
 }

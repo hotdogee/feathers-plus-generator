@@ -1,16 +1,16 @@
 
-const makeDebug = require('debug');
-const { getFragment } = require('../../lib/code-fragments');
-const { generatorFs } = require('../../lib/generator-fs');
+const makeDebug = require('debug')
+const { getFragment } = require('../../lib/code-fragments')
+const { generatorFs } = require('../../lib/generator-fs')
 
-const debug = makeDebug('generator-feathers-plus:writing:resources');
+const debug = makeDebug('generator-feathers-plus:writing:resources')
 
 module.exports = {
-  resources,
-};
+  resources
+}
 
 function resources (generator, props, specs, context, state) {
-  debug('resources()');
+  debug('resources()')
 
   const {
     // Expanded definitions.
@@ -37,29 +37,29 @@ function resources (generator, props, specs, context, state) {
     merge,
     EOL,
     stringifyPlus
-  } = context;
+  } = context
 
   const {
     // File writing functions.
-    source,
-  } = state;
+    source
+  } = state
 
-  if (!specs.requiredCustomResources || !specs.requiredCustomResources.files
-    || !specs.requiredCustomResources.files.text) { return; }
+  if (!specs.requiredCustomResources || !specs.requiredCustomResources.files ||
+    !specs.requiredCustomResources.files.text) { return }
 
-  const getFragmenter = getFragment(process.cwd() + '/requiredCustomResources');
-  const text = specs.requiredCustomResources.files.text;
-  const textPaths = Array.isArray(text) ? text : [text];
-  let todos = [];
+  const getFragmenter = getFragment(process.cwd() + '/requiredCustomResources')
+  const text = specs.requiredCustomResources.files.text
+  const textPaths = Array.isArray(text) ? text : [text]
+  let todos = []
 
   // Create new custom text files
   textPaths.forEach(textPath => {
-    const code = getFragmenter(textPath) || '';
+    const code = getFragmenter(textPath) || ''
     todos.push(
-      source(code, textPath, true),
-    );
-  });
+      source(code, textPath, true)
+    )
+  })
 
   // Generate modules
-  generatorFs(generator, context, todos);
+  generatorFs(generator, context, todos)
 }

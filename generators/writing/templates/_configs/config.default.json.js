@@ -1,4 +1,4 @@
-module.exports = function() {
+module.exports = function () {
   const config = {
     host: 'localhost',
     port: 3030,
@@ -8,7 +8,7 @@ module.exports = function() {
       max: 50
     },
     tests: {}
-  };
+  }
 
-  return config;
-};
+  return config
+}

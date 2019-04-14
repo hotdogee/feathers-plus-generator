@@ -1,16 +1,16 @@
 
-const makeDebug = require('debug');
-const { inspect } = require('util');
-const { generatorFs } = require('../../lib/generator-fs');
+const makeDebug = require('debug')
+const { inspect } = require('util')
+const { generatorFs } = require('../../lib/generator-fs')
 
-const debug = makeDebug('generator-feathers-plus:writing:test');
+const debug = makeDebug('generator-feathers-plus:writing:test')
 
 module.exports = {
-  test,
-};
+  test
+}
 
 function test (generator, props, specs, context, state) {
-  debug('test()');
+  debug('test()')
 
   const {
     // Paths.
@@ -33,7 +33,7 @@ function test (generator, props, specs, context, state) {
     merge,
     EOL,
     stringifyPlus
-  } = context;
+  } = context
 
   const {
     // File writing functions.
@@ -42,48 +42,48 @@ function test (generator, props, specs, context, state) {
     src,
     testPath,
     // Constants.
-    WRITE_IF_NEW,
-  } = state;
+    WRITE_IF_NEW
+  } = state
 
   // props = {
   //   testType = ['hookUnit', 'hookInteg', 'serviceUnit', 'serviceInteg', 'authBase', 'authServices'],
   //   hookName!, serviceName!
   // }
-  const testType = props.testType;
-  let todos = [];
+  const testType = props.testType
+  let todos = []
 
   if (testType === 'authBase') {
     todos = [
-      tmpl([testPath, 'authentication.base.test.ejs'],  ['test', `authentication.base.test.${js}`])
-    ];
+      tmpl([testPath, 'authentication.base.test.ejs'], ['test', `authentication.base.test.${js}`])
+    ]
 
-    writeDefaultJsonClient(generator, context);
+    writeDefaultJsonClient(generator, context)
   }
 
   if (testType === 'authServices') {
     todos = [
-      tmpl([testPath, 'authentication.services.test.ejs'],  ['test', `authentication.services.test.${js}`])
-    ];
+      tmpl([testPath, 'authentication.services.test.ejs'], ['test', `authentication.services.test.${js}`])
+    ]
 
-    writeDefaultJsonClient(generator, context);
+    writeDefaultJsonClient(generator, context)
   }
 
   if (testType === 'hookUnit' || testType === 'hookInteg') {
-    const hookName1 = props.hookName;
-    const hookSpec = specs.hooks[hookName1];
-    const hookFileName = hookSpec.fileName;
-    const htt = testType === 'hookUnit' ? '.unit' : '.integ';
-    const specHook = specs.hooks[hookFileName];
-    const hookName = specHook.camelName;
+    const hookName1 = props.hookName
+    const hookSpec = specs.hooks[hookName1]
+    const hookFileName = hookSpec.fileName
+    const htt = testType === 'hookUnit' ? '.unit' : '.integ'
+    const specHook = specs.hooks[hookFileName]
+    const hookName = specHook.camelName
 
-    let hookInfo, sn1, sfa, sfBack, pathToHook, pathToTest, pathTestToHook, pathTestToApp;
+    let hookInfo, sn1, sfa, sfBack, pathToHook, pathToTest, pathTestToHook, pathTestToApp
     // eslint-disable-next-line no-unused-vars
-    let x;
+    let x
 
     if (hookSpec.ifMulti !== 'y') {
-      const specsService = specs.services[hookSpec.singleService];
-      sn1 = specsService.fileName;
-      const sfa1 = generator.getNameSpace(specsService.subFolder)[1];
+      const specsService = specs.services[hookSpec.singleService]
+      sn1 = specsService.fileName
+      const sfa1 = generator.getNameSpace(specsService.subFolder)[1]
 
       hookInfo = {
         hookName: hookName1,
@@ -91,7 +91,7 @@ function test (generator, props, specs, context, state) {
         serviceName: specsService.name,
         hookFileName,
         pathToHook: `services/${sfa1.length ? `${sfa1.join('/')}/` : ''}${sn1}/hooks/${hookFileName}`
-      };
+      }
     } else {
       hookInfo = {
         hookName: hookName1,
@@ -99,23 +99,23 @@ function test (generator, props, specs, context, state) {
         serviceName: '*none',
         hookFileName,
         pathToHook: `hooks/${hookFileName}`
-      };
+      }
     }
 
     if (hookInfo.appLevelHook) {
-      pathToHook = `hooks/${hookFileName}`;
-      pathToTest = `${pathToHook}${htt}.test`;
-      pathTestToHook = `../../${src}/${pathToHook}`;
-      pathTestToApp = '../../';
+      pathToHook = `hooks/${hookFileName}`
+      pathToTest = `${pathToHook}${htt}.test`
+      pathTestToHook = `../../${src}/${pathToHook}`
+      pathTestToApp = '../../'
     } else {
-      const specService = specs.services[hookInfo.serviceName];
+      const specService = specs.services[hookInfo.serviceName]
       const sn = specService.fileName;
-      [x, sfa, sfBack ] = generator.getNameSpace(specService.subFolder);
+      [x, sfa, sfBack ] = generator.getNameSpace(specService.subFolder)
 
-      pathToHook = `services/${sfa.length ? `${sfa.join('/')}/` : ''}${sn}/hooks/${hookFileName}`;
-      pathToTest = `${pathToHook}${htt}.test`;
-      pathTestToHook = `${sfBack}../../../../${src}/${pathToHook}`;
-      pathTestToApp = `${sfBack}../../../../`;
+      pathToHook = `services/${sfa.length ? `${sfa.join('/')}/` : ''}${sn}/hooks/${hookFileName}`
+      pathToTest = `${pathToHook}${htt}.test`
+      pathTestToHook = `${sfBack}../../../../${src}/${pathToHook}`
+      pathTestToApp = `${sfBack}../../../../`
     }
 
     context = Object.assign({}, context, {
@@ -127,36 +127,36 @@ function test (generator, props, specs, context, state) {
       pathTestToHook,
       pathTestToApp,
       userEntity: specs.authentication ? specs.authentication.entity : null,
-      serviceFileName: `${hookSpec.ifMulti !== 'y' ? sn1 : ''}/hooks/`,
-    });
+      serviceFileName: `${hookSpec.ifMulti !== 'y' ? sn1 : ''}/hooks/`
+    })
 
     todos = [
-      tmpl([testPath, 'hooks', 'hook.unit.test.ejs'],  ['test', `${pathToTest}.${js}`], WRITE_IF_NEW, testType !== 'hookUnit'),
-      tmpl([testPath, 'hooks', 'hook.integ.test.ejs'], ['test', `${pathToTest}.${js}`], WRITE_IF_NEW, testType === 'hookUnit'),
-    ];
+      tmpl([testPath, 'hooks', 'hook.unit.test.ejs'], ['test', `${pathToTest}.${js}`], WRITE_IF_NEW, testType !== 'hookUnit'),
+      tmpl([testPath, 'hooks', 'hook.integ.test.ejs'], ['test', `${pathToTest}.${js}`], WRITE_IF_NEW, testType === 'hookUnit')
+    ]
 
     if (testType === 'hookInteg') {
       generator._packagerInstall(isJs ? [
         '@feathers-plus/test-utils'
       ] : [
-        //'@types/???',
+        // '@types/???',
         '@feathers-plus/test-utils'
-      ], { save: true }); // because seeding DBs also uses it
+      ], { save: true }) // because seeding DBs also uses it
     }
   }
 
   if (testType === 'serviceUnit' || testType === 'serviceInteg') {
-    const serviceName = props.serviceName;
-    const serviceSpec = specs.services[serviceName];
-    const serviceFileName = serviceSpec.fileName;
-    const stt = testType === 'serviceUnit' ? '.server' : '.client';
+    const serviceName = props.serviceName
+    const serviceSpec = specs.services[serviceName]
+    const serviceFileName = serviceSpec.fileName
+    const stt = testType === 'serviceUnit' ? '.server' : '.client'
     // eslint-disable-next-line no-unused-vars
-    const [x, sfa, sfBack ] = generator.getNameSpace(serviceSpec.subFolder);
-    const ssf = sfa.length ? `${sfa.join('/')}/` : '';
+    const [x, sfa, sfBack ] = generator.getNameSpace(serviceSpec.subFolder)
+    const ssf = sfa.length ? `${sfa.join('/')}/` : ''
 
-    const pathToService = `services/${ssf}${serviceFileName}/${serviceFileName}.service.${js}`;
-    const pathToTest = pathToService.substr(0, pathToService.length - 3) + `${stt}.test` + pathToService.substr(-3);
-    const pathTestToApp = `${sfBack}../../../`;
+    const pathToService = `services/${ssf}${serviceFileName}/${serviceFileName}.service.${js}`
+    const pathToTest = pathToService.substr(0, pathToService.length - 3) + `${stt}.test` + pathToService.substr(-3)
+    const pathTestToApp = `${sfBack}../../../`
 
     context = Object.assign({}, context, {
       serviceName,
@@ -164,24 +164,24 @@ function test (generator, props, specs, context, state) {
       servicePath: serviceSpec.path,
       stt,
       pathToTest,
-      pathTestToApp,
-    });
+      pathTestToApp
+    })
 
     todos = [
       tmpl([testPath, 'services', 'name', 'service.server.test.ejs'], ['test', pathToTest], WRITE_IF_NEW, testType !== 'serviceUnit'),
-      tmpl([testPath, 'services', 'name', 'service.client.test.ejs'], ['test', pathToTest], WRITE_IF_NEW, testType === 'serviceUnit'),
-    ];
+      tmpl([testPath, 'services', 'name', 'service.client.test.ejs'], ['test', pathToTest], WRITE_IF_NEW, testType === 'serviceUnit')
+    ]
 
     generator._packagerInstall(isJs ? [
       '@feathers-plus/test-utils'
     ] : [
-      //'@types/???',
+      // '@types/???',
       '@feathers-plus/test-utils'
-    ], { save: true }); // because seeding DBs also uses it
+    ], { save: true }) // because seeding DBs also uses it
   }
 
   // Generate modules
-  generatorFs(generator, context, todos);
+  generatorFs(generator, context, todos)
 }
 
 function writeDefaultJsonClient (generator, context) {
@@ -205,18 +205,18 @@ function writeDefaultJsonClient (generator, context) {
         overriddenAuth: {}
       }
     }
-  });
+  })
 
-  generator._specs._defaultJson = config;
+  generator._specs._defaultJson = config
 
   generator.fs.writeJSON(
     generator.destinationPath(context.appConfigPath, 'default.json'),
     config
-  );
+  )
 }
 
 // eslint-disable-next-line no-unused-vars
-function inspector(desc, obj, depth = 6) {
-  console.log(desc);
-  console.log(inspect(obj, { colors: true, depth }));
+function inspector (desc, obj, depth = 6) {
+  console.log(desc)
+  console.log(inspect(obj, { colors: true, depth }))
 }

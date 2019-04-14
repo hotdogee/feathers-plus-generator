@@ -1,17 +1,17 @@
 
-const makeDebug = require('debug');
-const { inspect } = require('util');
-const { generatorFs } = require('../../lib/generator-fs');
+const makeDebug = require('debug')
+const { inspect } = require('util')
+const { generatorFs } = require('../../lib/generator-fs')
 
-const debug = makeDebug('generator-feathers-plus:writing:middleware');
+const debug = makeDebug('generator-feathers-plus:writing:middleware')
 
 module.exports = {
-  middleware,
-};
+  middleware
+}
 
 function middleware (generator, props, specs, context, state) {
-  if (!specs.middlewares) return;
-  debug('middleware()');
+  if (!specs.middlewares) return
+  debug('middleware()')
 
   const {
     // Expanded definitions.
@@ -38,7 +38,7 @@ function middleware (generator, props, specs, context, state) {
     merge,
     EOL,
     stringifyPlus
-  } = context;
+  } = context
 
   const {
     // File writing functions.
@@ -52,27 +52,27 @@ function middleware (generator, props, specs, context, state) {
     // Constants.
     WRITE_IF_NEW,
     WRITE_ALWAYS,
-    DONT_SKIP_WRITE,
-  } = state;
+    DONT_SKIP_WRITE
+  } = state
 
   const todos = [
     tmpl([mwPath, 'index.ejs'], [src, 'middleware', `index.${js}`])
-  ];
+  ]
 
   Object.keys(specs.middlewares || {}).sort().forEach(mwName => {
-    const fileName = specs.middlewares[mwName].kebab;
+    const fileName = specs.middlewares[mwName].kebab
     todos.push(
       tmpl([mwPath, 'middleware.ejs'], [libDir, 'middleware', `${fileName}.${js}`], WRITE_IF_NEW, DONT_SKIP_WRITE, { mwName }),
-      tmpl([tpl, 'src', 'typings.d.ejs'],     [src, 'typings.d.ts'],                WRITE_ALWAYS, isJs),
-    );
-  });
+      tmpl([tpl, 'src', 'typings.d.ejs'], [src, 'typings.d.ts'], WRITE_ALWAYS, isJs)
+    )
+  })
 
   // Generate modules
-  generatorFs(generator, context, todos);
+  generatorFs(generator, context, todos)
 }
 
 // eslint-disable-next-line no-unused-vars
-function inspector(desc, obj, depth = 6) {
-  console.log(desc);
-  console.log(inspect(obj, { colors: true, depth }));
+function inspector (desc, obj, depth = 6) {
+  console.log(desc)
+  console.log(inspect(obj, { colors: true, depth }))
 }

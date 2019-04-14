@@ -4,4 +4,4 @@ module.exports = {
   configTest: require('./config.test.json.js'),
   nodemon: require('./nodemon.json.js'),
   package: require('./package.json.js')
-};
+}

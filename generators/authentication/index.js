@@ -1,40 +1,40 @@
 
-const chalk = require('chalk');
-const makeDebug = require('debug');
-const { parse } = require('path');
-const { cwd } = require('process');
-const Generator = require('../../lib/generator');
-const generatorWriting = require('../writing');
-const { initSpecs } = require('../../lib/specs');
+const chalk = require('chalk')
+const makeDebug = require('debug')
+const { parse } = require('path')
+const { cwd } = require('process')
+const Generator = require('../../lib/generator')
+const generatorWriting = require('../writing')
+const { initSpecs } = require('../../lib/specs')
 
 module.exports = class AuthGenerator extends Generator {
   async prompting () {
-    this.checkDirContainsApp();
-    await Generator.asyncInit(this);
-    const { _specs: specs } = this;
-    this._initialGeneration = !specs.authentication;
-    initSpecs('authentication');
+    this.checkDirContainsApp()
+    await Generator.asyncInit(this)
+    const { _specs: specs } = this
+    this._initialGeneration = !specs.authentication
+    initSpecs('authentication')
 
-    this.log('\n\n');
+    this.log('\n\n')
     if (this._initialGeneration) {
       this.log([
         chalk.green.bold('We are'),
         chalk.yellow.bold(' adding '),
         chalk.green.bold('initial authentication in dir '),
         chalk.yellow.bold(parse(cwd()).base)
-      ].join(''));
+      ].join(''))
     } else {
       this.log([
         chalk.green.bold('We are'),
         chalk.yellow.bold(' updating '),
         chalk.green.bold('the authentication in dir '),
         chalk.yellow.bold(parse(cwd()).base)
-      ].join(''));
+      ].join(''))
     }
-    this.log();
+    this.log()
 
     const ifStrategy = value => specs.authentication && specs.authentication.strategies &&
-      specs.authentication.strategies.indexOf(value) !== -1;
+      specs.authentication.strategies.indexOf(value) !== -1
 
     const prompts = [{
       type: 'checkbox',
@@ -66,20 +66,20 @@ module.exports = class AuthGenerator extends Generator {
       name: 'entity',
       message: 'What is the name of the user (entity) service?',
       default: (specs.authentication && specs.authentication.entity) || 'users'
-    }];
+    }]
 
     return this.prompt(prompts)
       .then(answers => {
-        Object.assign(this.props, answers);
+        Object.assign(this.props, answers)
 
         // Set missing defaults when call during test
         if (this._opts.calledByTest && this._opts.calledByTest.prompts) {
-          this.props = Object.assign({}, this._opts.calledByTest.prompts, this. props);
+          this.props = Object.assign({}, this._opts.calledByTest.prompts, this.props)
         }
-      });
+      })
   }
 
   writing () {
-    generatorWriting(this, 'authentication');
+    generatorWriting(this, 'authentication')
   }
-};
+}

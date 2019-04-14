@@ -1,17 +1,17 @@
 
-const makeDebug = require('debug');
-const { inspect } = require('util');
-const serviceSpecsToGraphql = require('../../lib/service-specs-to-graphql');
-const { generatorFs } = require('../../lib/generator-fs');
+const makeDebug = require('debug')
+const { inspect } = require('util')
+const serviceSpecsToGraphql = require('../../lib/service-specs-to-graphql')
+const { generatorFs } = require('../../lib/generator-fs')
 
-const debug = makeDebug('generator-feathers-plus:writing:graphql');
+const debug = makeDebug('generator-feathers-plus:writing:graphql')
 
 module.exports = {
-  graphql,
-};
+  graphql
+}
 
 function graphql (generator, props, specs, context, state) {
-  debug('graphql()');
+  debug('graphql()')
 
   const {
     // Expanded definitions.
@@ -38,7 +38,7 @@ function graphql (generator, props, specs, context, state) {
     merge,
     EOL,
     stringifyPlus
-  } = context;
+  } = context
 
   const {
     // File writing functions.
@@ -56,8 +56,8 @@ function graphql (generator, props, specs, context, state) {
     testDir,
     // Constants.
     WRITE_IF_NEW,
-    WRITE_ALWAYS,
-  } = state;
+    WRITE_ALWAYS
+  } = state
 
   // Custom template context
   const context1 = Object.assign({}, context, {
@@ -82,7 +82,7 @@ function graphql (generator, props, specs, context, state) {
     strategy: specs.graphql.strategy,
     graphqlSchemas: serviceSpecsToGraphql(feathersSpecs),
     libDirectory: generator.libDirectory
-  });
+  })
 
   const todos = [
     tmpl([testPath, 'services', 'name.test.ejs'], [testDir, 'services', `graphql.test.${js}`], WRITE_IF_NEW),
@@ -100,42 +100,42 @@ function graphql (generator, props, specs, context, state) {
     tmpl([qlPath, 'sql.resolvers.ejs'], [libDir, 'services', 'graphql', `sql.resolvers.${js}`]),
     tmpl([serPath, 'index.ejs'], [libDir, 'services', `index.${js}`]),
 
-    tmpl([tpl, 'src', 'typings.d.ejs'],     [src, 'typings.d.ts'],             WRITE_ALWAYS, isJs),
-  ];
+    tmpl([tpl, 'src', 'typings.d.ejs'], [src, 'typings.d.ts'], WRITE_ALWAYS, isJs)
+  ]
 
   // Generate modules
-  generatorFs(generator, context1, todos);
+  generatorFs(generator, context1, todos)
 
   // Update dependencies
   generator._packagerInstall([
     '@feathers-plus/graphql', // has graphql/graphql as a dependency
     'graphql-resolvers-ast',
     'merge-graphql-schemas'
-  ], { save: true });
+  ], { save: true })
 
   if (!isJs) {
     generator._packagerInstall([
       '@types/graphql'
-    ], { saveDev: true });
+    ], { saveDev: true })
   }
 
   // Determine which hooks are needed
-  function getHookInfo(name, sc) {
-    const requiresAuth = specs.graphql.requiresAuth;
+  function getHookInfo (name, sc) {
+    const requiresAuth = specs.graphql.requiresAuth
 
-    const hooks = [ 'iff' ];
+    const hooks = [ 'iff' ]
     const imports = isJs ? [
       `const commonHooks = require('feathers-hooks-common')${sc}`
     ] : [
       `import * as commonHooks from 'feathers-hooks-common'${sc}`,
       `import { HooksObject } from '@feathersjs/feathers'${sc}`
-    ];
+    ]
 
     const comments = {
       before: [],
       after: [],
-      error: [],
-    };
+      error: []
+    }
 
     const code = {
       before: {
@@ -146,40 +146,40 @@ function graphql (generator, props, specs, context, state) {
       },
       error: {
         all: [], find: [], get: [], create: [], update: [], patch: [], remove: []
-      },
-    };
-
-    if (requiresAuth) {
-      if (isJs) {
-        imports.push(`const { authenticate } = require('@feathersjs/authentication').hooks${sc}`);
-      } else {
-        imports.push(`import { hooks as authHooks } from '@feathersjs/authentication'${sc}`);
-        imports.push(`const { authenticate } = authHooks${sc}`);
       }
     }
 
     if (requiresAuth) {
-      code.before.all.push('authenticate(\'jwt\')');
+      if (isJs) {
+        imports.push(`const { authenticate } = require('@feathersjs/authentication').hooks${sc}`)
+      } else {
+        imports.push(`import { hooks as authHooks } from '@feathersjs/authentication'${sc}`)
+        imports.push(`const { authenticate } = authHooks${sc}`)
+      }
+    }
+
+    if (requiresAuth) {
+      code.before.all.push('authenticate(\'jwt\')')
     }
 
     // Form comments summarizing the hooks
     Object.keys(code).forEach(type => {
-      const typeHooks = [];
+      const typeHooks = []
 
       Object.keys(code[type]).forEach(method => {
-        const str = code[type][method].join(', ');
+        const str = code[type][method].join(', ')
 
         if (str) {
-          typeHooks.push(`//   ${method.padEnd(6)}: ${str}`);
+          typeHooks.push(`//   ${method.padEnd(6)}: ${str}`)
         }
-      });
+      })
 
       if (typeHooks.length) {
-        typeHooks.unshift('// Your hooks should include:');
+        typeHooks.unshift('// Your hooks should include:')
       }
 
-      comments[type] = typeHooks;
-    });
+      comments[type] = typeHooks
+    })
 
     return {
       imports,
@@ -187,12 +187,12 @@ function graphql (generator, props, specs, context, state) {
       comments,
       code,
       make: hooks => `${hooks.length ? ' ' : ''}${hooks.join(', ')}${hooks.length ? ' ' : ''}`
-    };
+    }
   }
 }
 
 // eslint-disable-next-line no-unused-vars
-function inspector(desc, obj, depth = 6) {
-  console.log(desc);
-  console.log(inspect(obj, { colors: true, depth }));
+function inspector (desc, obj, depth = 6) {
+  console.log(desc)
+  console.log(inspect(obj, { colors: true, depth }))
 }

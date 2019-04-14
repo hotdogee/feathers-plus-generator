@@ -1,5 +1,5 @@
 module.exports = function (generator, envName) {
-  const { _specs: specs } = generator;
+  const { _specs: specs } = generator
   const config = specs.options.ts ? {
     env: {
       NODE_ENV: envName
@@ -24,6 +24,6 @@ module.exports = function (generator, envName) {
       start: `eslint ${specs.app.src}/. test/. --config .eslintrc.json`,
       restart: `eslint ${specs.app.src}/. test/. --config .eslintrc.json`
     }
-  };
-  return config;
-};
+  }
+  return config
+}

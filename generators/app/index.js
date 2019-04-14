@@ -1,43 +1,43 @@
 
-const chalk = require('chalk');
-const makeDebug = require('debug');
-const { parse, sep } = require('path');
-const { cwd } = require('process');
-const { kebabCase } = require('lodash');
+const chalk = require('chalk')
+const makeDebug = require('debug')
+const { parse, sep } = require('path')
+const { cwd } = require('process')
+const { kebabCase } = require('lodash')
 
-const Generator = require('../../lib/generator');
-const generatorWriting = require('../writing');
-const { initSpecs } = require('../../lib/specs');
+const Generator = require('../../lib/generator')
+const generatorWriting = require('../writing')
+const { initSpecs } = require('../../lib/specs')
 
-const debug = makeDebug('generator-feathers-plus:prompts:app');
+const debug = makeDebug('generator-feathers-plus:prompts:app')
 
 module.exports = class AppGenerator extends Generator {
   async prompting () {
-    debug('app prompting() start');
+    debug('app prompting() start')
 
-    await Generator.asyncInit(this);
-    const { props, _specs: specs } = this;
-    const generator = this;
-    this._initialGeneration = !specs.app || !specs.app.src;
-    initSpecs('app');
+    await Generator.asyncInit(this)
+    const { props, _specs: specs } = this
+    const generator = this
+    this._initialGeneration = !specs.app || !specs.app.src
+    initSpecs('app')
 
     if (this._initialGeneration) {
-      this.log();
-      this.log();
+      this.log()
+      this.log()
       this.log([
         chalk.green.bold('We are creating a'),
         chalk.yellow.bold(' new '),
         chalk.green.bold('app in dir '),
         chalk.yellow.bold(parse(cwd()).base)
-      ].join(''));
+      ].join(''))
     } else {
       this.log([
         chalk.green.bold('We are'),
         chalk.yellow.bold(' updating '),
         chalk.green.bold('the app base in dir '),
         chalk.yellow.bold(parse(cwd()).base)
-      ].join(''));
-      this.log();
+      ].join(''))
+      this.log()
     }
 
     const dependencies = [
@@ -60,13 +60,13 @@ module.exports = class AppGenerator extends Generator {
       '@feathersjs/express',
       '@feathersjs/socketio',
       '@feathersjs/primus'
-    ];
+    ]
 
     // Define defaults for prompts which may not be displayed
-    props.name = specs.app.name || this.pkg.name || process.cwd().split(sep).pop();
-    props.src = specs.app.src || (this.pkg.directories && this.pkg.directories.lib) || 'src';
+    props.name = specs.app.name || this.pkg.name || process.cwd().split(sep).pop()
+    props.src = specs.app.src || (this.pkg.directories && this.pkg.directories.lib) || 'src'
     props.description = specs.app.description || this.pkg.description ||
-      `Project ${kebabCase(this.props.name)}`;
+      `Project ${kebabCase(this.props.name)}`
 
     const prompts = [{
       name: 'name',
@@ -78,18 +78,18 @@ module.exports = class AppGenerator extends Generator {
         // The project name can not be the same as any of the dependencies
         // we are going to install
         const isSelfReferential = dependencies.some(dependency => {
-          const separatorIndex = dependency.indexOf('@');
-          const end = separatorIndex !== -1 ? separatorIndex : dependency.length;
-          const dependencyName = dependency.substring(0, end);
+          const separatorIndex = dependency.indexOf('@')
+          const end = separatorIndex !== -1 ? separatorIndex : dependency.length
+          const dependencyName = dependency.substring(0, end)
 
-          return dependencyName === input;
-        });
+          return dependencyName === input
+        })
 
         if (isSelfReferential) {
-          return `Your project can not be named '${input}' because the '${input}' package will be installed as a project dependency.`;
+          return `Your project can not be named '${input}' because the '${input}' package will be installed as a project dependency.`
         }
 
-        return true;
+        return true
       }
     }, {
       name: 'description',
@@ -134,18 +134,18 @@ module.exports = class AppGenerator extends Generator {
       }],
       validate (input) {
         if (input.indexOf('primus') !== -1 && input.indexOf('socketio') !== -1) {
-          return 'You can only pick SocketIO or Primus, not both.';
+          return 'You can only pick SocketIO or Primus, not both.'
         }
 
-        return true;
-      },
+        return true
+      }
     }, {
       name: 'environmentsAllowingSeedData',
       message: 'Data mutating tests and seeding may run when NODE_ENV is one of (optional)',
       default: specs.app.environmentsAllowingSeedData || '',
       filter: input => {
-        const envs = input.split(',');
-        return (envs.map(str => kebabCase(str.trim()))).join(',');
+        const envs = input.split(',')
+        return (envs.map(str => kebabCase(str.trim()))).join(',')
       }
     }, {
       name: 'seedData',
@@ -153,38 +153,38 @@ module.exports = class AppGenerator extends Generator {
       type: 'confirm',
       when: answers => !!answers.environmentsAllowingSeedData,
       default () {
-        return !!specs.app.seedData;
-      },
-    }];
+        return !!specs.app.seedData
+      }
+    }]
 
-    debug('start prompts');
+    debug('start prompts')
     return this.prompt(prompts)
       .then(answers => {
-        debug('end prompts');
+        debug('end prompts')
 
-        answers.seedData = answers.environmentsAllowingSeedData ? answers.seedData : false;
-        Object.assign(this.props, answers);
+        answers.seedData = answers.environmentsAllowingSeedData ? answers.seedData : false
+        Object.assign(this.props, answers)
 
         // Set missing defaults when call during test
         if (this._opts.calledByTest && this._opts.calledByTest.prompts) {
-          this.props = Object.assign({}, this._opts.calledByTest.prompts, this. props);
+          this.props = Object.assign({}, this._opts.calledByTest.prompts, this.props)
         }
 
-        debug('app prompting() ends', this.props);
+        debug('app prompting() ends', this.props)
 
-        if (!generator.callWritingFromPrompting()) return;
+        if (!generator.callWritingFromPrompting()) return
 
-        debug('app writing patch starts. call generatorWriting');
-        generatorWriting(generator, 'app');
-        debug('app writing patch ends');
-      });
+        debug('app writing patch starts. call generatorWriting')
+        generatorWriting(generator, 'app')
+        debug('app writing patch ends')
+      })
   }
 
   writing () {
-    if (this.callWritingFromPrompting()) return;
+    if (this.callWritingFromPrompting()) return
 
-    debug('app writing starts. call generatorWriting');
-    generatorWriting(this, 'app');
-    debug('app writing ends');
+    debug('app writing starts. call generatorWriting')
+    generatorWriting(this, 'app')
+    debug('app writing ends')
   }
-};
+}
