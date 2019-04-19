@@ -1,7 +1,7 @@
 
 <%- tplImports('{ join }', 'path') %>
 <%- tplImports('{ authenticationBase }', '@feathers-plus/test-utils') %>
-<%- tplImports('config', '../config/default.json') %>
+<%- tplImports('config', '../config/default.js') %>
 
 // Determine if environment allows test to mutate existing DB data.
 const env = (config.tests || {}).environmentsAllowingSeedData || []<%- sc %>

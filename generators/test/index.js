@@ -77,7 +77,7 @@ module.exports = class CodelistGenerator extends Generator {
         generator.log('\n')
         generator.log([
           chalk.green.bold('Configuration options will be added to '),
-          chalk.yellow.bold('config/default.json'),
+          chalk.yellow.bold('config/default.js'),
           chalk.green.bold(' as ')
         ].join(''))
         generator.log([
@@ -124,7 +124,7 @@ module.exports = class CodelistGenerator extends Generator {
             'common hook to entirely disallow client access.',
             '',
             'Only such authentication or disallow changes need be specified in file ',
-            chalk.yellow.bold('config/default.json') + ' as prop ' + chalk.yellow.bold('tests.client.overriddenAuth') + '.',
+            chalk.yellow.bold('config/default.js') + ' as prop ' + chalk.yellow.bold('tests.client.overriddenAuth') + '.',
             '',
             'For example:',
             chalk.yellow('overriddenAuth: {'),

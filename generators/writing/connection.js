@@ -44,7 +44,7 @@ function connection (generator, props, specs, context, state) {
   const isGenerateConnection = generatorsInclude('connection') && !generatorsInclude('service')
 
   const todos = !Object.keys(connections).length ? [] : [
-    json(newConfig, [appConfigPath, 'default.json']),
+    json(newConfig, [appConfigPath, 'default.js']),
     tmpl([srcPath, 'app.ejs'], [libDir, `app.${js}`]),
     tmpl([tpl, 'src', 'typings.d.ejs'], [src, 'typings.d.ts'], WRITE_ALWAYS, isJs)
   ]

@@ -254,7 +254,7 @@ const tests = [
   },
 
   // z22 Test that app.js does not require templates/src/_adapters/* unless they are currently being used.
-  // Also tests that existing package.json, config/default.json & config/production.json contents are retained.
+  // Also tests that existing package.json, config/default.js & config/production.json contents are retained.
   //  generate app            # z-1, Project z-1, npm, src1, socketio (only)
   //  generate service        # MongoDB, nedb1, /nedb-1, mongodb://localhost:27017/z_1, auth N, graphql Y
   //  generate service        # NeDB,    nedb1, /nedb-1, nedb://../data,                auth N, graphql Y

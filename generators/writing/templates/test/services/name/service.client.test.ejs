@@ -7,7 +7,7 @@
 <%- tplImports('{ join }', 'path') %>
 <%- tplImports('{ localStorage, readJsonFileSync }', '@feathers-plus/test-utils') %>
 
-<%- tplImports('config', `${ pathTestToApp }config/default.json`) %>
+<%- tplImports('config', `${ pathTestToApp }config/default.js`) %>
 
 const delayAfterServerOnce = 500<%- sc %>
 const delayAfterServerClose = 500<%- sc %>

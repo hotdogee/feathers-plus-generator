@@ -3,7 +3,7 @@
 <%- tplImports('assert', null) %>
 <%- tplImports('{ readJsonFileSync }', '@feathers-plus/test-utils') %>
 <%- tplImports('app', `${pathTestToApp}${specs.app.src}/app`) %>
-<%- tplImports('config', `${pathTestToApp}config/default.json`) %>
+<%- tplImports('config', `${pathTestToApp}config/default.js`) %>
 
 // Determine if environment allows test to mutate existing DB data.
 const env = (config.tests || {}).environmentsAllowingSeedData || []<%- sc %>

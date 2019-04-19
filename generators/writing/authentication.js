@@ -130,19 +130,19 @@ function writeAuthenticationConfiguration (generator, context1) {
 
   configAuth.jwt = configAuth.jwt || {
     header: { typ: 'access' },
-    audience: 'https://yourdomain.com',
-    subject: 'anonymous',
+    audience: 'api',
+    subject: 'access',
     issuer: 'feathers',
     algorithm: 'HS256',
-    expiresIn: '1d'
+    expiresIn: '30m'
   }
 
   if (context1.strategies.indexOf('local') !== -1) {
     configAuth.strategies.push('local')
     configAuth.local = configAuth.local || {
-      entity: 'user',
-      usernameField: 'email',
-      passwordField: 'password'
+      entity: '\\\\user',
+      usernameField: '\\\\email',
+      passwordField: '\\\\password'
     }
   }
 

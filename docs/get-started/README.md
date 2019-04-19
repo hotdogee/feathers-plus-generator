@@ -242,7 +242,7 @@ The modules are properly wired together and structured as recommended by the Fea
 <collapse-image hidden title="Folders after 'generate app' with TypeScript" url="/assets/get-started/ts-generate-app-dir-compare.png" />
 
 - **config/** contains the configuration files for the app.
-production.json values override default.json ones when in production mode,
+production.json values override default.js ones when in production mode,
 i.e. when you run `NODE_ENV=production node path/to/your/server.js`.
 
 - **config/test.json** was created because we specified test as the environment where we can
@@ -258,7 +258,7 @@ seed and change data during testing. test.json initially contains
   "mssql": " "
 }
 ```
-This overrides the database connection strings in **default.json** and prevents unwanted data changes.
+This overrides the database connection strings in **default.js** and prevents unwanted data changes.
 
 
 - **node_modules/**. The generator installs the project dependencies here using either
@@ -994,7 +994,7 @@ module.exports = moduleExports;
 
 ## generate secret
 
-*generate authentication* added a secret to config/default.json:
+*generate authentication* added a secret to config/default.js:
 ```js
 {
   "host": "localhost",
@@ -1019,7 +1019,7 @@ feathers-plus generate secret
 
 <collapse-image title="Prompts 'generate secret'" url="/assets/get-started/generate-secret.png" />
 
-and paste the new secret into config/default.json.
+and paste the new secret into config/default.js.
 
 ## generate service
 
@@ -2887,7 +2887,7 @@ generate a test for a generated hook and then rename the generated test module.
 <collapse-image title="Prompts 'generate test' for a service client/server test" url="/assets/get-started/generate-test-service-client.png" />
 
 All client/server tests are configurable to your environment.
-**config/default.json** contains the options.
+**config/default.js** contains the options.
 
 <collapse hidden title="Configuration options for client/server tests">
 
