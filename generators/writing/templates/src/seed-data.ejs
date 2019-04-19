@@ -11,7 +11,7 @@ let ifSeedServices = ['--seed', '-s'].some((str) =>
 )<%- sc %>
 
 // Determine if environment allows test to mutate existing DB data.
-function areDbChangesAllowed(testConfig<%- tplTsOnly(': { environmentsAllowingSeedData: string[] }') -%>) {
+function areDbChangesAllowed (testConfig<%- tplTsOnly(': { environmentsAllowingSeedData: string[] }') -%>) {
   let { environmentsAllowingSeedData = [] } = testConfig<%- sc %>
   if (process.env.NODE_ENV) {
     return environmentsAllowingSeedData.includes(process.env.NODE_ENV)<%- sc %>
