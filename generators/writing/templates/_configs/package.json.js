@@ -8,7 +8,7 @@ module.exports = function (generator) {
   const pkg = {
     name: specs.app.name,
     description: specs.app.description,
-    version: '0.0.0',
+    version: '0.1.0',
     homepage: '',
     main: specs.app.src,
     keywords: [
@@ -45,7 +45,7 @@ module.exports = function (generator) {
   } : {
     test: `${packager} run eslint && ${packager} run mocha`,
     'test:all': `${packager} run eslint && cross-env NODE_ENV= npm run mocha`,
-    eslint: `eslint ${specs.app.src}/. test/. --config .eslintrc.json`,
+    eslint: `eslint ${specs.app.src}/. test/. --config .eslintrc.js`,
     dev: `nodemon ${specs.app.src}/`,
     'dev:seed': `nodemon ${specs.app.src}/ --seed`,
     start: `node ${specs.app.src}/`,
