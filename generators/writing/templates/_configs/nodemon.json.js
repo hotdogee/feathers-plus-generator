@@ -21,8 +21,8 @@ module.exports = function (generator, envName) {
       NODE_ENV: envName
     },
     events: {
-      start: `eslint ${specs.app.src}/. test/. --config .eslintrc.json`,
-      restart: `eslint ${specs.app.src}/. test/. --config .eslintrc.json`
+      start: `eslint ${specs.app.src}/. test/. --config .eslintrc.js`,
+      restart: `eslint ${specs.app.src}/. test/. --config .eslintrc.js`
     }
   }
   return config

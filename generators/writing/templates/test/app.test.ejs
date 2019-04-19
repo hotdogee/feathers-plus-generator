@@ -5,7 +5,7 @@
 <%- tplImports('url', null, 'req') %>
 <%- tplImports('app', `../${specs.app.src}/app`) %>
 
-const port = app.get('port') || 3030<%- sc %>
+const port = 3231<%- sc %>
 const getUrl = <%- tplJsOrTs('pathname', '(pathname?: string)') %> => url.format({
   hostname: app.get('host') || 'localhost',
   protocol: 'http',

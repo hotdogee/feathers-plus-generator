@@ -6,7 +6,9 @@
 <%- insertFragment('imports') %>
 
 // Determine if command line argument exists for seeding data
-let ifSeedServices = ['--seed', '-s'].some(str => process.argv.slice(2).includes(str))<%- sc %>
+let ifSeedServices = ['--seed', '-s'].some((str) =>
+  process.argv.slice(2).includes(str)
+)<%- sc %>
 
 // Determine if environment allows test to mutate existing DB data.
 function areDbChangesAllowed(testConfig<%- tplTsOnly(': { environmentsAllowingSeedData: string[] }') -%>) {
@@ -18,10 +20,17 @@ function areDbChangesAllowed(testConfig<%- tplTsOnly(': { environmentsAllowingSe
 }
 
 // Get generated fake data
-let fakeData = readJsonFileSync(join(__dirname, '../seeds/fake-data.json')) || {}<%- sc %>
+let fakeData =
+  readJsonFileSync(join(__dirname, '../seeds/fake-data.json')) || {}<%- sc %>
 
 // Get generated services
-let services = (readJsonFileSync(join(__dirname, '../feathers-gen-specs.json')) || {}).services<%- sc %>
+let services = (
+  readJsonFileSync(join(__dirname, '../feathers-gen-specs.json')) || {}
+).services<%- sc %>
+
+function sleep (ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))<%- sc %>
+}
 <%- insertFragment('init') %>
 
 <%- tplExport('async function (app) {', 'async function (app: App) {') %>
@@ -52,15 +61,30 @@ let services = (readJsonFileSync(join(__dirname, '../feathers-gen-specs.json')) 
             const service = app.service(path)<%- sc %>
 
             <%- insertFragment('seed_try', [
-              `            const deleted = await service.remove(null)${sc}`,
-              `            const result = await service.create(fakeData[name])${sc}`,
-              '            console.log(`Seeded service ${name} on path ${path} deleting ${deleted.length} records, adding ${result.length}.`)' + sc,
+`            while (!service.Model) {
+              await sleep(100)${sc}
+              console.log(
+                \`Waiting for service \${name} to be ready \${service.Model}\`
+              )${sc}
+            }
+            const deleted = await service._remove(null)${sc}
+            const result = await service._create(fakeData[name])${sc}
+            console.log(
+              \`Seeded service \${name} on path \${path} deleting \${
+                deleted.length
+              } records, adding \${result.length}.\`
+            )${sc}`
             ]) %>
           } catch (err) {
-            console.log(`Error on seeding service ${name} on path ${path}`, err.message)<%- sc %>
+            console.log(
+              `Error on seeding service ${name} on path ${path}`,
+              err.message
+            )<%- sc %>
           }
         } else {
-          console.log(`Not seeding service ${name} on path ${path}. No seed data.`)<%- sc %>
+          console.log(
+            `Not seeding service ${name} on path ${path}. No seed data.`
+          )<%- sc %>
         }
       } else {
         console.log(`Not seeding generic service ${name} on path ${path}.`)<%- sc %>

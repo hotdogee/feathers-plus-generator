@@ -210,7 +210,7 @@ function app (generator, props, specs, context, state) {
 
   if (isJs) {
     todos = todos.concat(
-      json(eslintrc, '.eslintrc.json', WRITE_ALWAYS, eslintrcExists && !eslintrcChanged)
+      copy([tpl, '_eslintrc.js'], '.eslintrc.js', WRITE_IF_NEW)
     )
   } else {
     todos = todos.concat(
@@ -236,6 +236,7 @@ function app (generator, props, specs, context, state) {
     'lodash.merge',
     'serve-favicon',
     'winston',
+    'dotenv',
     'cross-env'
   ]
 
@@ -248,7 +249,12 @@ function app (generator, props, specs, context, state) {
 
   if (isJs) {
     generator.devDependencies = generator.devDependencies.concat([
-      'eslint'
+      'eslint',
+      'eslint-config-standard',
+      'eslint-plugin-import',
+      'eslint-plugin-node',
+      'eslint-plugin-promise',
+      'eslint-plugin-standard'
     ])
   } else {
     generator.devDependencies = generator.devDependencies.concat([

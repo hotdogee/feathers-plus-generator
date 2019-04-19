@@ -1,25 +1,80 @@
 
 // Logger. (Can be re-generated.)
 <%- tplImports('{ createLogger, format, transports }', 'winston') %>
+<%- tplImports('{ inspect }', 'util') %>
+<%- tplImports('colors', 'colors/safe') %>
+<%- tplImports('{ MESSAGE }', 'triple-beam') %>
+<%- tplImports('jsonStringify', 'fast-safe-stringify') %>
 <%- insertFragment('imports') %>
-<%- insertFragment('init') %>
+<%- insertFragment('init', [
+  `const levelColors = {
+  error: 'red',
+  debug: 'blue',
+  warn: 'yellow',
+  data: 'grey',
+  info: 'green',
+  verbose: 'cyan',
+  silly: 'magenta',
+  custom: 'yellow'
+}
+const formatConsole = format((info, opts = {}) => {
+  const stringifiedRest = jsonStringify(
+    Object.assign({}, info, {
+      level: undefined,
+      message: undefined,
+      timestamp: undefined,
+      ms: undefined,
+      splat: undefined
+    })
+  )
+
+  const label = (info.label && \`\${info.label} \`) || ''
+  let colorize = colors['white']
+  if (!label && info.level && levelColors[info.level]) {
+    colorize = colors[levelColors[info.level]]
+  }
+  const level = colorize(info.level)
+  const ms = colorize(info.ms)
+  const time = new Date(info.timestamp)
+  const tzoffset = time.getTimezoneOffset() * 60000 // offset in milliseconds
+  const localISOTime = colorize(
+    new Date(time - tzoffset).toISOString().slice(0, -1)
+  )
+  const padding = (info.padding && info.padding[info.level]) || ''
+  if (stringifiedRest !== '{}') {
+    const rest = inspect(JSON.parse(stringifiedRest), false, 2, true)
+    info[MESSAGE] = \`\${localISOTime} \${label}\${level} \${padding} \${
+      info.message
+    } \${rest} \${ms}\`
+  } else {
+    info[MESSAGE] = \`\${localISOTime} \${label}\${level} \${padding} \${
+      info.message
+    } \${ms}\`
+  }
+
+  return info
+})`
+]) %>
 
 // Configure the Winston logger. For the complete documentation seee https://github.com/winstonjs/winston
 const moduleExports = createLogger({
   <%- insertFragment('level', [
     '  // To see more detailed errors, change this to \debug\'',
-    '  level: \'info\',',
+    '  level: \'debug\',',
   ]) %>
-  <%- insertFragment('format', [
-    '  format: format.combine(',
-    '    format.splat(),',
-    '    format.simple()',
-    '  ),'
-  ]) %>
+  <%- insertFragment('format') %>
   <%- insertFragment('transport', [
-    '  transports: [',
-    '    new transports.Console()',
-    '  ],',
+    `  transports: [
+    new transports.Console({
+      format: format.combine(
+        format.splat(),
+        format.timestamp(),
+        format.ms(),
+        format.padLevels(),
+        formatConsole()
+      )
+    })
+  ]`
   ]) %>
   <%- insertFragment('moduleExports') %>
 })<%- sc %>

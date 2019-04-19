@@ -26,7 +26,11 @@ process.on('unhandledRejection', (reason, p) => {
 
 server.on('listening', async () => {
   <%- insertFragment('listening_log', [
-    `  logger.info(\'Feathers application started on http://%s:%d\', app.get(\'host\'), port)${sc}`,
+    `  logger.info(
+    'Feathers application started on http://%s:%d',
+    app.get('host'),
+    port
+  )${sc}`,
   ]) %>
 <%# --- if-2 starts below. -%>
 <% if (Object.keys(specs.services || []).map(n => specs.services[n]).find(s => s.adapter === 'mongodb')) { -%>

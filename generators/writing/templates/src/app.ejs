@@ -58,23 +58,21 @@ app.configure(configuration())<%- sc %>
 ]) %>
 
 // Enable security, CORS, compression, favicon and body parsing
-app.use(helmet(
-  <%- insertFragment('helmet_config') %>
-))<%- sc %>
-app.use(cors(
-  <%- insertFragment('cors_config') %>
-))<%- sc %>
-app.use(compress(
-  <%- insertFragment('compress_config') %>
-))<%- sc %>
-app.use(express.json(
-  <%- insertFragment('json_config') %>
-))<%- sc %>
-app.use(express.urlencoded(
-  <%- insertFragment('urlencoded_config', [
-    '  { extended: true }'
-  ]) %>
-))<%- sc %>
+<%- insertFragment('helmet_config', [
+  `app.use(helmet())${sc}`
+]) %>
+<%- insertFragment('cors_config', [
+  `app.use(cors())${sc}`
+]) %>
+<%- insertFragment('compress_config', [
+  `app.use(compress())${sc}`
+]) %>
+<%- insertFragment('json_config', [
+  `app.use(express.json())${sc}`
+]) %>
+<%- insertFragment('urlencoded_config', [
+  `app.use(express.urlencoded({ extended: true }))${sc}`
+]) %>
 <%- insertFragment('use_favicon', [
   '// Use favicon',
   `app.use(favicon(path.join(app.get('public'), 'favicon.ico')))${sc}`
@@ -90,17 +88,17 @@ app.use(express.urlencoded(
 <%# -%>
 <%# --- if-90a starts below. -%>
 <% if (hasProvider('rest')) { -%>
-app.configure(express.rest(
-  <%- insertFragment('express_rest') %>
-))<%- sc %>
+<%- insertFragment('express_rest', [
+  `app.configure(express.rest())${sc}`
+]) %>
 <% } -%>
 <%# --- if-90a ends above. -%>
 <%# -%>
 <%# --- if-90b starts below. -%>
 <% if (hasProvider('socketio')) { -%>
-app.configure(socketio(
-  <%- insertFragment('express_socketio') %>
-))<%- sc %>
+<%- insertFragment('express_socketio', [
+  `app.configure(socketio())${sc}`
+]) %>
 <% } -%>
 <%# --- if-90b ends above. -%>
 <%# -%>
