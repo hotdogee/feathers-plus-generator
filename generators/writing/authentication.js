@@ -1,8 +1,10 @@
-
 const crypto = require('crypto')
+const { join } = require('path')
 const makeDebug = require('debug')
 const { inspect } = require('util')
+const prettier = require('prettier')
 const { generatorFs } = require('../../lib/generator-fs')
+const { insertFragment } = require('../../lib/code-fragments')
 
 const debug = makeDebug('generator-feathers-plus:writing:authentication')
 
@@ -140,9 +142,9 @@ function writeAuthenticationConfiguration (generator, context1) {
   if (context1.strategies.indexOf('local') !== -1) {
     configAuth.strategies.push('local')
     configAuth.local = configAuth.local || {
-      entity: '\\\\user',
-      usernameField: '\\\\email',
-      passwordField: '\\\\password'
+      entity: '\\user',
+      usernameField: '\\email',
+      passwordField: '\\password'
     }
   }
 
@@ -186,9 +188,24 @@ function writeAuthenticationConfiguration (generator, context1) {
 
   generator._specs._defaultJson = config
 
-  generator.fs.writeJSON(
-    generator.destinationPath(context1.appConfigPath, 'default.json'),
-    config
+  // generator.fs.writeJSON(
+  //   generator.destinationPath(context1.appConfigPath, 'default.json'),
+  //   config
+  // )
+  generator.fs.copyTpl(
+    generator.templatePath(join(__dirname, 'templates', 'json.ejs')),
+    generator.destinationPath(join(context1.appConfigPath, 'default.js')),
+    Object.assign({}, context1, {
+      insertFragment: insertFragment(generator.destinationPath(join(context1.appConfigPath, 'default.js')))
+    }, {
+      json: prettier
+        .format('let a = ' + JSON.stringify(config), {
+          semi: false,
+          singleQuote: true,
+          parser: 'babel'
+        })
+        .slice(8)
+    })
   )
 }
 

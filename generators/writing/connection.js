@@ -1,6 +1,7 @@
 
 const makeDebug = require('debug')
 const { inspect } = require('util')
+const prettier = require('prettier')
 const { generatorFs } = require('../../lib/generator-fs')
 
 const debug = makeDebug('generator-feathers-plus:writing:connection')
@@ -44,7 +45,16 @@ function connection (generator, props, specs, context, state) {
   const isGenerateConnection = generatorsInclude('connection') && !generatorsInclude('service')
 
   const todos = !Object.keys(connections).length ? [] : [
-    json(newConfig, [appConfigPath, 'default.js']),
+    // json(newConfig, [appConfigPath, 'default.js']),
+    tmpl([tpl, 'json.ejs'], [appConfigPath, 'default.js'], false, false, {
+      json: prettier
+        .format('let a = ' + JSON.stringify(newConfig), {
+          semi: false,
+          singleQuote: true,
+          parser: 'babel'
+        })
+        .slice(8)
+    }),
     tmpl([srcPath, 'app.ejs'], [libDir, `app.${js}`]),
     tmpl([tpl, 'src', 'typings.d.ejs'], [src, 'typings.d.ts'], WRITE_ALWAYS, isJs)
   ]

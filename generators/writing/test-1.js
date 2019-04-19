@@ -1,7 +1,9 @@
-
+const { join } = require('path')
 const makeDebug = require('debug')
 const { inspect } = require('util')
+const prettier = require('prettier')
 const { generatorFs } = require('../../lib/generator-fs')
+const { insertFragment } = require('../../lib/code-fragments')
 
 const debug = makeDebug('generator-feathers-plus:writing:test')
 
@@ -209,9 +211,24 @@ function writeDefaultJsonClient (generator, context) {
 
   generator._specs._defaultJson = config
 
-  generator.fs.writeJSON(
-    generator.destinationPath(context.appConfigPath, 'default.json'),
-    config
+  // generator.fs.writeJSON(
+  //   generator.destinationPath(context.appConfigPath, 'default.json'),
+  //   config
+  // )
+  generator.fs.copyTpl(
+    generator.templatePath(join(__dirname, 'templates', 'json.ejs')),
+    generator.destinationPath(join(context.appConfigPath, 'default.js')),
+    Object.assign({}, context, {
+      insertFragment: insertFragment(generator.destinationPath(join(context.appConfigPath, 'default.js')))
+    }, {
+      json: prettier
+        .format('let a = ' + JSON.stringify(config), {
+          semi: false,
+          singleQuote: true,
+          parser: 'babel'
+        })
+        .slice(8)
+    })
   )
 }
 
