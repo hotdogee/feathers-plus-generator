@@ -1,7 +1,7 @@
-
+const { join } = require('path')
 const makeDebug = require('debug')
 const { inspect } = require('util')
-const { join } = require('path')
+const prettier = require('prettier')
 const makeConfig = require('./templates/_configs')
 const { generatorFs } = require('../../lib/generator-fs')
 
@@ -42,7 +42,7 @@ function app (generator, props, specs, context, state) {
 
   let todos
 
-  const [ packager ] = specs.app.packager.split('@')
+  const [packager] = specs.app.packager.split('@')
   const testAllJsFront = `${packager} run eslint && cross-env NODE_ENV=`
   const testAllJsBack = ' npm run mocha'
   const testAllTsFront = `${packager} run tslint && cross-env NODE_ENV=`
@@ -55,31 +55,42 @@ function app (generator, props, specs, context, state) {
   let back
 
   // Configurations
-  const pkg = generator.pkg = generator.fs.readJSON(
-    generator.destinationPath('package.json'), makeConfig.package(generator)
-  )
+  const pkg = (generator.pkg = generator.fs.readJSON(
+    generator.destinationPath('package.json'),
+    makeConfig.package(generator)
+  ))
 
-  const configDefault = specs._defaultJson = generator.fs.readJSON(
-    generator.destinationPath(`${appConfigPath}/default.json`), makeConfig.configDefault(generator)
+  const configDefaultPath = generator.destinationPath(
+    `${appConfigPath}/default.js`
   )
+  const configDefault = (specs._defaultJson =
+    (generator.fs.exists(configDefaultPath) && require(configDefaultPath)) ||
+    makeConfig.configDefault(generator))
 
   // Update older configs with current specs
   configDefault.tests = configDefault.tests || {}
-  configDefault.tests.environmentsAllowingSeedData =
-    specs.app.environmentsAllowingSeedData.split(',')
-  pkg.scripts['test:all'] = pkg.scripts['test:all'] || (isJs
-    ? `${testAllJsFront}${testAllJsBack}` : `${testAllTsFront}${testAllTsBack}`
+  configDefault.tests.environmentsAllowingSeedData = specs.app.environmentsAllowingSeedData.split(
+    ','
   )
-  pkg.scripts['start:seed'] = pkg.scripts['start:seed'] || (isJs
-    ? `${startSeedFront}${startSeedJsBack}` : `${startSeedFront}${startSeedTsBack}`
-  )
+  pkg.scripts['test:all'] =
+    pkg.scripts['test:all'] ||
+    (isJs
+      ? `${testAllJsFront}${testAllJsBack}`
+      : `${testAllTsFront}${testAllTsBack}`)
+  pkg.scripts['start:seed'] =
+    pkg.scripts['start:seed'] ||
+    (isJs
+      ? `${startSeedFront}${startSeedJsBack}`
+      : `${startSeedFront}${startSeedTsBack}`)
 
   const configNodemon = generator.fs.readJSON(
-    generator.destinationPath('nodemon.json'), makeConfig.nodemon(generator, 'development')
+    generator.destinationPath('nodemon.json'),
+    makeConfig.nodemon(generator, 'development')
   )
 
   const configProd = generator.fs.readJSON(
-    generator.destinationPath(`${appConfigPath}/production.json`), makeConfig.configProduction(generator)
+    generator.destinationPath(`${appConfigPath}/production.json`),
+    makeConfig.configProduction(generator)
   )
 
   // update test:all script for first test environment
@@ -88,7 +99,10 @@ function app (generator, props, specs, context, state) {
   const front = isJs ? testAllJsFront : testAllTsFront
   back = isJs ? testAllJsBack : testAllTsBack
 
-  if (testAll.substr(0, front.length) === front && testAll.substr(-back.length) === back) {
+  if (
+    testAll.substr(0, front.length) === front &&
+    testAll.substr(-back.length) === back
+  ) {
     pkg.scripts['test:all'] = `${front}${firstTestEnv}${back}`
   }
 
@@ -104,16 +118,19 @@ function app (generator, props, specs, context, state) {
   }
 
   // Modify .eslintrc for semicolon option
-  let eslintrcExists = true
-  let eslintrcChanged = false
-  let eslintrc = generator.fs.readJSON(join(process.cwd(), '.eslintrc.json'), {})
+  // let eslintrcExists = true
+  // let eslintrcChanged = false
+  let eslintrc = generator.fs.readJSON(
+    join(process.cwd(), '.eslintrc.json'),
+    {}
+  )
 
   if (!Object.keys(eslintrc).length) {
-    eslintrcExists = false
+    // eslintrcExists = false
     eslintrc = generator.fs.readJSON(join(tpl, '_eslintrc.json'), {})
   }
 
-  const rules = eslintrc.rules = eslintrc.rules || {}
+  const rules = (eslintrc.rules = eslintrc.rules || {})
   const rulesSemi = rules.semi
 
   // Modify tslint.json for semicolon option
@@ -126,14 +143,14 @@ function app (generator, props, specs, context, state) {
     tslintjson = generator.fs.readJSON(join(tpl, '_tslint.json'), {})
   }
 
-  const tsRules = tslintjson.rules = tslintjson.rules || {}
+  const tsRules = (tslintjson.rules = tslintjson.rules || {})
   const tsRulesSemi = tsRules.semicolon
 
   if (context.sc) {
     // semicolons used
     if (!Array.isArray(rulesSemi) || rulesSemi[0] !== 'error') {
       eslintrc.rules.semi = ['error', 'always']
-      eslintrcChanged = true
+      // eslintrcChanged = true
     }
     if (!Array.isArray(tsRulesSemi) || tsRulesSemi[0] !== true) {
       tslintjson.rules.semicolon = true
@@ -143,7 +160,7 @@ function app (generator, props, specs, context, state) {
     // semicolons not used
     if (rulesSemi) {
       delete rules.semi
-      eslintrcChanged = true
+      // eslintrcChanged = true
     }
     if (tsRulesSemi) {
       tslintjson.rules.semicolon = false
@@ -165,19 +182,46 @@ function app (generator, props, specs, context, state) {
     copy([tpl, 'LICENSE'], 'LICENSE', WRITE_IF_NEW),
     tmpl([tpl, 'README.md.ejs'], 'README.md', WRITE_IF_NEW),
 
-    copy([tpl, 'public', 'favicon.ico'], ['public', 'favicon.ico'], WRITE_IF_NEW),
+    copy(
+      [tpl, 'public', 'favicon.ico'],
+      ['public', 'favicon.ico'],
+      WRITE_IF_NEW
+    ),
     copy([tpl, 'public', 'index.html'], ['public', 'index.html'], WRITE_IF_NEW),
 
-    tmpl([tpl, 'test', 'app.test.ejs'], [testDir, `app.test.${js}`], WRITE_IF_NEW),
+    tmpl(
+      [tpl, 'test', 'app.test.ejs'],
+      [testDir, `app.test.${js}`],
+      WRITE_IF_NEW
+    ),
 
     tmpl([tpl, 'src', 'hooks', 'log.ejs'], [src, 'hooks', `log.${js}`]),
-    copy([tpl, 'src', 'refs', 'common.json'], [src, 'refs', 'common.json'], WRITE_IF_NEW),
+    copy(
+      [tpl, 'src', 'refs', 'common.json'],
+      [src, 'refs', 'common.json'],
+      WRITE_IF_NEW
+    ),
     tmpl([tpl, 'src', 'channels.ejs'], [src, `channels.${js}`], WRITE_IF_NEW),
-    tmpl([tpl, 'src', 'seed-data.ejs'], [src, `seed-data.${js}`], WRITE_ALWAYS, !specs.app.seedData),
+    tmpl(
+      [tpl, 'src', 'seed-data.ejs'],
+      [src, `seed-data.${js}`],
+      WRITE_ALWAYS,
+      !specs.app.seedData
+    ),
 
     json(pkg, 'package.json'),
     json(configNodemon, 'nodemon.json'),
-    json(configDefault, [appConfigPath, 'default.json']),
+    // json(configDefault, [appConfigPath, 'default.js']),
+    // tmpl (src, dest, ifNew, ifSkip, ctx)
+    tmpl([tpl, 'json.ejs'], [appConfigPath, 'default.js'], false, false, {
+      json: prettier
+        .format('let a = ' + JSON.stringify(configDefault), {
+          semi: false,
+          singleQuote: true,
+          parser: 'babel'
+        })
+        .slice(8)
+    }),
     json(configProd, [appConfigPath, 'production.json']),
 
     tmpl([tpl, 'src', 'index.ejs'], [src, `index.${js}`]),
@@ -187,24 +231,48 @@ function app (generator, props, specs, context, state) {
     tmpl([mwPath, 'index.ejs'], [src, 'middleware', `index.${js}`]),
     tmpl([srcPath, 'app.ejs'], [src, `app.${js}`]),
     tmpl([serPath, 'index.ejs'], [src, 'services', `index.${js}`]),
-    tmpl([tpl, 'src', 'app.interface.ejs'], [src, 'app.interface.ts'], WRITE_ALWAYS, isJs),
-    tmpl([tpl, 'src', 'typings.d.ejs'], [src, 'typings.d.ts'], WRITE_ALWAYS, isJs)
+    tmpl(
+      [tpl, 'src', 'app.interface.ejs'],
+      [src, 'app.interface.ts'],
+      WRITE_ALWAYS,
+      isJs
+    ),
+    tmpl(
+      [tpl, 'src', 'typings.d.ejs'],
+      [src, 'typings.d.ts'],
+      WRITE_ALWAYS,
+      isJs
+    )
   ]
 
   // generate name.json files for test environments
   configDefault.tests.environmentsAllowingSeedData.forEach(envName => {
     const defaultConfigTest = makeConfig.configTest(generator, envName)
-    const configTest = specs._testJson = generator.fs.readJSON(
-      generator.destinationPath(`${appConfigPath}/${envName}.json`), defaultConfigTest
-    )
+    const configTest = (specs._testJson = generator.fs.readJSON(
+      generator.destinationPath(`${appConfigPath}/${envName}.json`),
+      defaultConfigTest
+    ))
 
-    const connectionStrings = ['mongodb', 'mysql', 'nedb', 'postgres', 'rethinkdb', 'sqlite', 'mssql']
+    const connectionStrings = [
+      'mongodb',
+      'mysql',
+      'nedb',
+      'postgres',
+      'rethinkdb',
+      'sqlite',
+      'mssql'
+    ]
     connectionStrings.forEach(name => {
       configTest[name] = configTest[name] || defaultConfigTest[name]
     })
 
     todos.push(
-      json(configTest, [appConfigPath, `${envName}.json`], WRITE_ALWAYS, !envName)
+      json(
+        configTest,
+        [appConfigPath, `${envName}.json`],
+        WRITE_ALWAYS,
+        !envName
+      )
     )
   })
 
@@ -214,7 +282,12 @@ function app (generator, props, specs, context, state) {
     )
   } else {
     todos = todos.concat(
-      json(tslintjson, 'tslint.json', WRITE_ALWAYS, tslintExists && !tslintJsonChanged),
+      json(
+        tslintjson,
+        'tslint.json',
+        WRITE_ALWAYS,
+        tslintExists && !tslintJsonChanged
+      ),
       tmpl([tpl, 'tsconfig.json'], 'tsconfig.json', WRITE_IF_NEW),
       copy([tpl, 'tsconfig.test.json'], 'tsconfig.test.json', WRITE_IF_NEW)
     )
@@ -240,12 +313,7 @@ function app (generator, props, specs, context, state) {
     'cross-env'
   ]
 
-  generator.devDependencies = [
-    'mocha',
-    'nodemon',
-    'request',
-    'request-promise'
-  ]
+  generator.devDependencies = ['mocha', 'nodemon', 'request', 'request-promise']
 
   if (isJs) {
     generator.devDependencies = generator.devDependencies.concat([

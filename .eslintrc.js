@@ -12,5 +12,8 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2018
   },
-  rules: {}
+  rules: {
+    'max-len': 'warn',
+    'eol-last': 'off'
+  }
 }
