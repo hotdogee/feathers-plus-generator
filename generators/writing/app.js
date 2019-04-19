@@ -88,10 +88,11 @@ function app (generator, props, specs, context, state) {
     makeConfig.nodemon(generator, 'development')
   )
 
-  const configProd = generator.fs.readJSON(
-    generator.destinationPath(`${appConfigPath}/production.json`),
-    makeConfig.configProduction(generator)
+  const configProdPath = generator.destinationPath(
+    `${appConfigPath}/production.js`
   )
+  const configProd = (generator.fs.exists(configProdPath) && require(configProdPath)) ||
+    makeConfig.configProduction(generator)
 
   // update test:all script for first test environment
   const firstTestEnv = configDefault.tests.environmentsAllowingSeedData[0]
@@ -222,7 +223,16 @@ function app (generator, props, specs, context, state) {
         })
         .slice(8)
     }),
-    json(configProd, [appConfigPath, 'production.json']),
+    // json(configProd, [appConfigPath, 'production.json']),
+    tmpl([tpl, 'json.ejs'], [appConfigPath, 'production.js'], false, false, {
+      json: prettier
+        .format('let a = ' + JSON.stringify(configProd), {
+          semi: false,
+          singleQuote: true,
+          parser: 'babel'
+        })
+        .slice(8)
+    }),
 
     tmpl([tpl, 'src', 'index.ejs'], [src, `index.${js}`]),
     tmpl([tpl, 'src', 'app.hooks.ejs'], [src, `app.hooks.${js}`]),
@@ -248,11 +258,12 @@ function app (generator, props, specs, context, state) {
   // generate name.json files for test environments
   configDefault.tests.environmentsAllowingSeedData.forEach(envName => {
     const defaultConfigTest = makeConfig.configTest(generator, envName)
-    const configTest = (specs._testJson = generator.fs.readJSON(
-      generator.destinationPath(`${appConfigPath}/${envName}.json`),
-      defaultConfigTest
-    ))
-
+    const configTestPath = generator.destinationPath(
+      `${appConfigPath}/${envName}.js`
+    )
+    const configTest = (specs._testJson =
+      (generator.fs.exists(configTestPath) && require(configTestPath)) ||
+      defaultConfigTest)
     const connectionStrings = [
       'mongodb',
       'mysql',
@@ -267,12 +278,21 @@ function app (generator, props, specs, context, state) {
     })
 
     todos.push(
-      json(
-        configTest,
-        [appConfigPath, `${envName}.json`],
-        WRITE_ALWAYS,
-        !envName
-      )
+      // json(
+      //   configTest,
+      //   [appConfigPath, `${envName}.json`],
+      //   WRITE_ALWAYS,
+      //   !envName
+      // )
+      tmpl([tpl, 'json.ejs'], [appConfigPath, `${envName}.js`], false, false, {
+        json: prettier
+          .format('let a = ' + JSON.stringify(configTest), {
+            semi: false,
+            singleQuote: true,
+            parser: 'babel'
+          })
+          .slice(8)
+      })
     )
   })
 
