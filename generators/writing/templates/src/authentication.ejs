@@ -38,9 +38,8 @@
 <%# --- forEach-1 starts below. -%>
 <% oauthProviders.forEach(provider => { %>
   app.configure(oauth2(Object.assign({
-    name: '<%= provider.name %>',
-    Strategy: <%= provider.strategyName %>,
-    <%- insertFragment(provider.name + '_options') %>
+    <%- insertFragment(provider.name + '_options', `    name: '${provider.name}',
+    Strategy: ${provider.strategyName}`) %>
   }, config.<%= provider.name %>)))<%- sc %>
 <% }); %>
 <%# --- forEach-1 ends above. -%>
@@ -53,17 +52,15 @@
     before: {
       create: [
         <%- insertFragment('before_create', [
-          '        authentication.hooks.authenticate(config.strategies),'
+          '        authentication.hooks.authenticate(config.strategies)'
         ]) %>
       ],
       remove: [
         <%- insertFragment('before_remove', [
-          '        authentication.hooks.authenticate(\'jwt\'),'
+          '        authentication.hooks.authenticate(\'jwt\')'
         ]) %>
-      ],
-      <%- insertFragment('before') %>
-    },
-    <%- insertFragment('after') %>
+      <%- insertFragment('before', '      ]') %>
+    <%- insertFragment('after', '    }') %>
   })<%- sc %>
   <%- insertFragment('func_return') %>
 }<%- sc %>

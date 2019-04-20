@@ -97,8 +97,7 @@
         `    patch: [${hooks.make(hooks.code.error.patch)}],`,
         `    remove: [${hooks.make(hooks.code.error.remove)}]`,
     ]) %>
-  },
-  <%- insertFragment('moduleExports') %>
+  <%- insertFragment('moduleExports', '  }') %>
 }<%- sc %>
 
 <%- insertFragment('exports') %>

@@ -17,7 +17,7 @@
       return client<%- sc %>
     }
 
-    const dbName = parseConnectionString(config, () => {});
+    const dbName = parseConnectionString(config, () => {})<%- sc %>
     return client.db(dbName)<%- sc %>
   })
     .catch(error => {

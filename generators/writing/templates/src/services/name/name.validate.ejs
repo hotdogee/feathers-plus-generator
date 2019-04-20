@@ -18,24 +18,21 @@ let base = merge({},
    __str = stringifyPlus(__jsonSchema).replace(/"ID"/g, 'ID')
      .split('\n').map(str => `  ${str}`).join('\n');
 -%>
-  <%- insertFragment('base', Object.keys(__jsonSchema).length === 0 ? undefined : `${__str},`) %>
-  <%- insertFragment('base_more') %>
+  <%- insertFragment('base', Object.keys(__jsonSchema).length === 0 ? undefined : `${__str}`.slice(0,-4)) %>
+  <%- insertFragment('base_more', '  }') %>
 )<%- sc %>
 <%- insertFragment('base_change') %>
 
 let create = merge({},
-  base,
-  <%- insertFragment('create_more') %>
+  <%- insertFragment('create_more', '  base') %>
 )<%- sc %>
 
 let update = merge({},
-  base,
-  <%- insertFragment('update_more') %>
+  <%- insertFragment('update_more', '  base') %>
 )<%- sc %>
 
 let patch = merge({},
-  base,
-  <%- insertFragment('patch_more') %>
+  <%- insertFragment('patch_more', '  base') %>
 )<%- sc %>
 delete patch.required<%- sc %>
 <%- insertFragment('all_change') %>
@@ -71,14 +68,13 @@ let quickValidate = <%- tplJsOrTs('(method, data, options)', '(method: string, d
 
 <%- tplTsOnly(['// tslint:disable:trailing-comma', '']) -%>
 let moduleExports = {
-  create,
+  <%- insertFragment('moduleExports', `  create,
   update,
   patch,
   validateCreate,
   validateUpdate,
   validatePatch,
-  quickValidate,
-  <%- insertFragment('moduleExports') %>
+  quickValidate`) %>
 }<%- sc %>
 
 <%- insertFragment('exports') %>

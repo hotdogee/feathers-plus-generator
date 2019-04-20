@@ -11,8 +11,8 @@
 <%- insertFragment('init') %>
 
 let moduleExports = merge({},
-  <%- insertFragment('model', mongooseSchemaStr.split('\n').map(str => `  ${str}`).join('\n') + ',') %>
-  <%- insertFragment('moduleExports') %>
+  <%- insertFragment('model', mongooseSchemaStr.split('\n').map(str => `  ${str}`).join('\n').slice(0,-4)) %>
+  <%- insertFragment('moduleExports', '  }') %>
 )<%- sc %>
 
 <%- insertFragment('exports') %>

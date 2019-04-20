@@ -24,8 +24,7 @@ let schema = {
   // Fields in the model.
   properties: {
     <%- insertFragment('schema_properties') %>
-  },
-  <%- insertFragment('schema_more') %>
+  <%- insertFragment('schema_more', '  }') %>
 }<%- sc %>
 
 // Define optional, non-JSON-schema extensions.
@@ -52,17 +51,15 @@ let extensions = {
       <%- insertFragment('graphql_add', [
         `      // __author__: { type: '__User__!', args: false, relation: { ourTable: '__authorId__', otherTable: '${primaryKey.idName}' } },`,
       ])%>
-    },
-    <%- insertFragment('graphql_more') %>
-  },
+    <%- insertFragment('graphql_more', '    }') %>
+  }
 }<%- sc %>
 
 <%- insertFragment('more') %>
 
 let moduleExports = {
-  schema,
-  extensions,
-  <%- insertFragment('moduleExports') %>
+  <%- insertFragment('moduleExports', `  schema,
+  extensions`) %>
 }<%- sc %>
 
 <%- insertFragment('exports') %>
