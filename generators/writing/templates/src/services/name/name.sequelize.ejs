@@ -35,7 +35,7 @@
 <%# --- if-1 ends above. -%>
 let moduleExports = merge({},
   <%- insertFragment('sequelize_model',
-    sequelizeSchemaStr.split('\n').map(str => `  ${str}`).join('\n').slice(0,-4) + tplTsOnly(' as DefineAttributes'))
+    sequelizeSchemaStr.length <= 2 ? sequelizeSchemaStr.split('\n').map(str => `  ${str}`).join('\n').slice(0,-1) : sequelizeSchemaStr.split('\n').map(str => `  ${str}`).join('\n').slice(0,-4) + tplTsOnly(' as DefineAttributes'))
   %>
   <%- insertFragment('moduleExports', '  }') %>
 )<%- sc %>

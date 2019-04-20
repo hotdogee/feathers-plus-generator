@@ -34,7 +34,7 @@ let extensions = {
     <%- insertFragment('graphql_header', [
       `    name: '${serviceNameSingular.charAt(0).toUpperCase() + serviceNameSingular.slice(1)}',`,
       '    service: {',
-      `      sort: { ${primaryKey.idName}: 1 },`,
+      `      sort: { ${primaryKey.idName}: 1 }`,
       '    },',
       '    // sql: {',
       `    //   sqlTable: '${__defaultGraphqlName}',`,

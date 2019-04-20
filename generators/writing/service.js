@@ -202,6 +202,7 @@ function service (generator, name, props, specs, context, state, inject) {
   context1.sequelizeSchema = seqModel
   context1.sequelizeFks = seqFks
   context1.sequelizeSchemaStr = stringifyPlus(context1.sequelizeSchema, { nativeFuncs: sequelizeNativeFuncs })
+  debug('service() context1.sequelizeSchemaStr', context1.sequelizeSchemaStr.length, context1.sequelizeSchemaStr)
 
   // inspector(`\n... mongoJsonSchema ${name} (generator ${what})`, context1.mongooseSchema);
   // inspector(`\n... mongoJsonSchemaStr ${name} (generator ${what})`, context1.mongooseSchemaStr.split('\n'));
