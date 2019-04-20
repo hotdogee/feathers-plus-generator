@@ -352,7 +352,7 @@ function service (generator, name, props, specs, context, state, inject) {
         code.before.create.push('hashPassword()')
         code.before.update.push('hashPassword()')
         code.before.patch.push('hashPassword()')
-        code.after.all.push('protect(\'password\') /* Must always be the last hook */')
+        code.after.all.push('protect(\'password\') // Must always be the last hook')
       }
 
       code.before.find.push('authenticate(\'jwt\')')
@@ -396,7 +396,7 @@ function service (generator, name, props, specs, context, state, inject) {
       hooks: hooks.filter((val, i) => hooks.indexOf(val) === i), // unique
       comments,
       code,
-      make: hooks => `${hooks.length ? ' ' : ''}${hooks.join(', ')}${hooks.length ? ' ' : ''}`
+      make: hooks => `${hooks.length ? '\n      ' : ''}${hooks.join(',\n      ')}${hooks.length ? '\n    ' : ''}`
     }
   }
 }
