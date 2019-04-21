@@ -98,6 +98,9 @@ const testConfigObjectExpression = template.ast(
 // update AST
 // merge two ObjectExpressions
 function astObjectExpressionMerge (a, b) {
+  if (!a.properties) {
+    console.log(a, b)
+  }
   const aMap = new Map(a.properties.map((o, i) => [o.key.name, i]))
   b.properties.forEach(bOp => {
     const key = bOp.key.name // 'mongodb'
@@ -105,7 +108,7 @@ function astObjectExpressionMerge (a, b) {
       const aOp = a.properties[aMap.get(key)]
       // key node exists
       if (aOp.value.type === 'ObjectExpression' && bOp.value.type === 'ObjectExpression') {
-        astObjectExpressionMerge(aOp, bOp)
+        astObjectExpressionMerge(aOp.value, bOp.value)
       } else if (aOp.value.type === 'ArrayExpression' && bOp.value.type === 'ArrayExpression') {
         if (bOp.value.elements.length !== 0) {
           a.properties[aMap.get(key)] = bOp
