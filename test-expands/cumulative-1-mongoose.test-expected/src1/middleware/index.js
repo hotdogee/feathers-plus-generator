@@ -1,4 +1,3 @@
-
 // Configure middleware. (Can be re-generated.)
 const mw1 = require('./mw-1');
 const mw2 = require('./mw-2');
@@ -6,7 +5,7 @@ const mw2 = require('./mw-2');
 // !code: init // !end
 
 // eslint-disable-next-line no-unused-vars
-let moduleExports = function (app) {
+let moduleExports = function(app) {
   // !code: func_init // !end
   // Add your custom middleware here. Remember that
   // in Express, the order matters.

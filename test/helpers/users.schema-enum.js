@@ -1,4 +1,3 @@
-
 // Define the Feathers schema for service `users`. (Can be re-generated.)
 // !code: imports // !end
 // !code: init // !end
@@ -30,17 +29,19 @@ let schema = {
 
     roles: {
       type: 'array',
-      items: [{
-        type: 'string',
-        enum: [ 'admin' ]
-      }]
+      items: [
+        {
+          type: 'string',
+          enum: ['admin']
+        }
+      ]
     },
 
     roles1: {
       type: 'array',
       items: {
         type: 'string',
-        enum: [ 'admin' ]
+        enum: ['admin']
       }
     },
 
@@ -49,19 +50,19 @@ let schema = {
       items: {
         type: 'object',
         properties: {
-          name: { },
+          name: {},
           code: { type: 'number', default: '1' }
         }
       }
     },
 
-    dept: { enum: [ 'acct' ] },
+    dept: { enum: ['acct'] },
 
     parentId: { type: 'ID', ref: 'User', nullable: true }
     // !end
-  },
+  }
   // !code: schema_more // !end
-};
+}
 
 // Define optional, non-JSON-schema extensions.
 let extensions = {
@@ -70,7 +71,7 @@ let extensions = {
     // !<DEFAULT> code: graphql_header
     name: 'User',
     service: {
-      sort: { _id: 1 },
+      sort: { _id: 1 }
     },
     // sql: {
     //   sqlTable: 'Users',
@@ -87,21 +88,21 @@ let extensions = {
       // !<DEFAULT> code: graphql_add
       // __author__: { type: '__User__!', args: false, relation: { ourTable: '__authorId__', otherTable: '_id' } },
       // !end
-    },
+    }
     // !code: graphql_more // !end
-  },
-};
+  }
+}
 
 // !code: more // !end
 
 let moduleExports = {
   schema,
-  extensions,
+  extensions
   // !code: moduleExports // !end
-};
+}
 
 // !code: exports // !end
-module.exports = moduleExports;
+module.exports = moduleExports
 
 // !code: funcs // !end
 // !code: end // !end

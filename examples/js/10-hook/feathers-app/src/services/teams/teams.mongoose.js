@@ -1,4 +1,3 @@
-
 /* eslint quotes: 0 */
 // Defines Mongoose model for service `teams`. (Can be re-generated.)
 const merge = require('lodash.merge');
@@ -7,17 +6,16 @@ const mongoose = require('mongoose');
 // !code: imports // !end
 // !code: init // !end
 
-let moduleExports = merge({},
+let moduleExports = merge(
+  {},
   // !<DEFAULT> code: model
   {
     name: {
       type: String,
       required: true
     },
-    memberIds: [
-      mongoose.Schema.Types.ObjectId
-    ]
-  },
+    memberIds: [mongoose.Schema.Types.ObjectId]
+  }
   // !end
   // !code: moduleExports // !end
 );

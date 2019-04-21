@@ -1,4 +1,3 @@
-
 const assert = require('assert');
 const feathers = require('@feathersjs/feathers');
 const skipRemainingHooks = require('../../src/hooks/skip-remaining-hooks');
@@ -9,7 +8,7 @@ describe('Test /hooks/skip-remaining-hooks.integ.test.js', () => {
   let service;
   let hooksRun;
 
-  function setHookRun( name) {
+  function setHookRun(name) {
     return () => {
       hooksRun.push(name);
     };
@@ -47,19 +46,20 @@ describe('Test /hooks/skip-remaining-hooks.integ.test.js', () => {
       user: {
         email: 'test@example.com'
       }
-
     };
   });
-
 
   it('Hook exists', () => {
     assert(typeof skipRemainingHooks === 'function', 'Hook is not a function.');
   });
 
   it('SKIP before skips following before hooks', async () => {
-    const result = await service.create({
-      foo: 'bar'
-    }, params);
+    const result = await service.create(
+      {
+        foo: 'bar'
+      },
+      params
+    );
     assert(!hooksRun.includes('before2'), 'following hooks are run');
   });
 

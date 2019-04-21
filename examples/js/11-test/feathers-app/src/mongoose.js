@@ -1,14 +1,18 @@
-
 // mongoose.js - Mongoose adapter
 const mongoose = require('mongoose');
 // !code: imports // !end
 // !code: init // !end
 
-module.exports = function (app) {
+module.exports = function(app) {
   mongoose.Promise = global.Promise;
-  mongoose.connect(app.get('mongodb'), { useNewUrlParser: true })
+  mongoose
+    .connect(app.get('mongodb'), { useNewUrlParser: true })
     .then(({ connection }) => {
-      console.log(`connected to "${connection.name}" database at ${connection.host}:${connection.port}`);
+      console.log(
+        `connected to "${connection.name}" database at ${connection.host}:${
+          connection.port
+        }`
+      );
       return connection;
     })
     .catch(error => {

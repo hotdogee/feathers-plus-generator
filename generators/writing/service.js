@@ -1,4 +1,3 @@
-
 const makeDebug = require('debug')
 const mongoose = require('mongoose')
 const Sequelize = require('sequelize')
@@ -104,7 +103,9 @@ function service (generator, name, props, specs, context, state, inject) {
   const snakeName = snakeCase(name)
   const adapter = specsService.adapter
   const path = specsService.path
-  const isAuthEntityWithAuthentication = specsService.isAuthEntity ? specs.authentication : undefined
+  const isAuthEntityWithAuthentication = specsService.isAuthEntity
+    ? specs.authentication
+    : undefined
 
   const moduleMappings = {
     generic: `./${fileName}.class`,
@@ -118,7 +119,9 @@ function service (generator, name, props, specs, context, state, inject) {
   }
 
   const serviceModule = moduleMappings[adapter]
-  const modelTpl = `${adapter}${isAuthEntityWithAuthentication ? '-user' : ''}.ejs`
+  const modelTpl = `${adapter}${
+    isAuthEntityWithAuthentication ? '-user' : ''
+  }.ejs`
   const hasModel = existsSync(join(srcPath, '_model', modelTpl))
 
   // Run `generate connection` for the selected adapter
@@ -126,10 +129,12 @@ function service (generator, name, props, specs, context, state, inject) {
     if (adapter !== 'generic' && adapter !== 'memory') {
       // Do not `generate connection` on `generate service` if adapter already exists.
       if (!specs.connections || !specs.connections[adapter]) {
-        generator.composeWith(require.resolve('../connection'), { props: {
-          adapter,
-          service: name
-        } })
+        generator.composeWith(require.resolve('../connection'), {
+          props: {
+            adapter,
+            service: name
+          }
+        })
       } else {
         connection(generator, props, specs, context, state)
       }
@@ -144,13 +149,18 @@ function service (generator, name, props, specs, context, state, inject) {
   validateJsonSchema(name, feathersSpecs[name])
 
   // Custom template context.
-  const { typescriptTypes, typescriptExtends } =
-    serviceSpecsToTypescript(specsService, feathersSpecs[name], feathersSpecs[name]._extensions)
+  const { typescriptTypes, typescriptExtends } = serviceSpecsToTypescript(
+    specsService,
+    feathersSpecs[name],
+    feathersSpecs[name]._extensions
+  )
 
   let graphqlTypeName
   if (specs.graphql && specsService.graphql && name !== 'graphql') {
-    graphqlTypeName = ((feathersSpecs[name]._extensions.graphql || {}).name) ||
-      (specsService.nameSingular.charAt(0).toUpperCase() + specsService.nameSingular.slice(1))
+    graphqlTypeName =
+      (feathersSpecs[name]._extensions.graphql || {}).name ||
+      specsService.nameSingular.charAt(0).toUpperCase() +
+        specsService.nameSingular.slice(1)
   }
 
   const context1 = Object.assign({}, context, {
@@ -176,15 +186,30 @@ function service (generator, name, props, specs, context, state, inject) {
     libDirectory: specs.app.src,
     modelName: hasModel ? `${fileName}.model` : null,
     serviceModule,
-    mongoJsonSchema: serviceSpecsToMongoJsonSchema(feathersSpecs[name], feathersSpecs[name]._extensions),
-    mongooseSchema: serviceSpecsToMongoose(feathersSpecs[name], feathersSpecs[name]._extensions)
+    mongoJsonSchema: serviceSpecsToMongoJsonSchema(
+      feathersSpecs[name],
+      feathersSpecs[name]._extensions
+    ),
+    mongooseSchema: serviceSpecsToMongoose(
+      feathersSpecs[name],
+      feathersSpecs[name]._extensions
+    )
   })
   context1.mongoJsonSchemaStr = stringifyPlus(context1.mongoJsonSchema)
-  context1.mongooseSchemaStr = stringifyPlus(context1.mongooseSchema, { nativeFuncs: mongooseNativeFuncs })
-  context1.typescriptTypesStr = typescriptTypes.map(str => `  ${str}${context1.sc}`).join(`${EOL}`)
-  context1.typescriptExtendsStr = typescriptExtends.map(str => `  ${str}${context1.sc} // change if needed`).join(`${EOL}`)
+  context1.mongooseSchemaStr = stringifyPlus(context1.mongooseSchema, {
+    nativeFuncs: mongooseNativeFuncs
+  })
+  context1.typescriptTypesStr = typescriptTypes
+    .map(str => `  ${str}${context1.sc}`)
+    .join(`${EOL}`)
+  context1.typescriptExtendsStr = typescriptExtends
+    .map(str => `  ${str}${context1.sc} // change if needed`)
+    .join(`${EOL}`)
 
-  const { seqModel, seqFks } = serviceSpecsToSequelize(feathersSpecs[name], feathersSpecs[name]._extensions)
+  const { seqModel, seqFks } = serviceSpecsToSequelize(
+    feathersSpecs[name],
+    feathersSpecs[name]._extensions
+  )
 
   // Process objects created by Sequelize.ENUM([option1, option2, ...])
   traverse(seqModel).forEach(function (value) {
@@ -201,8 +226,14 @@ function service (generator, name, props, specs, context, state, inject) {
 
   context1.sequelizeSchema = seqModel
   context1.sequelizeFks = seqFks
-  context1.sequelizeSchemaStr = stringifyPlus(context1.sequelizeSchema, { nativeFuncs: sequelizeNativeFuncs })
-  debug('service() context1.sequelizeSchemaStr', context1.sequelizeSchemaStr.length, context1.sequelizeSchemaStr)
+  context1.sequelizeSchemaStr = stringifyPlus(context1.sequelizeSchema, {
+    nativeFuncs: sequelizeNativeFuncs
+  })
+  debug(
+    'service() context1.sequelizeSchemaStr',
+    context1.sequelizeSchemaStr.length,
+    context1.sequelizeSchemaStr
+  )
 
   // inspector(`\n... mongoJsonSchema ${name} (generator ${what})`, context1.mongooseSchema);
   // inspector(`\n... mongoJsonSchemaStr ${name} (generator ${what})`, context1.mongooseSchemaStr.split('\n'));
@@ -256,30 +287,88 @@ function service (generator, name, props, specs, context, state, inject) {
   })
 
   // Custom abbreviations for building 'todos'.
-  const serviceTpl = existsSync(join(serPath, '_service', `name.service-${adapter}.ejs`))
-    ? `name.service-${adapter}.ejs` : 'name.service.ejs'
+  const serviceTpl = existsSync(
+    join(serPath, '_service', `name.service-${adapter}.ejs`)
+  )
+    ? `name.service-${adapter}.ejs`
+    : 'name.service.ejs'
   const fn = fileName
   const sfa = context1.subFolderArray
 
   const todos = [
-    tmpl([testPath, 'services', 'name.test.ejs'], [testDir, 'services', `${fn}.test.${js}`], WRITE_IF_NEW),
-    tmpl([srcPath, '_model', modelTpl], [libDir, 'models', ...sfa, `${context1.modelName}.${js}`], WRITE_ALWAYS, !context1.modelName),
-    tmpl([serPath, '_service', serviceTpl], [libDir, 'services', ...sfa, fn, `${fn}.service.${js}`]),
-    tmpl([namePath, 'name.class.ejs'], [libDir, 'services', ...sfa, fn, `${fn}.class.${js}`], WRITE_ALWAYS, adapter !== 'generic'),
-    tmpl([namePath, 'name.interface.ejs'], [libDir, 'services', ...sfa, fn, `${fn}.interface.${js}`], WRITE_ALWAYS, isJs),
+    tmpl(
+      [testPath, 'services', 'name.test.ejs'],
+      [testDir, 'services', `${fn}.test.${js}`],
+      WRITE_IF_NEW
+    ),
+    tmpl(
+      [srcPath, '_model', modelTpl],
+      [libDir, 'models', ...sfa, `${context1.modelName}.${js}`],
+      WRITE_ALWAYS,
+      !context1.modelName
+    ),
+    tmpl(
+      [serPath, '_service', serviceTpl],
+      [libDir, 'services', ...sfa, fn, `${fn}.service.${js}`]
+    ),
+    tmpl(
+      [namePath, 'name.class.ejs'],
+      [libDir, 'services', ...sfa, fn, `${fn}.class.${js}`],
+      WRITE_ALWAYS,
+      adapter !== 'generic'
+    ),
+    tmpl(
+      [namePath, 'name.interface.ejs'],
+      [libDir, 'services', ...sfa, fn, `${fn}.interface.${js}`],
+      WRITE_ALWAYS,
+      isJs
+    ),
 
-    tmpl([namePath, 'name.schema.ejs'], [libDir, 'services', ...sfa, fn, `${fn}.schema.${js}`]),
-    tmpl([namePath, 'name.mongo.ejs'], [libDir, 'services', ...sfa, fn, `${fn}.mongo.${js}`]),
-    tmpl([namePath, 'name.mongoose.ejs'], [libDir, 'services', ...sfa, fn, `${fn}.mongoose.${js}`]),
-    tmpl([namePath, 'name.sequelize.ejs'], [libDir, 'services', ...sfa, fn, `${fn}.sequelize.${js}`]),
-    tmpl([namePath, 'name.validate.ejs'], [libDir, 'services', ...sfa, fn, `${fn}.validate.${js}`]),
-    tmpl([namePath, 'name.hooks.ejs'], [libDir, 'services', ...sfa, fn, `${fn}.hooks.${js}`]),
-    tmpl([namePath, 'name.populate.ejs'], [libDir, 'services', ...sfa, fn, `${fn}.populate.${js}`], WRITE_ALWAYS, !graphqlTypeName),
+    tmpl(
+      [namePath, 'name.schema.ejs'],
+      [libDir, 'services', ...sfa, fn, `${fn}.schema.${js}`]
+    ),
+    tmpl(
+      [namePath, 'name.mongo.ejs'],
+      [libDir, 'services', ...sfa, fn, `${fn}.mongo.${js}`]
+    ),
+    tmpl(
+      [namePath, 'name.mongoose.ejs'],
+      [libDir, 'services', ...sfa, fn, `${fn}.mongoose.${js}`]
+    ),
+    tmpl(
+      [namePath, 'name.sequelize.ejs'],
+      [libDir, 'services', ...sfa, fn, `${fn}.sequelize.${js}`]
+    ),
+    tmpl(
+      [namePath, 'name.validate.ejs'],
+      [libDir, 'services', ...sfa, fn, `${fn}.validate.${js}`]
+    ),
+    tmpl(
+      [namePath, 'name.hooks.ejs'],
+      [libDir, 'services', ...sfa, fn, `${fn}.hooks.${js}`]
+    ),
+    tmpl(
+      [namePath, 'name.populate.ejs'],
+      [libDir, 'services', ...sfa, fn, `${fn}.populate.${js}`],
+      WRITE_ALWAYS,
+      !graphqlTypeName
+    ),
     tmpl([serPath, 'index.ejs'], [libDir, 'services', `index.${js}`]),
     tmpl([tpl, 'src', 'index.ejs'], [src, `index.${js}`]),
 
-    tmpl([tpl, 'src', 'app.interface.ejs'], [src, 'app.interface.ts'], WRITE_ALWAYS, isJs),
-    tmpl([tpl, 'src', 'typings.d.ejs'], [src, 'typings.d.ts'], WRITE_ALWAYS, isJs)
+    tmpl(
+      [tpl, 'src', 'app.interface.ejs'],
+      [src, 'app.interface.ts'],
+      WRITE_ALWAYS,
+      isJs
+    ),
+    tmpl(
+      [tpl, 'src', 'typings.d.ejs'],
+      [src, 'typings.d.ts'],
+      WRITE_ALWAYS,
+      isJs
+    )
   ]
 
   // Generate modules
@@ -299,13 +388,13 @@ function service (generator, name, props, specs, context, state, inject) {
     const isMongo = specs.services[name].adapter === 'mongodb'
     const requiresAuth = specsService.requiresAuth
 
-    const hooks = [ 'iff' ]
-    const imports = isJs ? [
-      `const commonHooks = require('feathers-hooks-common')${sc}`
-    ] : [
-      `import * as commonHooks from 'feathers-hooks-common'${sc}`,
-      `import { HooksObject } from '@feathersjs/feathers'${sc}`
-    ]
+    const hooks = ['iff']
+    const imports = isJs
+      ? [`const commonHooks = require('feathers-hooks-common')${sc}`]
+      : [
+        `import * as commonHooks from 'feathers-hooks-common'${sc}`,
+        `import { HooksObject } from '@feathersjs/feathers'${sc}`
+      ]
 
     const comments = {
       before: [],
@@ -315,52 +404,80 @@ function service (generator, name, props, specs, context, state, inject) {
 
     const code = {
       before: {
-        all: [], find: [], get: [], create: [], update: [], patch: [], remove: []
+        all: [],
+        find: [],
+        get: [],
+        create: [],
+        update: [],
+        patch: [],
+        remove: []
       },
       after: {
-        all: [], find: [], get: [], create: [], update: [], patch: [], remove: []
+        all: [],
+        find: [],
+        get: [],
+        create: [],
+        update: [],
+        patch: [],
+        remove: []
       },
       error: {
-        all: [], find: [], get: [], create: [], update: [], patch: [], remove: []
+        all: [],
+        find: [],
+        get: [],
+        create: [],
+        update: [],
+        patch: [],
+        remove: []
       }
     }
 
     if (requiresAuth || isAuthEntityWithAuthentication) {
       if (isJs) {
-        imports.push(`const { authenticate } = require('@feathersjs/authentication').hooks${sc}`)
+        imports.push(
+          `const { authenticate } = require('@feathersjs/authentication').hooks${sc}`
+        )
       } else {
-        imports.push(`import { hooks as authHooks } from '@feathersjs/authentication'${sc}`)
+        imports.push(
+          `import { hooks as authHooks } from '@feathersjs/authentication'${sc}`
+        )
         imports.push(`const { authenticate } = authHooks${sc}`)
       }
     }
 
     if (!isAuthEntityWithAuthentication) {
       if (requiresAuth) {
-        code.before.all.push('authenticate(\'jwt\')')
+        code.before.all.push("authenticate('jwt')")
       }
     } else {
       // The order of the hooks is important
       if (isAuthEntityWithAuthentication.strategies.indexOf('local') !== -1) {
         if (isJs) {
           imports.push('// eslint-disable-next-line no-unused-vars')
-          imports.push(`const { hashPassword, protect } = require('@feathersjs/authentication-local').hooks${sc}`)
+          imports.push(
+            `const { hashPassword, protect } = require('@feathersjs/authentication-local').hooks${sc}`
+          )
         } else {
           imports.push('// tslint:disable-next-line:no-unused-variable')
-          imports.push(`import { hooks as localAuthHooks } from '@feathersjs/authentication-local'${sc}`)
+          imports.push(
+            `import { hooks as localAuthHooks } from '@feathersjs/authentication-local'${sc}`
+          )
           imports.push(`const { hashPassword, protect } = localAuthHooks${sc}`)
         }
 
         code.before.create.push('hashPassword()')
         code.before.update.push('hashPassword()')
         code.before.patch.push('hashPassword()')
-        code.after.all.push('protect(\'password\') // Must always be the last hook')
+        code.after.all.push(
+          "protect('password') // Must always be the last hook"
+        )
       }
 
-      code.before.find.push('authenticate(\'jwt\')')
-      code.before.get.push('authenticate(\'jwt\')')
-      code.before.update.push('authenticate(\'jwt\')')
-      code.before.patch.push('authenticate(\'jwt\')')
-      code.before.remove.push('authenticate(\'jwt\')')
+      code.before.find.push("authenticate('jwt')")
+      code.before.get.push("authenticate('jwt')")
+      code.before.update.push("authenticate('jwt')")
+      code.before.patch.push("authenticate('jwt')")
+      code.before.remove.push("authenticate('jwt')")
     }
 
     if (isMongo) {
@@ -397,7 +514,10 @@ function service (generator, name, props, specs, context, state, inject) {
       hooks: hooks.filter((val, i) => hooks.indexOf(val) === i), // unique
       comments,
       code,
-      make: hooks => `${hooks.length ? '\n      ' : ''}${hooks.join(',\n      ')}${hooks.length ? '\n    ' : ''}`
+      make: hooks =>
+        `${hooks.length ? '\n      ' : ''}${hooks.join(',\n      ')}${
+          hooks.length ? '\n    ' : ''
+        }`
     }
   }
 }

@@ -1,4 +1,3 @@
-
 const assert = require('assert');
 const app = require('../../../src/app');
 const config = require('../../../config/default.json');
@@ -37,10 +36,13 @@ describe('Test users/users.service.server.test.js', () => {
     // Setting `provider` indicates an external request
     const params = { provider: 'rest' };
 
-    const user = await app.service('users').create({
-      email: 'test2@example.com',
-      password: 'secret'
-    }, params);
+    const user = await app.service('users').create(
+      {
+        email: 'test2@example.com',
+        password: 'secret'
+      },
+      params
+    );
 
     // Make sure password has been removed
     assert.ok(!user.password);

@@ -1,4 +1,3 @@
-
 /* eslint-disable no-unused-vars */
 // Define GraphQL resolvers for forming raw SQL statements. (Can be re-generated.)
 // !code: imports // !end
@@ -12,9 +11,8 @@ let moduleExports = function sqlResolvers(app, options) {
     // !code: resolver_field_more // !end
 
     Query: {
-
       // !code: resolver_query_more // !end
-    },
+    }
   };
 
   // !code: func_return // !end

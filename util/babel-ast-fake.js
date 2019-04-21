@@ -62,7 +62,8 @@ const specs = {
 
 const fakeConfigPath = './config/fakeConfig.js'
 const fakeConfigCode = fs.readFileSync(fakeConfigPath, 'utf8')
-const fakeConfigObjectExpression = parse(fakeConfigCode).program.body[0].expression.right
+const fakeConfigObjectExpression = parse(fakeConfigCode).program.body[0]
+  .expression.right
 
 // update AST
 // merge two ObjectExpressions
@@ -76,9 +77,15 @@ function astObjectExpressionMerge (a, b) {
     if (aMap.has(key)) {
       const aOp = a.properties[aMap.get(key)]
       // key node exists
-      if (aOp.value.type === 'ObjectExpression' && bOp.value.type === 'ObjectExpression') {
+      if (
+        aOp.value.type === 'ObjectExpression' &&
+        bOp.value.type === 'ObjectExpression'
+      ) {
         astObjectExpressionMerge(aOp.value, bOp.value)
-      } else if (aOp.value.type === 'ArrayExpression' && bOp.value.type === 'ArrayExpression') {
+      } else if (
+        aOp.value.type === 'ArrayExpression' &&
+        bOp.value.type === 'ArrayExpression'
+      ) {
         if (bOp.value.elements.length !== 0) {
           a.properties[aMap.get(key)] = bOp
         }
@@ -100,11 +107,13 @@ function astObjectExpressionMerge (a, b) {
 }
 astObjectExpressionMerge(moduleExports.node, fakeConfigObjectExpression)
 
-console.log(prettier.format(generate(ast).code, {
-  semi: false,
-  singleQuote: true,
-  parser: 'babel'
-}))
+console.log(
+  prettier.format(generate(ast).code, {
+    semi: false,
+    singleQuote: true,
+    parser: 'babel'
+  })
+)
 
 // console.log(template.ast('tests: {}', { preserveComments: true }))
 // console.log(

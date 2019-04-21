@@ -1,9 +1,11 @@
-
 // Hooks for service `users`. (Can be re-generated.)
 const commonHooks = require('feathers-hooks-common');
 const { authenticate } = require('@feathersjs/authentication').hooks;
 // eslint-disable-next-line no-unused-vars
-const { hashPassword, protect } = require('@feathersjs/authentication-local').hooks;
+const {
+  hashPassword,
+  protect
+} = require('@feathersjs/authentication-local').hooks;
 // eslint-disable-next-line no-unused-vars
 const verifyEmail = require('./hooks/verify-email');
 // !code: imports // !end
@@ -12,7 +14,14 @@ const verifyEmail = require('./hooks/verify-email');
 // eslint-disable-next-line no-unused-vars
 const { iff } = commonHooks;
 // eslint-disable-next-line no-unused-vars
-const { create, update, patch, validateCreate, validateUpdate, validatePatch } = require('./users.validate');
+const {
+  create,
+  update,
+  patch,
+  validateCreate,
+  validateUpdate,
+  validatePatch
+} = require('./users.validate');
 // !end
 
 // !code: init // !end
@@ -28,12 +37,12 @@ let moduleExports = {
     //   remove: authenticate('jwt')
     // !<DEFAULT> code: before
     all: [],
-    find: [ authenticate('jwt') ],
-    get: [ authenticate('jwt') ],
-    create: [ hashPassword() ],
-    update: [ hashPassword(), authenticate('jwt') ],
-    patch: [ hashPassword(), authenticate('jwt') ],
-    remove: [ authenticate('jwt') ]
+    find: [authenticate('jwt')],
+    get: [authenticate('jwt')],
+    create: [hashPassword()],
+    update: [hashPassword(), authenticate('jwt')],
+    patch: [hashPassword(), authenticate('jwt')],
+    remove: [authenticate('jwt')]
     // !end
   },
 
@@ -41,7 +50,7 @@ let moduleExports = {
     // Your hooks should include:
     //   all   : protect('password') /* Must always be the last hook */
     // !<DEFAULT> code: after
-    all: [ protect('password') /* Must always be the last hook */ ],
+    all: [protect('password') /* Must always be the last hook */],
     find: [],
     get: [],
     create: [],
@@ -61,7 +70,7 @@ let moduleExports = {
     patch: [],
     remove: []
     // !end
-  },
+  }
   // !code: moduleExports // !end
 };
 

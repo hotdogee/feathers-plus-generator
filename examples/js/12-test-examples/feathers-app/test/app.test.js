@@ -1,21 +1,21 @@
-
 const assert = require('assert');
 const rp = require('request-promise');
 const url = require('url');
 const app = require('../src/app');
 
 const port = app.get('port') || 3030;
-const getUrl = pathname => url.format({
-  hostname: app.get('host') || 'localhost',
-  protocol: 'http',
-  port,
-  pathname
-});
+const getUrl = pathname =>
+  url.format({
+    hostname: app.get('host') || 'localhost',
+    protocol: 'http',
+    port,
+    pathname
+  });
 
 describe('Feathers application tests', () => {
   let server;
 
-  before(function (done) {
+  before(function(done) {
     server = app.listen(port);
     server.once('listening', () => {
       setTimeout(() => done(), 500);
@@ -23,18 +23,21 @@ describe('Feathers application tests', () => {
     app.service('users').remove(null);
   });
 
-  after(function (done) {
+  after(function(done) {
     server.close();
     setTimeout(() => done(), 500);
   });
 
   it('starts and shows the index page', () => {
     return rp(getUrl()).then(body =>
-      assert.ok(body.indexOf('<html>') !== -1, 'response does not contain <html>')
+      assert.ok(
+        body.indexOf('<html>') !== -1,
+        'response does not contain <html>'
+      )
     );
   });
 
-  describe('404', function () {
+  describe('404', function() {
     it('shows a 404 HTML page', () => {
       return rp({
         url: getUrl('path/to/nowhere'),
@@ -43,7 +46,10 @@ describe('Feathers application tests', () => {
         }
       }).catch(res => {
         assert.equal(res.statusCode, 404, 'unexpected statusCode');
-        assert.ok(res.error.indexOf('<html>') !== -1, 'error does not contain <html>');
+        assert.ok(
+          res.error.indexOf('<html>') !== -1,
+          'error does not contain <html>'
+        );
       });
     });
 
@@ -54,7 +60,11 @@ describe('Feathers application tests', () => {
       }).catch(res => {
         assert.equal(res.statusCode, 404, 'unexpected statusCode');
         assert.equal(res.error.code, 404, 'unexpected error.code');
-        assert.equal(res.error.message, 'Page not found', 'unexpected error.message');
+        assert.equal(
+          res.error.message,
+          'Page not found',
+          'unexpected error.message'
+        );
         assert.equal(res.error.name, 'NotFound', 'unexpected error.name');
       });
     });

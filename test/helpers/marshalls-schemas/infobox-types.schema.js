@@ -1,4 +1,3 @@
-
 // Define the Feathers schema for service `infoboxTypes`. (Can be re-generated.)
 // !code: imports // !end
 // !code: init // !end
@@ -37,7 +36,7 @@ let schema = {
       }
     }
     // !end
-  },
+  }
   // !code: schema_more // !end
 }
 
@@ -48,7 +47,7 @@ let extensions = {
     // !code: graphql_header
     name: 'InfoboxType',
     service: {
-      sort: { _id: 1 },
+      sort: { _id: 1 }
     },
     // sql: {
     //   sqlTable: 'InfoboxTypes',
@@ -65,16 +64,16 @@ let extensions = {
       // !<DEFAULT> code: graphql_add
       // __author__: { type: '__User__!', args: false, relation: { ourTable: '__authorId__', otherTable: '_id' } },
       // !end
-    },
+    }
     // !code: graphql_more // !end
-  },
+  }
 }
 
 // !code: more // !end
 
 let moduleExports = {
   schema,
-  extensions,
+  extensions
   // !code: moduleExports // !end
 }
 

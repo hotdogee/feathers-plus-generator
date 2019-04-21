@@ -1,4 +1,3 @@
-
 // Define the Feathers schema for service `teams`. (Can be re-generated.)
 // !code: imports // !end
 // !code: init // !end
@@ -26,15 +25,15 @@ let schema = {
   // Fields in the model.
   properties: {
     // !code: schema_properties
-    id:        { type: 'ID' },
-    name:      { minLength: 2, maxLength: 30, faker: 'lorem.words' },
+    id: { type: 'ID' },
+    name: { minLength: 2, maxLength: 30, faker: 'lorem.words' },
     memberIds: {
       type: 'array',
       maxItems: 10,
-      items:   { type: 'ID', faker: { fk: 'users:next' } },
+      items: { type: 'ID', faker: { fk: 'users:next' } }
     }
     // !end
-  },
+  }
   // !code: schema_more // !end
 };
 
@@ -45,7 +44,7 @@ let extensions = {
     // !code: graphql_header
     name: 'Team',
     service: {
-      sort: { _id: 1 },
+      sort: { _id: 1 }
     },
     // sql: {
     //   sqlTable: 'Teams',
@@ -62,16 +61,16 @@ let extensions = {
       // !<DEFAULT> code: graphql_add
       // __author__: { type: '__User__!', args: false, relation: { ourTable: '__authorId__', otherTable: '_id' } },
       // !end
-    },
+    }
     // !code: graphql_more // !end
-  },
+  }
 };
 
 // !code: more // !end
 
 let moduleExports = {
   schema,
-  extensions,
+  extensions
   // !code: moduleExports // !end
 };
 

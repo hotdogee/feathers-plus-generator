@@ -1,4 +1,3 @@
-
 module.exports = {
   // Configuration for faking service data
   fakeData: {
@@ -33,8 +32,7 @@ module.exports = {
       extend: {
         // Invoked with: format: 'foo'
         // foo: () => jsf.random.randexp('\\d\\.\\d\\.[1-9]\\d?');,
-      },
-
+      }
     },
     // https://github.com/Marak/Faker.js#localization
     faker: {
@@ -43,20 +41,20 @@ module.exports = {
       // Language to generate for.
       locale: 'en',
       // Fallback language for missing definitions.
-      localeFallback: 'en',
+      localeFallback: 'en'
       // Custom seeders.
       // faz: {
-           // Invoked with: faker: 'faz.foo', faker: { 'faz.foo': 'bar' } or faker: { 'faz.foo': ['bar', 'baz'] }
-           // foo: (p1 = 'hello', p2 = 'world') => `${p1} ${p2}`,
+      // Invoked with: faker: 'faz.foo', faker: { 'faz.foo': 'bar' } or faker: { 'faz.foo': ['bar', 'baz'] }
+      // foo: (p1 = 'hello', p2 = 'world') => `${p1} ${p2}`,
       // },
     },
     // http://chancejs.com/usage/seed.html
     chance: {
       // If you want consistent results, you can set your own seed.
-      seed: undefined,
+      seed: undefined
       // Custom seeders.
       // Invoked with: chance: 'foo', chance: { foo: 'bar' } or chance: { foo: ['bar', 'baz'] }
       // foo: (p1 = 'hello', p2 = 'world') => `${p1} ${p2}`,
-    },
+    }
   }
-};
+}

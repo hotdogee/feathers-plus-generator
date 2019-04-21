@@ -1,4 +1,3 @@
-
 const chalk = require('chalk')
 const { randomBytes } = require('crypto')
 const Generator = require('../../lib/generator')

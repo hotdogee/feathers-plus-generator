@@ -1,4 +1,3 @@
-
 /* eslint-disable no-console */
 const makeDebug = require('debug')
 const merge = require('lodash.merge')
@@ -31,7 +30,7 @@ function abstractTs (specs) {
   const sc = specs.options.semicolons ? ';' : ''
 
   return {
-    tplJsOrTs: (value, valueTs) => ifTs ? valueTs : value,
+    tplJsOrTs: (value, valueTs) => (ifTs ? valueTs : value),
     tplJsOnly: lines => {
       lines = Array.isArray(lines) ? lines : [lines]
 
@@ -43,10 +42,10 @@ function abstractTs (specs) {
       return ifTs ? lines.join(EOL) : ''
     },
     tplImports: (vars, module, format, useConst = 'const') => {
-      if (!ifTs) return `${useConst} ${vars} = require('${module || vars}')${sc}`
+      if (!ifTs) { return `${useConst} ${vars} = require('${module || vars}')${sc}` }
 
       // todo [removed] if (format === 'req') return `import ${vars} = require('${module || vars}')${sc}`;
-      if (format === 'as') return `import * as ${vars} from '${module || vars}'${sc}`
+      if (format === 'as') { return `import * as ${vars} from '${module || vars}'${sc}` }
       return `import ${vars} from '${module || vars}'${sc}`
     },
     tplModuleExports: (type, value = '{', valueTs) => {
@@ -97,16 +96,29 @@ module.exports = function generatorWriting (generator, what) {
     // Abstract .js and .ts linting.
     this.lintRule = this.isJs ? 'eslint ' : 'tslint:'
     this.lintDisable = this.isJs ? 'eslint-disable' : 'tslint:disable'
-    this.lintDisableUnused = this.isJs ? 'eslint-disable no-unused-vars' : 'tslint:disable no-unused-variable'
-    this.lintDisableNextLine = this.isJs ? 'eslint-disable-next-line' : 'tslint:disable-next-line'
+    this.lintDisableUnused = this.isJs
+      ? 'eslint-disable no-unused-vars'
+      : 'tslint:disable no-unused-variable'
+    this.lintDisableNextLine = this.isJs
+      ? 'eslint-disable-next-line'
+      : 'tslint:disable-next-line'
     this.lintDisableNextLineUnused = this.isJs
-      ? 'eslint-disable-next-line no-unused-vars' : 'tslint:disable-next-line:no-unused-variable'
+      ? 'eslint-disable-next-line no-unused-vars'
+      : 'tslint:disable-next-line:no-unused-variable'
     this.lintDisableNextLineNoConsole = this.isJs
-      ? 'eslint-disable-next-line no-console' : 'tslint:disable-next-line:no-console'
+      ? 'eslint-disable-next-line no-console'
+      : 'tslint:disable-next-line:no-console'
     this.ruleQuoteDisable = this.isJs ? 'quotes: 0' : 'disable:quotemark'
 
     // Abstract .js and .ts statements.
-    const { tplJsOrTs, tplJsOnly, tplTsOnly, tplImports, tplModuleExports, tplExport } = abstractTs(specs)
+    const {
+      tplJsOrTs,
+      tplJsOnly,
+      tplTsOnly,
+      tplImports,
+      tplModuleExports,
+      tplExport
+    } = abstractTs(specs)
     this.tplJsOrTs = tplJsOrTs
     this.tplJsOnly = tplJsOnly
     this.tplTsOnly = tplTsOnly
@@ -191,8 +203,11 @@ module.exports = function generatorWriting (generator, what) {
   // Generate what is needed.
   switch (what) {
     case 'all':
-      if (!specs.app.name) { // specs.js adds default props to specs.app
-        generator.log('\nfeathers-gen-specs.json does not contain an \'app\' property. Terminating.')
+      if (!specs.app.name) {
+        // specs.js adds default props to specs.app
+        generator.log(
+          "\nfeathers-gen-specs.json does not contain an 'app' property. Terminating."
+        )
         break
       }
 
@@ -216,8 +231,10 @@ module.exports = function generatorWriting (generator, what) {
 
       middleware(generator, props, specs, context, state)
 
-      if (specs.graphql &&
-        (Object.keys(context.mapping.graphqlService).length || Object.keys(context.mapping.graphqlSql).length)
+      if (
+        specs.graphql &&
+        (Object.keys(context.mapping.graphqlService).length ||
+          Object.keys(context.mapping.graphqlSql).length)
       ) {
         graphql(generator, props, specs, context, state)
       }

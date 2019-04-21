@@ -1,4 +1,3 @@
-
 // Configure authentication. (Can be re-generated.)
 const authentication = require('@feathersjs/authentication');
 const jwt = require('@feathersjs/authentication-jwt');
@@ -12,7 +11,7 @@ const GithubStrategy = require('passport-github');
 // !code: imports // !end
 // !code: init // !end
 
-let moduleExports = function (app) {
+let moduleExports = function(app) {
   const config = app.get('authentication');
   // !code: func_init // !end
 
@@ -22,29 +21,57 @@ let moduleExports = function (app) {
   app.configure(local());
   // !code: loc_1 // !end
 
-  app.configure(oauth2(Object.assign({
-    name: 'auth0',
-    Strategy: Auth0Strategy,
-    // !code: auth0_options // !end
-  }, config.auth0)));
+  app.configure(
+    oauth2(
+      Object.assign(
+        {
+          name: 'auth0',
+          Strategy: Auth0Strategy
+          // !code: auth0_options // !end
+        },
+        config.auth0
+      )
+    )
+  );
 
-  app.configure(oauth2(Object.assign({
-    name: 'google',
-    Strategy: GoogleStrategy,
-    // !code: google_options // !end
-  }, config.google)));
+  app.configure(
+    oauth2(
+      Object.assign(
+        {
+          name: 'google',
+          Strategy: GoogleStrategy
+          // !code: google_options // !end
+        },
+        config.google
+      )
+    )
+  );
 
-  app.configure(oauth2(Object.assign({
-    name: 'facebook',
-    Strategy: FacebookStrategy,
-    // !code: facebook_options // !end
-  }, config.facebook)));
+  app.configure(
+    oauth2(
+      Object.assign(
+        {
+          name: 'facebook',
+          Strategy: FacebookStrategy
+          // !code: facebook_options // !end
+        },
+        config.facebook
+      )
+    )
+  );
 
-  app.configure(oauth2(Object.assign({
-    name: 'github',
-    Strategy: GithubStrategy,
-    // !code: github_options // !end
-  }, config.github)));
+  app.configure(
+    oauth2(
+      Object.assign(
+        {
+          name: 'github',
+          Strategy: GithubStrategy
+          // !code: github_options // !end
+        },
+        config.github
+      )
+    )
+  );
 
   // !code: loc_2 // !end
 
@@ -55,16 +82,16 @@ let moduleExports = function (app) {
     before: {
       create: [
         // !<DEFAULT> code: before_create
-        authentication.hooks.authenticate(config.strategies),
+        authentication.hooks.authenticate(config.strategies)
         // !end
       ],
       remove: [
         // !<DEFAULT> code: before_remove
-        authentication.hooks.authenticate('jwt'),
+        authentication.hooks.authenticate('jwt')
         // !end
-      ],
+      ]
       // !code: before // !end
-    },
+    }
     // !code: after // !end
   });
   // !code: func_return // !end

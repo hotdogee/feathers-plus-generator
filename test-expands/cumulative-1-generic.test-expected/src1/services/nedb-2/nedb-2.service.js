@@ -1,17 +1,15 @@
-
 // Initializes the `nedb2` service on path `/nedb-2`. (Can be re-generated.)
 const createService = require('./nedb-2.class');
 const hooks = require('./nedb-2.hooks');
 // !code: imports // !end
 // !code: init // !end
 
-let moduleExports = function (app) {
-
+let moduleExports = function(app) {
   let paginate = app.get('paginate');
   // !code: func_init // !end
 
   let options = {
-    paginate,
+    paginate
     // !code: options_more // !end
   };
   // !code: options_change // !end

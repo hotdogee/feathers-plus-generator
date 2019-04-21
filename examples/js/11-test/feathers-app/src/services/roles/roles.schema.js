@@ -1,4 +1,3 @@
-
 // Define the Feathers schema for service `roles`. (Can be re-generated.)
 // !code: imports // !end
 // !code: init // !end
@@ -26,9 +25,9 @@ let schema = {
   properties: {
     // !code: schema_properties
     id: { type: 'ID' },
-    name: { faker: 'name.title'}
+    name: { faker: 'name.title' }
     // !end
-  },
+  }
   // !code: schema_more // !end
 };
 
@@ -39,7 +38,7 @@ let extensions = {
     // !code: graphql_header
     name: 'Role',
     service: {
-      sort: { name: 1 },
+      sort: { name: 1 }
     },
     // sql: {
     //   sqlTable: 'Roles',
@@ -54,18 +53,22 @@ let extensions = {
     ],
     add: {
       // !code: graphql_add
-      users: { type: '[User!]', args: false, relation: { ourTable: '_id', otherTable: 'roleId' } },
+      users: {
+        type: '[User!]',
+        args: false,
+        relation: { ourTable: '_id', otherTable: 'roleId' }
+      }
       // !end
-    },
+    }
     // !code: graphql_more // !end
-  },
+  }
 };
 
 // !code: more // !end
 
 let moduleExports = {
   schema,
-  extensions,
+  extensions
   // !code: moduleExports // !end
 };
 

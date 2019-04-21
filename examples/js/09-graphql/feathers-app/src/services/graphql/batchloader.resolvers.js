@@ -1,4 +1,3 @@
-
 /* eslint-disable no-unused-vars */
 // Define GraphQL resolvers using Feathers services and BatchLoaders. (Can be re-generated.)
 const { getByDot, setByDot } = require('feathers-hooks-common');
@@ -7,13 +6,20 @@ const { getByDot, setByDot } = require('feathers-hooks-common');
 
 let moduleExports = function batchLoaderResolvers(app, options) {
   // eslint-disable-next-line
-  let { convertArgsToParams, convertArgsToFeathers, extractAllItems, extractFirstItem,
-    feathersBatchLoader: { feathersBatchLoader } } = options;
+  let {
+    convertArgsToParams,
+    convertArgsToFeathers,
+    extractAllItems,
+    extractFirstItem,
+    feathersBatchLoader: { feathersBatchLoader }
+  } = options;
 
   // !<DEFAULT> code: max-batch-size
   let defaultPaginate = app.get('paginate');
-  let maxBatchSize = defaultPaginate && typeof defaultPaginate.max === 'number' ?
-    defaultPaginate.max : undefined;
+  let maxBatchSize =
+    defaultPaginate && typeof defaultPaginate.max === 'number'
+      ? defaultPaginate.max
+      : undefined;
   // !end
 
   // !<DEFAULT> code: extra_auth_props
@@ -38,7 +44,13 @@ let moduleExports = function batchLoaderResolvers(app, options) {
       let batchLoader = getByDot(content, contentByDot);
 
       if (!batchLoader) {
-        batchLoader = getBatchLoader(batchLoaderName, parent, args, content, ast);
+        batchLoader = getBatchLoader(
+          batchLoaderName,
+          parent,
+          args,
+          content,
+          ast
+        );
         setByDot(content, contentByDot, batchLoader);
       }
 
@@ -71,11 +83,15 @@ let moduleExports = function batchLoaderResolvers(app, options) {
     // Role.users: [User!]
     // !<DEFAULT> code: bl-Role-users
     case 'Role.users':
-      return feathersBatchLoader(dataLoaderName, '[!]', 'roleId',
+      return feathersBatchLoader(
+        dataLoaderName,
+        '[!]',
+        'roleId',
         keys => {
           feathersParams = convertArgs(args, content, null, {
             query: { roleId: { $in: keys }, $sort: undefined },
-            _populate: 'skip', paginate: false
+            _populate: 'skip',
+            paginate: false
           });
           return users.find(feathersParams);
         },
@@ -83,14 +99,18 @@ let moduleExports = function batchLoaderResolvers(app, options) {
       );
       // !end
 
-    // Team.members: [User!]
-    // !<DEFAULT> code: bl-Team-members
+      // Team.members: [User!]
+      // !<DEFAULT> code: bl-Team-members
     case 'Team.members':
-      return feathersBatchLoader(dataLoaderName, '[!]', '_id',
+      return feathersBatchLoader(
+        dataLoaderName,
+        '[!]',
+        '_id',
         keys => {
           feathersParams = convertArgs(args, content, null, {
             query: { _id: { $in: keys }, $sort: undefined },
-            _populate: 'skip', paginate: false
+            _populate: 'skip',
+            paginate: false
           });
           return users.find(feathersParams);
         },
@@ -98,14 +118,18 @@ let moduleExports = function batchLoaderResolvers(app, options) {
       );
       // !end
 
-    // User.role(query: JSON, params: JSON, key: JSON): Role
-    // !<DEFAULT> code: bl-User-role
+      // User.role(query: JSON, params: JSON, key: JSON): Role
+      // !<DEFAULT> code: bl-User-role
     case 'User.role':
-      return feathersBatchLoader(dataLoaderName, '', '_id',
+      return feathersBatchLoader(
+        dataLoaderName,
+        '',
+        '_id',
         keys => {
           feathersParams = convertArgs(args, content, null, {
             query: { _id: { $in: keys }, $sort: undefined },
-            _populate: 'skip', paginate: false
+            _populate: 'skip',
+            paginate: false
           });
           return roles.find(feathersParams);
         },
@@ -113,14 +137,18 @@ let moduleExports = function batchLoaderResolvers(app, options) {
       );
       // !end
 
-    // User.teams(query: JSON, params: JSON, key: JSON): [Team!]
-    // !<DEFAULT> code: bl-User-teams
+      // User.teams(query: JSON, params: JSON, key: JSON): [Team!]
+      // !<DEFAULT> code: bl-User-teams
     case 'User.teams':
-      return feathersBatchLoader(dataLoaderName, '[!]', 'memberIds',
+      return feathersBatchLoader(
+        dataLoaderName,
+        '[!]',
+        'memberIds',
         keys => {
           feathersParams = convertArgs(args, content, null, {
             query: { memberIds: { $in: keys }, $sort: undefined },
-            _populate: 'skip', paginate: false
+            _populate: 'skip',
+            paginate: false
           });
           return teams.find(feathersParams);
         },
@@ -128,37 +156,37 @@ let moduleExports = function batchLoaderResolvers(app, options) {
       );
       // !end
 
-    /* Throw on unknown BatchLoader name. */
+      /* Throw on unknown BatchLoader name. */
     default:
       // !<DEFAULT> code: bl-default
-      throw new Error(`GraphQL query requires BatchLoader named '${dataLoaderName}' but no definition exists for it.`);
+      throw new Error(
+        `GraphQL query requires BatchLoader named '${dataLoaderName}' but no definition exists for it.`
+      );
       // !end
     }
   }
 
   let returns = {
-
     Role: {
-
       // users: [User!]
       // !<DEFAULT> code: resolver-Role-users
-      users: getResult('Role.users', '_id', true),
+      users: getResult('Role.users', '_id', true)
       // !end
     },
 
     Team: {
-
       // members: [User!]
       // !<DEFAULT> code: resolver-Team-members
-      members: getResult('Team.members', 'memberIds', true),
+      members: getResult('Team.members', 'memberIds', true)
       // !end
     },
 
     User: {
-
       // fullName: String!
       // !<DEFAULT> code: resolver-User-fullName-non
-      fullName: (parent, args, content, ast) => { throw Error('GraphQL fieldName User.fullName is not calculated.'); },
+      fullName: (parent, args, content, ast) => {
+        throw Error('GraphQL fieldName User.fullName is not calculated.');
+      },
       // !end
 
       // role(query: JSON, params: JSON, key: JSON): Role
@@ -168,13 +196,12 @@ let moduleExports = function batchLoaderResolvers(app, options) {
 
       // teams(query: JSON, params: JSON, key: JSON): [Team!]
       // !<DEFAULT> code: resolver-User-teams
-      teams: getResult('User.teams', '_id', true),
+      teams: getResult('User.teams', '_id', true)
       // !end
     },
 
     // !code: resolver_field_more // !end
     Query: {
-
       // !<DEFAULT> code: query-Role
       // getRole(query: JSON, params: JSON, key: JSON): Role
       getRole(parent, args, content, ast) {
@@ -184,8 +211,13 @@ let moduleExports = function batchLoaderResolvers(app, options) {
 
       // findRole(query: JSON, params: JSON): [Role!]
       findRole(parent, args, content, ast) {
-        const feathersParams = convertArgs(args, content, ast, { query: { $sort: {   name: 1 } } });
-        return roles.find(feathersParams).then(paginate(content)).then(extractAllItems);
+        const feathersParams = convertArgs(args, content, ast, {
+          query: { $sort: { name: 1 } }
+        });
+        return roles
+          .find(feathersParams)
+          .then(paginate(content))
+          .then(extractAllItems);
       },
       // !end
 
@@ -198,8 +230,13 @@ let moduleExports = function batchLoaderResolvers(app, options) {
 
       // findTeam(query: JSON, params: JSON): [Team!]
       findTeam(parent, args, content, ast) {
-        const feathersParams = convertArgs(args, content, ast, { query: { $sort: {   name: 1 } } });
-        return teams.find(feathersParams).then(paginate(content)).then(extractAllItems);
+        const feathersParams = convertArgs(args, content, ast, {
+          query: { $sort: { name: 1 } }
+        });
+        return teams
+          .find(feathersParams)
+          .then(paginate(content))
+          .then(extractAllItems);
       },
       // !end
 
@@ -212,12 +249,17 @@ let moduleExports = function batchLoaderResolvers(app, options) {
 
       // findUser(query: JSON, params: JSON): [User!]
       findUser(parent, args, content, ast) {
-        const feathersParams = convertArgs(args, content, ast, { query: { $sort: {   lastName: 1,   firstName: 1 } } });
-        return users.find(feathersParams).then(paginate(content)).then(extractAllItems);
-      },
+        const feathersParams = convertArgs(args, content, ast, {
+          query: { $sort: { lastName: 1, firstName: 1 } }
+        });
+        return users
+          .find(feathersParams)
+          .then(paginate(content))
+          .then(extractAllItems);
+      }
       // !end
       // !code: resolver_query_more // !end
-    },
+    }
   };
 
   // !code: func_return // !end
@@ -231,11 +273,13 @@ module.exports = moduleExports;
 
 function paginate(content) {
   return result => {
-    content.pagination = !result.data ? undefined : {
-      total: result.total,
-      limit: result.limit,
-      skip: result.skip,
-    };
+    content.pagination = !result.data
+      ? undefined
+      : {
+        total: result.total,
+        limit: result.limit,
+        skip: result.skip
+      };
 
     return result;
   };

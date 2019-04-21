@@ -1,4 +1,3 @@
-
 // Hooks for service `users`. (Can be re-generated.)
 const commonHooks = require('feathers-hooks-common');
 const { authenticate } = require('@feathersjs/authentication').hooks;
@@ -8,7 +7,14 @@ const { authenticate } = require('@feathersjs/authentication').hooks;
 // eslint-disable-next-line no-unused-vars
 const { iff } = commonHooks;
 // eslint-disable-next-line no-unused-vars
-const { create, update, patch, validateCreate, validateUpdate, validatePatch } = require('./users.validate');
+const {
+  create,
+  update,
+  patch,
+  validateCreate,
+  validateUpdate,
+  validatePatch
+} = require('./users.validate');
 // !end
 
 // !code: init // !end
@@ -23,12 +29,12 @@ let moduleExports = {
     //   remove: authenticate('jwt')
     // !<DEFAULT> code: before
     all: [],
-    find: [ authenticate('jwt') ],
-    get: [ authenticate('jwt') ],
+    find: [authenticate('jwt')],
+    get: [authenticate('jwt')],
     create: [],
-    update: [ authenticate('jwt') ],
-    patch: [ authenticate('jwt') ],
-    remove: [ authenticate('jwt') ]
+    update: [authenticate('jwt')],
+    patch: [authenticate('jwt')],
+    remove: [authenticate('jwt')]
     // !end
   },
 
@@ -54,7 +60,7 @@ let moduleExports = {
     patch: [],
     remove: []
     // !end
-  },
+  }
   // !code: moduleExports // !end
 };
 

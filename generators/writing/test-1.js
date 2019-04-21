@@ -61,7 +61,10 @@ function test (generator, props, specs, context, state) {
 
   if (testType === 'authBase') {
     todos = [
-      tmpl([testPath, 'authentication.base.test.ejs'], ['test', `authentication.base.test.${js}`])
+      tmpl(
+        [testPath, 'authentication.base.test.ejs'],
+        ['test', `authentication.base.test.${js}`]
+      )
     ]
 
     writeDefaultJsonClient(generator, context)
@@ -69,7 +72,10 @@ function test (generator, props, specs, context, state) {
 
   if (testType === 'authServices') {
     todos = [
-      tmpl([testPath, 'authentication.services.test.ejs'], ['test', `authentication.services.test.${js}`])
+      tmpl(
+        [testPath, 'authentication.services.test.ejs'],
+        ['test', `authentication.services.test.${js}`]
+      )
     ]
 
     writeDefaultJsonClient(generator, context)
@@ -83,7 +89,14 @@ function test (generator, props, specs, context, state) {
     const specHook = specs.hooks[hookFileName]
     const hookName = specHook.camelName
 
-    let hookInfo, sn1, sfa, sfBack, pathToHook, pathToTest, pathTestToHook, pathTestToApp
+    let hookInfo,
+      sn1,
+      sfa,
+      sfBack,
+      pathToHook,
+      pathToTest,
+      pathTestToHook,
+      pathTestToApp
     // eslint-disable-next-line no-unused-vars
     let x
 
@@ -97,7 +110,9 @@ function test (generator, props, specs, context, state) {
         appLevelHook: false,
         serviceName: specsService.name,
         hookFileName,
-        pathToHook: `services/${sfa1.length ? `${sfa1.join('/')}/` : ''}${sn1}/hooks/${hookFileName}`
+        pathToHook: `services/${
+          sfa1.length ? `${sfa1.join('/')}/` : ''
+        }${sn1}/hooks/${hookFileName}`
       }
     } else {
       hookInfo = {
@@ -116,10 +131,12 @@ function test (generator, props, specs, context, state) {
       pathTestToApp = '../../'
     } else {
       const specService = specs.services[hookInfo.serviceName]
-      const sn = specService.fileName;
-      [x, sfa, sfBack ] = generator.getNameSpace(specService.subFolder)
+      const sn = specService.fileName
+      ;[x, sfa, sfBack] = generator.getNameSpace(specService.subFolder)
 
-      pathToHook = `services/${sfa.length ? `${sfa.join('/')}/` : ''}${sn}/hooks/${hookFileName}`
+      pathToHook = `services/${
+        sfa.length ? `${sfa.join('/')}/` : ''
+      }${sn}/hooks/${hookFileName}`
       pathToTest = `${pathToHook}${htt}.test`
       pathTestToHook = `${sfBack}../../../../${src}/${pathToHook}`
       pathTestToApp = `${sfBack}../../../../`
@@ -138,17 +155,30 @@ function test (generator, props, specs, context, state) {
     })
 
     todos = [
-      tmpl([testPath, 'hooks', 'hook.unit.test.ejs'], ['test', `${pathToTest}.${js}`], WRITE_IF_NEW, testType !== 'hookUnit'),
-      tmpl([testPath, 'hooks', 'hook.integ.test.ejs'], ['test', `${pathToTest}.${js}`], WRITE_IF_NEW, testType === 'hookUnit')
+      tmpl(
+        [testPath, 'hooks', 'hook.unit.test.ejs'],
+        ['test', `${pathToTest}.${js}`],
+        WRITE_IF_NEW,
+        testType !== 'hookUnit'
+      ),
+      tmpl(
+        [testPath, 'hooks', 'hook.integ.test.ejs'],
+        ['test', `${pathToTest}.${js}`],
+        WRITE_IF_NEW,
+        testType === 'hookUnit'
+      )
     ]
 
     if (testType === 'hookInteg') {
-      generator._packagerInstall(isJs ? [
-        '@feathers-plus/test-utils'
-      ] : [
-        // '@types/???',
-        '@feathers-plus/test-utils'
-      ], { save: true }) // because seeding DBs also uses it
+      generator._packagerInstall(
+        isJs
+          ? ['@feathers-plus/test-utils']
+          : [
+            // '@types/???',
+            '@feathers-plus/test-utils'
+          ],
+        { save: true }
+      ) // because seeding DBs also uses it
     }
   }
 
@@ -158,11 +188,14 @@ function test (generator, props, specs, context, state) {
     const serviceFileName = serviceSpec.fileName
     const stt = testType === 'serviceUnit' ? '.server' : '.client'
     // eslint-disable-next-line no-unused-vars
-    const [x, sfa, sfBack ] = generator.getNameSpace(serviceSpec.subFolder)
+    const [x, sfa, sfBack] = generator.getNameSpace(serviceSpec.subFolder)
     const ssf = sfa.length ? `${sfa.join('/')}/` : ''
 
     const pathToService = `services/${ssf}${serviceFileName}/${serviceFileName}.service.${js}`
-    const pathToTest = pathToService.substr(0, pathToService.length - 3) + `${stt}.test` + pathToService.substr(-3)
+    const pathToTest =
+      pathToService.substr(0, pathToService.length - 3) +
+      `${stt}.test` +
+      pathToService.substr(-3)
     const pathTestToApp = `${sfBack}../../../`
 
     context = Object.assign({}, context, {
@@ -175,16 +208,29 @@ function test (generator, props, specs, context, state) {
     })
 
     todos = [
-      tmpl([testPath, 'services', 'name', 'service.server.test.ejs'], ['test', pathToTest], WRITE_IF_NEW, testType !== 'serviceUnit'),
-      tmpl([testPath, 'services', 'name', 'service.client.test.ejs'], ['test', pathToTest], WRITE_IF_NEW, testType === 'serviceUnit')
+      tmpl(
+        [testPath, 'services', 'name', 'service.server.test.ejs'],
+        ['test', pathToTest],
+        WRITE_IF_NEW,
+        testType !== 'serviceUnit'
+      ),
+      tmpl(
+        [testPath, 'services', 'name', 'service.client.test.ejs'],
+        ['test', pathToTest],
+        WRITE_IF_NEW,
+        testType === 'serviceUnit'
+      )
     ]
 
-    generator._packagerInstall(isJs ? [
-      '@feathers-plus/test-utils'
-    ] : [
-      // '@types/???',
-      '@feathers-plus/test-utils'
-    ], { save: true }) // because seeding DBs also uses it
+    generator._packagerInstall(
+      isJs
+        ? ['@feathers-plus/test-utils']
+        : [
+          // '@types/???',
+          '@feathers-plus/test-utils'
+        ],
+      { save: true }
+    ) // because seeding DBs also uses it
   }
 
   // Generate modules
@@ -194,15 +240,14 @@ function test (generator, props, specs, context, state) {
 function writeDefaultJsonClient (generator, context) {
   const testConfig = {
     tests: {
-      environmentsAllowingSeedData: [
-      ],
+      environmentsAllowingSeedData: [],
       local: {
         password: 'password'
       },
       client: {
         port: 3030,
         ioOptions: {
-          transports: [ 'websocket' ],
+          transports: ['websocket'],
           forceNew: true,
           reconnection: false,
           extraHeaders: {}
@@ -257,13 +302,11 @@ function writeDefaultJsonClient (generator, context) {
   // update AST
   // create testConfig ObjectExpression node
   const testConfigObjectExpression = template.ast(
-    prettier.format(`module.exports = ${JSON.stringify(testConfig)}`,
-      {
-        semi: false,
-        singleQuote: true,
-        parser: 'babel'
-      }
-    ),
+    prettier.format(`module.exports = ${JSON.stringify(testConfig)}`, {
+      semi: false,
+      singleQuote: true,
+      parser: 'babel'
+    }),
     {
       reserveComments: true
     }
@@ -279,9 +322,15 @@ function writeDefaultJsonClient (generator, context) {
       if (aMap.has(key)) {
         const aOp = a.properties[aMap.get(key)]
         // key node exists
-        if (aOp.value.type === 'ObjectExpression' && bOp.value.type === 'ObjectExpression') {
+        if (
+          aOp.value.type === 'ObjectExpression' &&
+          bOp.value.type === 'ObjectExpression'
+        ) {
           astObjectExpressionMerge(aOp.value, bOp.value)
-        } else if (aOp.value.type === 'ArrayExpression' && bOp.value.type === 'ArrayExpression') {
+        } else if (
+          aOp.value.type === 'ArrayExpression' &&
+          bOp.value.type === 'ArrayExpression'
+        ) {
           if (bOp.value.elements.length !== 0) {
             a.properties[aMap.get(key)] = bOp
           }
@@ -332,16 +381,11 @@ function writeDefaultJsonClient (generator, context) {
   // )
   generator.fs.write(
     configDefaultPath,
-    prettier.format(
-      generate(
-        configDefaultAst
-      ).code,
-      {
-        semi: false,
-        singleQuote: true,
-        parser: 'babel'
-      }
-    )
+    prettier.format(generate(configDefaultAst).code, {
+      semi: false,
+      singleQuote: true,
+      parser: 'babel'
+    })
   )
 }
 

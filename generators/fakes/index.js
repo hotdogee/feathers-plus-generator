@@ -1,4 +1,3 @@
-
 const chalk = require('chalk')
 const makeDebug = require('debug')
 const { cwd } = require('process')
@@ -19,53 +18,70 @@ module.exports = class FakesGenerator extends Generator {
     initSpecs('fakes')
     const generator = this
 
-    const existingDefaultJsPath = this.destinationPath(join('config', 'default.js'))
+    const existingDefaultJsPath = this.destinationPath(
+      join('config', 'default.js')
+    )
     const ifRegen = doesFileExist(existingDefaultJsPath)
 
     if (!ifRegen) {
       this.log()
-      this.log([
-        chalk.green.bold('We are generating fake service data for the first time in dir '),
-        chalk.yellow.bold(parse(cwd()).base),
-        chalk.green.bold('.')
-      ].join(''))
-      this.log()
-      this.log([
-        chalk.green.bold('The configuration controlling the faking resides in '),
-        chalk.yellow.bold('config/default.js'),
-        chalk.green.bold('.')
-      ].join(''))
       this.log(
-        chalk.green.bold('You can change this configuration and rerun "feathers-plus generate fakes".')
+        [
+          chalk.green.bold(
+            'We are generating fake service data for the first time in dir '
+          ),
+          chalk.yellow.bold(parse(cwd()).base),
+          chalk.green.bold('.')
+        ].join('')
+      )
+      this.log()
+      this.log(
+        [
+          chalk.green.bold(
+            'The configuration controlling the faking resides in '
+          ),
+          chalk.yellow.bold('config/default.js'),
+          chalk.green.bold('.')
+        ].join('')
+      )
+      this.log(
+        chalk.green.bold(
+          'You can change this configuration and rerun "feathers-plus generate fakes".'
+        )
       )
       this.log()
     } else {
       this.log()
-      this.log([
-        chalk.green.bold('We are regenerating the existing fake service data in dir '),
-        chalk.yellow.bold(parse(cwd()).base)
-      ].join(''))
+      this.log(
+        [
+          chalk.green.bold(
+            'We are regenerating the existing fake service data in dir '
+          ),
+          chalk.yellow.bold(parse(cwd()).base)
+        ].join('')
+      )
       this.log()
     }
 
-    const prompts = [{
-      name: 'confirmation',
-      message: 'Regenerate the fakes service data?',
-      type: 'confirm'
-    }]
+    const prompts = [
+      {
+        name: 'confirmation',
+        message: 'Regenerate the fakes service data?',
+        type: 'confirm'
+      }
+    ]
 
-    return this.prompt(prompts)
-      .then(answers => {
-        if (!answers.confirmation) process.exit(0)
+    return this.prompt(prompts).then(answers => {
+      if (!answers.confirmation) process.exit(0)
 
-        debug('fakes prompting() ends', this.props)
+      debug('fakes prompting() ends', this.props)
 
-        if (!generator.callWritingFromPrompting()) return
+      if (!generator.callWritingFromPrompting()) return
 
-        debug('fakes writing patch starts. call generatorWriting')
-        generatorWriting(generator, 'fakes')
-        debug('fakes writing patch ends')
-      })
+      debug('fakes writing patch starts. call generatorWriting')
+      generatorWriting(generator, 'fakes')
+      debug('fakes writing patch ends')
+    })
   }
 
   writing () {

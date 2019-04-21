@@ -1,4 +1,3 @@
-
 module.exports = {
   // Configuration for faking service data
   fakeData: {
@@ -34,7 +33,6 @@ module.exports = {
         // Invoked with: format: 'foo'
         // foo: () => jsf.random.randexp('\\d\\.\\d\\.[1-9]\\d?');,
       }
-
     },
     // https://github.com/Marak/Faker.js#localization
     faker: {

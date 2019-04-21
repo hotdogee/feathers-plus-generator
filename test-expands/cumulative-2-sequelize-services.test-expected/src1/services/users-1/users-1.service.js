@@ -1,4 +1,3 @@
-
 // Initializes the `users1` service on path `/users-1`. (Can be re-generated.)
 const createService = require('feathers-sequelize');
 const createModel = require('../../models/users-1.model');
@@ -6,14 +5,14 @@ const hooks = require('./users-1.hooks');
 // !code: imports // !end
 // !code: init // !end
 
-let moduleExports = function (app) {
+let moduleExports = function(app) {
   let Model = createModel(app);
   let paginate = app.get('paginate');
   // !code: func_init // !end
 
   let options = {
     Model,
-    paginate,
+    paginate
     // !code: options_more // !end
   };
   // !code: options_change // !end

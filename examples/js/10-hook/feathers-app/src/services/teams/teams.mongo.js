@@ -1,44 +1,41 @@
-
 /* eslint quotes: 0 */
 // Defines the MongoDB $jsonSchema for service `teams`. (Can be re-generated.)
 const merge = require('lodash.merge');
 // !code: imports // !end
 // !code: init // !end
 
-let moduleExports = merge({},
+let moduleExports = merge(
+  {},
   // !<DEFAULT> code: model
   {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       name: {
         minLength: 2,
         maxLength: 30,
-        faker: "lorem.words",
-        bsonType: "string"
+        faker: 'lorem.words',
+        bsonType: 'string'
       },
       memberIds: {
         maxItems: 10,
         items: {
-          "0": {
-            type: "string"
+          '0': {
+            type: 'string'
           },
-          type: "ID",
+          type: 'ID',
           faker: {
-            fk: "users:next"
+            fk: 'users:next'
           }
         },
-        bsonType: "array"
+        bsonType: 'array'
       }
     },
-    required: [
-      "name",
-      "members"
-    ]
-  },
+    required: ['name', 'members']
+  }
   // !end
   // !code: moduleExports // !end
 );

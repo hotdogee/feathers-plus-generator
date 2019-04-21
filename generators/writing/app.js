@@ -136,16 +136,13 @@ function app (generator, props, specs, context, state) {
     moduleExports.node.properties.push(testsObjectProperty)
   }
   configDefault.tests.environmentsAllowingSeedData = environmentsAllowingSeedData
-  debug(prettier.format(
-    generate(
-      configDefaultAst
-    ).code,
-    {
+  debug(
+    prettier.format(generate(configDefaultAst).code, {
       semi: false,
       singleQuote: true,
       parser: 'babel'
-    }
-  ))
+    })
+  )
 
   // package.json
   pkg.scripts['test:all'] =
@@ -301,16 +298,13 @@ function app (generator, props, specs, context, state) {
     //     .slice(8)
     // }),
     source(
-      [prettier.format(
-        generate(
-          configDefaultAst
-        ).code,
-        {
+      [
+        prettier.format(generate(configDefaultAst).code, {
           semi: false,
           singleQuote: true,
           parser: 'babel'
-        }
-      )],
+        })
+      ],
       [appConfigPath, 'default.js']
     ),
     // json(configProd, [appConfigPath, 'production.json']),

@@ -1,4 +1,3 @@
-
 // Hooks for service `graphql`. (Can be re-generated.)
 const commonHooks = require('feathers-hooks-common');
 // !code: imports // !end
@@ -45,7 +44,7 @@ let moduleExports = {
     patch: [],
     remove: []
     // !end
-  },
+  }
   // !code: moduleExports // !end
 };
 

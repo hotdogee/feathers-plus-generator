@@ -1,4 +1,3 @@
-
 const assert = require('assert');
 const { readJsonFileSync } = require('@feathers-plus/test-utils');
 const app = require('../../../src1/app');
@@ -14,7 +13,8 @@ if (!env.includes(process.env.NODE_ENV)) {
 }
 
 // eslint-disable-next-line no-unused-vars
-const fakeData = readJsonFileSync([__dirname, '../../../../seeds/fake-data.json']) || {};
+const fakeData =
+  readJsonFileSync([__dirname, '../../../../seeds/fake-data.json']) || {};
 
 describe('Test nedb-1/nedb-1.service.server.test.js', () => {
   beforeEach(async () => {

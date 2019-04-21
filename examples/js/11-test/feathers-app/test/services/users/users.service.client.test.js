@@ -1,10 +1,6 @@
-
-
-
 const assert = require('assert');
 const feathersClient = require('@feathersjs/client');
 const io = require('socket.io-client');
-;
 const { join } = require('path');
 const { localStorage, readJsonFileSync } = require('@feathers-plus/test-utils');
 
@@ -30,14 +26,15 @@ if (!dbChangesAllowed) {
 
 // Get generated fake data
 // eslint-disable-next-line no-unused-vars
-const fakeData = readJsonFileSync(join(__dirname, '../../../seeds/fake-data.json')) || {};
+const fakeData =
+  readJsonFileSync(join(__dirname, '../../../seeds/fake-data.json')) || {};
 
 describe('Test users/users.service.client.test.js', () => {
   let app;
   let client;
   let server;
 
-  before(async function () {
+  before(async function() {
     this.timeout(timeoutForStartingServerAndClient);
 
     // Restarting src/app.*s is required if a previous server make a service call
@@ -48,7 +45,7 @@ describe('Test users/users.service.client.test.js', () => {
     const host = app.get('host');
     const port = app.get('port');
 
-    const result = await app.service('/users').find({ query: { email }});
+    const result = await app.service('/users').find({ query: { email } });
     if ((result.data || result).length === 0) {
       await app.service('/users').create({ email, password });
     }
@@ -68,7 +65,7 @@ describe('Test users/users.service.client.test.js', () => {
     await await app.service('/users').remove(null);
   });
 
-  after(function (done) {
+  after(function(done) {
     this.timeout(timeoutForClosingingServerAndClient);
     client.logout();
     server.close();
@@ -102,18 +99,23 @@ describe('Test users/users.service.client.test.js', () => {
 async function makeClient(host, port, email1, password1) {
   const client = feathersClient();
   const socket = io(`http://${host}:${port}`, {
-    transports: ['websocket'], forceNew: true, reconnection: false, extraHeaders: {}
+    transports: ['websocket'],
+    forceNew: true,
+    reconnection: false,
+    extraHeaders: {}
   });
   client.configure(feathersClient.socketio(socket));
-  client.configure(feathersClient.authentication({
-    storage: localStorage
-  }));
+  client.configure(
+    feathersClient.authentication({
+      storage: localStorage
+    })
+  );
 
   try {
     await client.authenticate({
       strategy: 'local',
       email: email1,
-      password: password1,
+      password: password1
     });
   } catch (err) {
     throw new Error(`Unable to authenticate: ${err.message}`);

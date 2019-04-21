@@ -1,17 +1,15 @@
-
 // Initializes the `users1` service on path `/users-1`. (Can be re-generated.)
 const createService = require('./users-1.class');
 const hooks = require('./users-1.hooks');
 // !code: imports // !end
 // !code: init // !end
 
-let moduleExports = function (app) {
-
+let moduleExports = function(app) {
   let paginate = app.get('paginate');
   // !code: func_init // !end
 
   let options = {
-    paginate,
+    paginate
     // !code: options_more // !end
   };
   // !code: options_change // !end

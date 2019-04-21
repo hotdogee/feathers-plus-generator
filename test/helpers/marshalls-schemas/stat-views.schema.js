@@ -1,4 +1,3 @@
-
 // Define the Feathers schema for service `statViews`. (Can be re-generated.)
 // !code: imports // !end
 // !code: init // !end
@@ -25,7 +24,7 @@ let schema = {
     // !code: schema_properties
     type: {
       type: 'string',
-      enum: [ 'environment', 'pano', 'infobox' ]
+      enum: ['environment', 'pano', 'infobox']
     },
     userId: {
       type: 'ID'
@@ -38,10 +37,10 @@ let schema = {
     },
     infoboxId: {
       type: 'ID'
-    },
+    }
 
     // !end
-  },
+  }
   // !code: schema_more // !end
 }
 
@@ -52,7 +51,7 @@ let extensions = {
     // !code: graphql_header
     name: 'StatView',
     service: {
-      sort: { _id: 1 },
+      sort: { _id: 1 }
     },
     // sql: {
     //   sqlTable: 'StatViews',
@@ -69,16 +68,16 @@ let extensions = {
       // !<DEFAULT> code: graphql_add
       // __author__: { type: '__User__!', args: false, relation: { ourTable: '__authorId__', otherTable: '_id' } },
       // !end
-    },
+    }
     // !code: graphql_more // !end
-  },
+  }
 }
 
 // !code: more // !end
 
 let moduleExports = {
   schema,
-  extensions,
+  extensions
   // !code: moduleExports // !end
 }
 

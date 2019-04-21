@@ -1,36 +1,31 @@
-
 const assert = require('assert');
 const hookManual = require('../../src1/hooks/hook.manual');
 
 describe('Test /hooks/hook.manual.unit.test.js', () => {
   // eslint-disable-next-line no-unused-vars
-  let contextBefore, contextAfterPaginated,
+  let contextBefore,
+    contextAfterPaginated,
     // eslint-disable-next-line no-unused-vars
-    contextAfter, contextAfterMultiple;
+    contextAfter,
+    contextAfterMultiple;
 
   beforeEach(() => {
     contextBefore = {
       type: 'before',
       params: { provider: 'socketio' },
-      data: {
-
-      }
+      data: {}
     };
 
     contextAfter = {
       type: 'after',
       params: { provider: 'socketio' },
-      result: {
-
-      }
+      result: {}
     };
 
     contextAfterMultiple = {
       type: 'after',
       params: { provider: 'socketio' },
-      result: [
-
-      ]
+      result: []
     };
 
     contextAfterPaginated = {
@@ -38,12 +33,11 @@ describe('Test /hooks/hook.manual.unit.test.js', () => {
       method: 'find',
       params: { provider: 'socketio' },
       result: {
-        data: [
-
-        ]
+        data: []
       }
     };
-    contextAfterPaginated.result.total = contextAfterPaginated.result.data.length;
+    contextAfterPaginated.result.total =
+      contextAfterPaginated.result.data.length;
   });
 
   it('Hook exists', () => {

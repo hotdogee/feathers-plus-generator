@@ -1,4 +1,3 @@
-
 // fgraphql populate hook for service `nedb1`. (Can be re-generated.)
 const runTime = require('@feathers-plus/graphql/lib/run-time');
 const { fgraphql, serialize } = require('feathers-hooks-common');
@@ -16,33 +15,37 @@ const queries = {
   // All resolver fields 1 level deep.
   oneLevel: {
     query: {
-      nedb2: {},
+      nedb2: {}
     }
   },
   // All resolver fields 2 levels deep.
   twoLevels: {
     query: {
       nedb2: {
-        nedb1: {},
-      },
+        nedb1: {}
+      }
     }
-  },
+  }
   // !code: queries // !end
 };
 
-async function nedb1Populate (context) {
+async function nedb1Populate(context) {
   // eslint-disable-next-line no-unused-vars
   const params = context.params;
   let query, options, serializer;
 
-  if (params.$populate) { return context; } // another populate is calling this service
+  if (params.$populate) {
+    return context;
+  } // another populate is calling this service
 
   // !<DEFAULT> code: populate
   // Example: always the same query
   ({ query, options, serializer } = queries.foo);
 
   // Example: select query based on user being authenticated or not
-  ({ query, options, serializer } = queries[params.user ? queries.foo : queries.bar]);
+  ({ query, options, serializer } = queries[
+    params.user ? queries.foo : queries.bar
+  ]);
 
   // Example: select query based on the user role
   if (params.user && params.user.roles.includes('foo')) {
@@ -62,7 +65,7 @@ async function nedb1Populate (context) {
     resolvers,
     recordType: 'Nedb1',
     query,
-    options,
+    options
   })(context);
 
   // Prune and sanitize the data.

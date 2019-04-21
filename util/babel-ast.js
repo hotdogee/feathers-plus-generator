@@ -44,9 +44,12 @@ traverse(ast, {
     }
   }
 })
-const testsObjectProperty = template.ast(`module.exports = { tests: { environmentsAllowingSeedData: ['test'] } }`, {
-  reserveComments: true
-}).expression.right.properties[0]
+const testsObjectProperty = template.ast(
+  `module.exports = { tests: { environmentsAllowingSeedData: ['test'] } }`,
+  {
+    reserveComments: true
+  }
+).expression.right.properties[0]
 // traverse(
 //   moduleExports.node,
 //   {
@@ -69,11 +72,16 @@ for (let i = 0; i < moduleExports.node.properties.length; i++) {
   }
 }
 
-console.log(prettier.format(generate(ast, { retainLines: true, retainFunctionParens: true }, code).code, {
-  semi: false,
-  singleQuote: true,
-  parser: 'babel'
-}))
+console.log(
+  prettier.format(
+    generate(ast, { retainLines: true, retainFunctionParens: true }, code).code,
+    {
+      semi: false,
+      singleQuote: true,
+      parser: 'babel'
+    }
+  )
+)
 
 // console.log(template.ast('tests: {}', { preserveComments: true }))
 // console.log(

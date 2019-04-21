@@ -1,4 +1,3 @@
-
 // Initializes the `graphql` service on path `/graphql`. (Can be re-generated.)
 const createService = require('@feathers-plus/graphql');
 const merge = require('lodash.merge');
@@ -13,23 +12,25 @@ const strategy = 'batchloaders';
 console.log(`\n===== configuring graphql service for ${strategy}.\n`);
 
 let schemas = mergeTypes([
-  generatedSchema,
+  generatedSchema
   // !code: schemas // !end
 ]);
 
-let resolvers = (app, options) => merge({},
-  generatedResolvers(app, options),
-  // !code: batchloader_resolvers // !end
-);
+let resolvers = (app, options) =>
+  merge(
+    {},
+    generatedResolvers(app, options)
+    // !code: batchloader_resolvers // !end
+  );
 // !code: init // !end
 
-let moduleExports = function () {
+let moduleExports = function() {
   const app = this;
   // !code: func_init // !end
 
   let options = {
     schemas,
-    resolvers,
+    resolvers
   };
   // !code: func_options // !end
 

@@ -1,4 +1,3 @@
-
 const makeDebug = require('debug')
 const { inspect } = require('util')
 const prettier = require('prettier')
@@ -45,10 +44,15 @@ function connection (generator, props, specs, context, state) {
   } = state
 
   // Common abbreviations for building 'todos'.
-  const newConfig = specs._defaultJson = Object.assign({}, specs._defaultJson, specs._dbConfigs)
+  const newConfig = (specs._defaultJson = Object.assign(
+    {},
+    specs._defaultJson,
+    specs._dbConfigs
+  ))
   const connections = specs.connections
   const _adapters = specs._adapters
-  const isGenerateConnection = generatorsInclude('connection') && !generatorsInclude('service')
+  const isGenerateConnection =
+    generatorsInclude('connection') && !generatorsInclude('service')
 
   // CODE
   const configDefaultPath = generator.destinationPath(
@@ -92,9 +96,7 @@ function connection (generator, props, specs, context, state) {
   // update AST
   // create dbConfigs ObjectExpression node
   const dbConfigsObjectExpression = template.ast(
-    `module.exports = ${JSON.stringify(
-      specs._dbConfigs
-    )}`,
+    `module.exports = ${JSON.stringify(specs._dbConfigs)}`,
     {
       reserveComments: true
     }
@@ -117,49 +119,59 @@ function connection (generator, props, specs, context, state) {
     }
   })
 
-  const todos = !Object.keys(connections).length ? [] : [
-    // json(newConfig, [appConfigPath, 'default.js']),
-    // tmpl([tpl, 'json.ejs'], [appConfigPath, 'default.js'], false, false, {
-    //   json: prettier
-    //     .format('let a = ' + JSON.stringify(newConfig), {
-    //       semi: false,
-    //       singleQuote: true,
-    //       parser: 'babel'
-    //     })
-    //     .slice(8)
-    // }),
-    source(
-      [prettier.format(
-        generate(
-          configDefaultAst
-        ).code,
-        {
-          semi: false,
-          singleQuote: true,
-          parser: 'babel'
-        }
-      )],
-      [appConfigPath, 'default.js']
-    ),
-    tmpl([srcPath, 'app.ejs'], [libDir, `app.${js}`]),
-    tmpl([tpl, 'src', 'typings.d.ejs'], [src, 'typings.d.ts'], WRITE_ALWAYS, isJs)
-  ]
-
-  Object.keys(_adapters).sort().forEach(adapter => {
-    const connectionsAdapter = adapter === 'sequelize-mssql' ? 'sequelize' : adapter
-
-    if (connections[connectionsAdapter]) {
-      // Force a regen for the adapter selected using `generate connection`.
-      const forceWrite = isGenerateConnection && props.adapter === adapter
-
-      todos.push(
-        tmpl(
-          [srcPath, '_adapters', _adapters[adapter]],
-          [libDir, `${adapter}.${js}`],
-          !forceWrite, false, { database: connections[connectionsAdapter].database })
+  const todos = !Object.keys(connections).length
+    ? []
+    : [
+      // json(newConfig, [appConfigPath, 'default.js']),
+      // tmpl([tpl, 'json.ejs'], [appConfigPath, 'default.js'], false, false, {
+      //   json: prettier
+      //     .format('let a = ' + JSON.stringify(newConfig), {
+      //       semi: false,
+      //       singleQuote: true,
+      //       parser: 'babel'
+      //     })
+      //     .slice(8)
+      // }),
+      source(
+        [
+          prettier.format(generate(configDefaultAst).code, {
+            semi: false,
+            singleQuote: true,
+            parser: 'babel'
+          })
+        ],
+        [appConfigPath, 'default.js']
+      ),
+      tmpl([srcPath, 'app.ejs'], [libDir, `app.${js}`]),
+      tmpl(
+        [tpl, 'src', 'typings.d.ejs'],
+        [src, 'typings.d.ts'],
+        WRITE_ALWAYS,
+        isJs
       )
-    }
-  })
+    ]
+
+  Object.keys(_adapters)
+    .sort()
+    .forEach(adapter => {
+      const connectionsAdapter =
+        adapter === 'sequelize-mssql' ? 'sequelize' : adapter
+
+      if (connections[connectionsAdapter]) {
+        // Force a regen for the adapter selected using `generate connection`.
+        const forceWrite = isGenerateConnection && props.adapter === adapter
+
+        todos.push(
+          tmpl(
+            [srcPath, '_adapters', _adapters[adapter]],
+            [libDir, `${adapter}.${js}`],
+            !forceWrite,
+            false,
+            { database: connections[connectionsAdapter].database }
+          )
+        )
+      }
+    })
 
   // Generate modules
   generatorFs(generator, context, todos)

@@ -1,4 +1,3 @@
-
 /* eslint quotes: 0 */
 // Defines Mongoose model for service `nedb6`. (Can be re-generated.)
 const merge = require('lodash.merge');
@@ -7,9 +6,10 @@ const mongoose = require('mongoose');
 // !code: imports // !end
 // !code: init // !end
 
-let moduleExports = merge({},
-  // !<DEFAULT> code: model
+let moduleExports = merge(
   {},
+  // !<DEFAULT> code: model
+  {}
   // !end
   // !code: moduleExports // !end
 );

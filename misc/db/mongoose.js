@@ -1,5 +1,4 @@
-
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 // schemaTypes
 const a = {
@@ -10,8 +9,8 @@ const a = {
   Boolean,
   Mixed: mongoose.Schema.Types.Mixed, // Anything goes
   ObjectId: mongoose.Schema.ObjectId, // commonly specifies a link to another document in your database
-  Array,
-};
+  Array
+}
 
 const x = {
   string: [
@@ -19,16 +18,16 @@ const x = {
     'to uppercase',
     'trim data prior to saving',
     'regular expression that can limit data allowed',
-    'enum that can define a list of strings',
+    'enum that can define a list of strings'
   ],
   Number: ['min', 'max'],
-  Date: ['min', 'max'],
-};
+  Date: ['min', 'max']
+}
 
 var userSchema1 = mongoose.Schema({
   firstName: String,
   lastName: String
-});
+})
 
 var userSchema2 = mongoose.Schema({
   name: {
@@ -36,7 +35,7 @@ var userSchema2 = mongoose.Schema({
     lastName: String
   },
   created: Date
-});
+})
 
 // Example
 
@@ -55,7 +54,7 @@ var authorSchema = mongoose.Schema({
     type: Date,
     default: Date.now
   }
-});
+})
 
 var bookSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
@@ -82,10 +81,10 @@ var bookSchema = mongoose.Schema({
     type: Date,
     default: Date.now
   }
-});
+})
 
-var Author = mongoose.model('Author', authorSchema);
-var Book = mongoose.model('Book', bookSchema);
+var Author = mongoose.model('Author', authorSchema)
+var Book = mongoose.model('Book', bookSchema)
 
 var jamieAuthor = new Author({
   _id: new mongoose.Types.ObjectId(),
@@ -93,12 +92,13 @@ var jamieAuthor = new Author({
     firstName: 'Jamie',
     lastName: 'Munro'
   },
-  biography: 'Jamie is the author of ASP.NET MVC 5 with Bootstrap and Knockout.js.',
+  biography:
+    'Jamie is the author of ASP.NET MVC 5 with Bootstrap and Knockout.js.',
   twitter: 'https://twitter.com/endyourif',
   facebook: 'https://www.facebook.com/End-Your-If-194251957252562/'
-});
+})
 
-jamieAuthor.save(function(err) {});
+jamieAuthor.save(function (err) {})
 
 // *****
 
@@ -115,8 +115,8 @@ var authorSchema1 = mongoose.Schema({
   twitter: {
     type: String,
     validate: {
-      validator: function(text) {
-        return text.indexOf('https://twitter.com/') === 0;
+      validator: function (text) {
+        return text.indexOf('https://twitter.com/') === 0
       },
       message: 'Twitter handle must start with https://twitter.com/'
     }
@@ -124,8 +124,8 @@ var authorSchema1 = mongoose.Schema({
   facebook: {
     type: String,
     validate: {
-      validator: function(text) {
-        return text.indexOf('https://www.facebook.com/') === 0;
+      validator: function (text) {
+        return text.indexOf('https://www.facebook.com/') === 0
       },
       message: 'Facebook must start with https://www.facebook.com/'
     }
@@ -133,8 +133,8 @@ var authorSchema1 = mongoose.Schema({
   linkedin: {
     type: String,
     validate: {
-      validator: function(text) {
-        return text.indexOf('https://www.linkedin.com/') === 0;
+      validator: function (text) {
+        return text.indexOf('https://www.linkedin.com/') === 0
       },
       message: 'LinkedIn must start with https://www.linkedin.com/'
     }
@@ -144,5 +144,4 @@ var authorSchema1 = mongoose.Schema({
     type: Date,
     default: Date.now
   }
-});
-
+})

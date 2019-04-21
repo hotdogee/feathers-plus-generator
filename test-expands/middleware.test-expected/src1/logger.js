@@ -1,4 +1,3 @@
-
 // Logger. (Can be re-generated.)
 const { createLogger, format, transports } = require('winston');
 // !code: imports // !end
@@ -11,15 +10,10 @@ const moduleExports = createLogger({
   level: 'info',
   // !end
   // !<DEFAULT> code: format
-  format: format.combine(
-    format.splat(),
-    format.simple()
-  ),
+  format: format.combine(format.splat(), format.simple()),
   // !end
   // !<DEFAULT> code: transport
-  transports: [
-    new transports.Console()
-  ],
+  transports: [new transports.Console()]
   // !end
   // !code: moduleExports // !end
 });

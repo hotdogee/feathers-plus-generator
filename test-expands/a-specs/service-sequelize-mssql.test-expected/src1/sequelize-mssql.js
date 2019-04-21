@@ -1,4 +1,3 @@
-
 // sequelize.js - Sequelize adapter for SQL server.
 const url = require('url');
 const Sequelize = require('sequelize');
@@ -43,12 +42,12 @@ const operatorsAliases = {
   $col: Op.col
 };
 
-module.exports = function (app) {
+module.exports = function(app) {
   let connectionString = app.get('mssql');
   let connection = url.parse(connectionString);
   let database = connection.path.substring(1, connection.path.length);
   let { port, hostname } = connection;
-  let [ username, password ] = (connection.auth || ':').split(':');
+  let [username, password] = (connection.auth || ':').split(':');
   let sequelize = new Sequelize(database, username, password, {
     dialect: 'mssql',
     host: hostname,
@@ -68,7 +67,7 @@ module.exports = function (app) {
 
   app.set('sequelizeClient', sequelize);
 
-  app.setup = function (...args) {
+  app.setup = function(...args) {
     let result = oldSetup.call(this, ...args);
     // !code: func_init // !end
 

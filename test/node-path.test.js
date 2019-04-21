@@ -1,6 +1,13 @@
-
 const { assert } = require('chai')
-const { delimiter, join, normalize, parse, posix, resolve, win32 } = require('path')
+const {
+  delimiter,
+  join,
+  normalize,
+  parse,
+  posix,
+  resolve,
+  win32
+} = require('path')
 const { platform } = require('os')
 
 const sepOk = delimiter

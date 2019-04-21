@@ -1,4 +1,3 @@
-
 // Configure Feathers app. (Can be re-generated.)
 const path = require('path');
 const compress = require('compression');
@@ -52,7 +51,6 @@ app.use('/', express.static(app.get('public')));
 // !code: config_start // !end
 app.configure(express.rest());
 app.configure(socketio());
-
 
 // Configure other middleware (see `middleware/index.js`)
 app.configure(middleware);

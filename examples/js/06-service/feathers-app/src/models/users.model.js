@@ -1,4 +1,3 @@
-
 // users-model.js - A Mongoose model for a user entity
 //
 // See http://mongoosejs.com/docs/models.html
@@ -9,7 +8,7 @@ const mongooseSchema = require('../services/users/users.mongoose');
 // !code: mongoose_imports // !end
 // !code: mongoose_init // !end
 
-let moduleExports = function (app) {
+let moduleExports = function(app) {
   let mongooseClient = app.get('mongooseClient');
   // !code: mongoose_func_init // !end
 

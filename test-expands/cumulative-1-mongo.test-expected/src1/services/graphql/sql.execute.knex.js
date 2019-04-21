@@ -1,4 +1,3 @@
-
 // Execute raw SQL statement for GraphQL using Knex. (Can be re-generated.)
 // !code: imports // !end
 
@@ -20,19 +19,22 @@ let moduleExports = function sqlExecuteKnex(app) {
   // !<DEFAULT> code: func_dialect
   let dialect = dialects[knex.client.dialect];
   if (!dialect) {
-    throw new Error('Unsupported Knex dialect: \'' + knex.client.dialect + '\'. (sql.execute.knex.*s)');
+    throw new Error(
+      'Unsupported Knex dialect: \'' +
+        knex.client.dialect +
+        '\'. (sql.execute.knex.*s)'
+    );
   }
   // !end
   // !code: func_init // !end
 
   // !<DEFAULT> code: func_exec
   let executeSql = sql => {
-    return knex.raw(sql)
-      .catch(err => {
-        // eslint-disable-next-line no-console
-        console.log('executeSql error=', err.message);
-        throw err;
-      });
+    return knex.raw(sql).catch(err => {
+      // eslint-disable-next-line no-console
+      console.log('executeSql error=', err.message);
+      throw err;
+    });
   };
   // !end
 

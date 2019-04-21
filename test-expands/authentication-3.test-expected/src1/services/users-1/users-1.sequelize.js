@@ -1,4 +1,3 @@
-
 /* eslint quotes: 0 */
 // Defines Sequelize model for service `users1`. (Can be re-generated.)
 const merge = require('lodash.merge');
@@ -12,9 +11,10 @@ const DataTypes = Sequelize.DataTypes;
 //   email:      { type: DataTypes.STRING, allowNull: false, unique: true },
 //   password:   { type: DataTypes.STRING, allowNull: false },
 //   auth0Id:    { type: DataTypes.STRING },
-let moduleExports = merge({},
-  // !<DEFAULT> code: sequelize_model
+let moduleExports = merge(
   {},
+  // !<DEFAULT> code: sequelize_model
+  {}
   // !end
   // !code: moduleExports // !end
 );

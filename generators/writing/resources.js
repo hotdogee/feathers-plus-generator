@@ -1,4 +1,3 @@
-
 const makeDebug = require('debug')
 const { getFragment } = require('../../lib/code-fragments')
 const { generatorFs } = require('../../lib/generator-fs')
@@ -44,8 +43,13 @@ function resources (generator, props, specs, context, state) {
     source
   } = state
 
-  if (!specs.requiredCustomResources || !specs.requiredCustomResources.files ||
-    !specs.requiredCustomResources.files.text) { return }
+  if (
+    !specs.requiredCustomResources ||
+    !specs.requiredCustomResources.files ||
+    !specs.requiredCustomResources.files.text
+  ) {
+    return
+  }
 
   const getFragmenter = getFragment(process.cwd() + '/requiredCustomResources')
   const text = specs.requiredCustomResources.files.text
@@ -55,9 +59,7 @@ function resources (generator, props, specs, context, state) {
   // Create new custom text files
   textPaths.forEach(textPath => {
     const code = getFragmenter(textPath) || ''
-    todos.push(
-      source(code, textPath, true)
-    )
+    todos.push(source(code, textPath, true))
   })
 
   // Generate modules

@@ -1,4 +1,3 @@
-
 // Hooks for service `nedb1`. (Can be re-generated.)
 const commonHooks = require('feathers-hooks-common');
 const { authenticate } = require('@feathersjs/authentication').hooks;
@@ -11,15 +10,18 @@ const nedb1Populate = require('./nedb-1.populate');
 // eslint-disable-next-line no-unused-vars
 const { iff, mongoKeys } = commonHooks;
 // eslint-disable-next-line no-unused-vars
-const { create, update, patch, validateCreate, validateUpdate, validatePatch } = require('./nedb-1.validate');
+const {
+  create,
+  update,
+  patch,
+  validateCreate,
+  validateUpdate,
+  validatePatch
+} = require('./nedb-1.validate');
 // !end
 // !<DEFAULT> code: foreign_keys
 // eslint-disable-next-line no-unused-vars
-const foreignKeys = [
-  'id',
-  '_id',
-  'nedb2Id'
-];
+const foreignKeys = ['id', '_id', 'nedb2Id'];
 // !end
 // !code: init // !end
 
@@ -29,8 +31,8 @@ let moduleExports = {
     //   all   : authenticate('jwt')
     //   find  : mongoKeys(ObjectID, foreignKeys)
     // !<DEFAULT> code: before
-    all: [ authenticate('jwt') ],
-    find: [ mongoKeys(ObjectID, foreignKeys) ],
+    all: [authenticate('jwt')],
+    find: [mongoKeys(ObjectID, foreignKeys)],
     get: [],
     create: [],
     update: [],
@@ -61,7 +63,7 @@ let moduleExports = {
     patch: [],
     remove: []
     // !end
-  },
+  }
   // !code: moduleExports // !end
 };
 

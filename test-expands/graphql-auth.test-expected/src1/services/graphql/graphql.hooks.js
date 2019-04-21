@@ -1,4 +1,3 @@
-
 // Hooks for service `graphql`. (Can be re-generated.)
 const commonHooks = require('feathers-hooks-common');
 const { authenticate } = require('@feathersjs/authentication').hooks;
@@ -16,7 +15,7 @@ let moduleExports = {
     // Your hooks should include:
     //   all   : authenticate('jwt')
     // !<DEFAULT> code: before
-    all: [ authenticate('jwt') ],
+    all: [authenticate('jwt')],
     find: [],
     get: [],
     create: [],
@@ -48,7 +47,7 @@ let moduleExports = {
     patch: [],
     remove: []
     // !end
-  },
+  }
   // !code: moduleExports // !end
 };
 

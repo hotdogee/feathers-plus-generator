@@ -1,438 +1,415 @@
-
-const mongoose = require('mongoose');
-const Sequelize = require('sequelize');
-const jsonSchemaRunner = require('../helpers/json-schema-runner');
-const mongooseTypeEquivalence = { // json-schema: mongoose
-  'array': Array,
-  'buffer': Buffer,
-  'boolean': Boolean,
-  'date': Date,
-  'mixed': mongoose.Schema.Types.Mixed,
-  'number': Number,
-  'objectid': mongoose.Schema.Types.ObjectId,
-  'string': String,
-  'object': Object,
-  'integer': Number,
-  'ID': mongoose.Schema.Types.ObjectId // Our GraphQL custom scalar
-};
+const mongoose = require('mongoose')
+const Sequelize = require('sequelize')
+const jsonSchemaRunner = require('../helpers/json-schema-runner')
+const mongooseTypeEquivalence = {
+  // json-schema: mongoose
+  array: Array,
+  buffer: Buffer,
+  boolean: Boolean,
+  date: Date,
+  mixed: mongoose.Schema.Types.Mixed,
+  number: Number,
+  objectid: mongoose.Schema.Types.ObjectId,
+  string: String,
+  object: Object,
+  integer: Number,
+  ID: mongoose.Schema.Types.ObjectId // Our GraphQL custom scalar
+}
 
 const sequelizeTypeEquivalences = {
-  'boolean': Sequelize.BOOLEAN,
-  'enum': Sequelize.ENUM,
-  'integer': Sequelize.INTEGER,
-  'jsonb': Sequelize.JSONB,
-  'real': Sequelize.REAL,
-  'string': Sequelize.STRING,
-  'text': Sequelize.TEXT,
-  'date': Sequelize.DATE,
-  'dateonly': Sequelize.DATEONLY,
-};
+  boolean: Sequelize.BOOLEAN,
+  enum: Sequelize.ENUM,
+  integer: Sequelize.INTEGER,
+  jsonb: Sequelize.JSONB,
+  real: Sequelize.REAL,
+  string: Sequelize.STRING,
+  text: Sequelize.TEXT,
+  date: Sequelize.DATE,
+  dateonly: Sequelize.DATEONLY
+}
 
 // Source for tests
 const specs = {
-  "options": {
-    "ver": "1.0.0",
-    "inspectConflicts": false,
-    "semicolons": false,
-    "freeze": [
-      "src/app.js"
-    ],
-    "ts": false
+  options: {
+    ver: '1.0.0',
+    inspectConflicts: false,
+    semicolons: false,
+    freeze: ['src/app.js'],
+    ts: false
   },
-  "app": {
-    "environmentsAllowingSeedData": "development,test",
-    "seedData": true,
-    "name": "rovit-api",
-    "description": "Project rovit-api",
-    "src": "src",
-    "packager": "npm@>= 3.0.0",
-    "providers": [
-      "rest",
-      "socketio"
-    ]
+  app: {
+    environmentsAllowingSeedData: 'development,test',
+    seedData: true,
+    name: 'rovit-api',
+    description: 'Project rovit-api',
+    src: 'src',
+    packager: 'npm@>= 3.0.0',
+    providers: ['rest', 'socketio']
   },
-  "services": {
-    "users": {
-      "name": "users",
-      "nameSingular": "user",
-      "subFolder": "v1",
-      "fileName": "users",
-      "adapter": "mongoose",
-      "path": "/users",
-      "isAuthEntity": true,
-      "requiresAuth": true,
-      "graphql": true
+  services: {
+    users: {
+      name: 'users',
+      nameSingular: 'user',
+      subFolder: 'v1',
+      fileName: 'users',
+      adapter: 'mongoose',
+      path: '/users',
+      isAuthEntity: true,
+      requiresAuth: true,
+      graphql: true
     },
-    "clientUsers": {
-      "name": "clientUsers",
-      "nameSingular": "clientUser",
-      "subFolder": "v1",
-      "fileName": "client-users",
-      "adapter": "mongoose",
-      "path": "/client-users",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    clientUsers: {
+      name: 'clientUsers',
+      nameSingular: 'clientUser',
+      subFolder: 'v1',
+      fileName: 'client-users',
+      adapter: 'mongoose',
+      path: '/client-users',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "businesses": {
-      "name": "businesses",
-      "nameSingular": "business",
-      "subFolder": "v1",
-      "fileName": "businesses",
-      "adapter": "mongoose",
-      "path": "/businesses",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    businesses: {
+      name: 'businesses',
+      nameSingular: 'business',
+      subFolder: 'v1',
+      fileName: 'businesses',
+      adapter: 'mongoose',
+      path: '/businesses',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "categories": {
-      "name": "categories",
-      "nameSingular": "category",
-      "subFolder": "v1",
-      "fileName": "categories",
-      "adapter": "mongoose",
-      "path": "/categories",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    categories: {
+      name: 'categories',
+      nameSingular: 'category',
+      subFolder: 'v1',
+      fileName: 'categories',
+      adapter: 'mongoose',
+      path: '/categories',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "clients": {
-      "name": "clients",
-      "nameSingular": "client",
-      "subFolder": "v1",
-      "fileName": "clients",
-      "adapter": "mongoose",
-      "path": "/clients",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    clients: {
+      name: 'clients',
+      nameSingular: 'client',
+      subFolder: 'v1',
+      fileName: 'clients',
+      adapter: 'mongoose',
+      path: '/clients',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "config": {
-      "name": "config",
-      "nameSingular": "config",
-      "subFolder": "v1",
-      "fileName": "config",
-      "adapter": "mongoose",
-      "path": "/config",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    config: {
+      name: 'config',
+      nameSingular: 'config',
+      subFolder: 'v1',
+      fileName: 'config',
+      adapter: 'mongoose',
+      path: '/config',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "envPanos": {
-      "name": "envPanos",
-      "nameSingular": "envPano",
-      "subFolder": "v1",
-      "fileName": "env-panos",
-      "adapter": "mongoose",
-      "path": "/env-panos",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    envPanos: {
+      name: 'envPanos',
+      nameSingular: 'envPano',
+      subFolder: 'v1',
+      fileName: 'env-panos',
+      adapter: 'mongoose',
+      path: '/env-panos',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "environments": {
-      "name": "environments",
-      "nameSingular": "environment",
-      "subFolder": "v1",
-      "fileName": "environments",
-      "adapter": "mongoose",
-      "path": "/environments",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    environments: {
+      name: 'environments',
+      nameSingular: 'environment',
+      subFolder: 'v1',
+      fileName: 'environments',
+      adapter: 'mongoose',
+      path: '/environments',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "faqs": {
-      "name": "faqs",
-      "nameSingular": "faq",
-      "subFolder": "v1",
-      "fileName": "faqs",
-      "adapter": "mongoose",
-      "path": "/faqs",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    faqs: {
+      name: 'faqs',
+      nameSingular: 'faq',
+      subFolder: 'v1',
+      fileName: 'faqs',
+      adapter: 'mongoose',
+      path: '/faqs',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "hotspotIcons": {
-      "name": "hotspotIcons",
-      "nameSingular": "hotspotIcon",
-      "subFolder": "v1",
-      "fileName": "hotspot-icons",
-      "adapter": "mongoose",
-      "path": "/hotspot-icons",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    hotspotIcons: {
+      name: 'hotspotIcons',
+      nameSingular: 'hotspotIcon',
+      subFolder: 'v1',
+      fileName: 'hotspot-icons',
+      adapter: 'mongoose',
+      path: '/hotspot-icons',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "infoboxMedia": {
-      "name": "infoboxMedia",
-      "nameSingular": "infoboxMedia",
-      "subFolder": "v1",
-      "fileName": "infobox-media",
-      "adapter": "mongoose",
-      "path": "/infobox-media",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    infoboxMedia: {
+      name: 'infoboxMedia',
+      nameSingular: 'infoboxMedia',
+      subFolder: 'v1',
+      fileName: 'infobox-media',
+      adapter: 'mongoose',
+      path: '/infobox-media',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "infoboxTypes": {
-      "name": "infoboxTypes",
-      "nameSingular": "infoboxType",
-      "subFolder": "v1",
-      "fileName": "infobox-types",
-      "adapter": "mongoose",
-      "path": "/infobox-types",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    infoboxTypes: {
+      name: 'infoboxTypes',
+      nameSingular: 'infoboxType',
+      subFolder: 'v1',
+      fileName: 'infobox-types',
+      adapter: 'mongoose',
+      path: '/infobox-types',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "infoboxVideos": {
-      "name": "infoboxVideos",
-      "nameSingular": "infoboxVideo",
-      "subFolder": "v1",
-      "fileName": "infobox-videos",
-      "adapter": "mongoose",
-      "path": "/infobox-videos",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    infoboxVideos: {
+      name: 'infoboxVideos',
+      nameSingular: 'infoboxVideo',
+      subFolder: 'v1',
+      fileName: 'infobox-videos',
+      adapter: 'mongoose',
+      path: '/infobox-videos',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "infoboxes": {
-      "name": "infoboxes",
-      "nameSingular": "infobox",
-      "subFolder": "v1",
-      "fileName": "infoboxes",
-      "adapter": "mongoose",
-      "path": "/infoboxes",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    infoboxes: {
+      name: 'infoboxes',
+      nameSingular: 'infobox',
+      subFolder: 'v1',
+      fileName: 'infoboxes',
+      adapter: 'mongoose',
+      path: '/infoboxes',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "panoHotspots": {
-      "name": "panoHotspots",
-      "nameSingular": "panoHotspot",
-      "subFolder": "v1",
-      "fileName": "pano-hotspots",
-      "adapter": "mongoose",
-      "path": "/pano-hotspots",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    panoHotspots: {
+      name: 'panoHotspots',
+      nameSingular: 'panoHotspot',
+      subFolder: 'v1',
+      fileName: 'pano-hotspots',
+      adapter: 'mongoose',
+      path: '/pano-hotspots',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "panos": {
-      "name": "panos",
-      "nameSingular": "pano",
-      "subFolder": "v1",
-      "fileName": "panos",
-      "adapter": "mongoose",
-      "path": "/panos",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    panos: {
+      name: 'panos',
+      nameSingular: 'pano',
+      subFolder: 'v1',
+      fileName: 'panos',
+      adapter: 'mongoose',
+      path: '/panos',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "salesLeads": {
-      "name": "salesLeads",
-      "nameSingular": "salesLead",
-      "subFolder": "v1",
-      "fileName": "sales-leads",
-      "adapter": "mongoose",
-      "path": "/sales-leads",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    salesLeads: {
+      name: 'salesLeads',
+      nameSingular: 'salesLead',
+      subFolder: 'v1',
+      fileName: 'sales-leads',
+      adapter: 'mongoose',
+      path: '/sales-leads',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "salesNotes": {
-      "name": "salesNotes",
-      "nameSingular": "salesNote",
-      "subFolder": "v1",
-      "fileName": "sales-notes",
-      "adapter": "mongoose",
-      "path": "/sales-notes",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    salesNotes: {
+      name: 'salesNotes',
+      nameSingular: 'salesNote',
+      subFolder: 'v1',
+      fileName: 'sales-notes',
+      adapter: 'mongoose',
+      path: '/sales-notes',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "statViews": {
-      "name": "statViews",
-      "nameSingular": "statView",
-      "subFolder": "v1",
-      "fileName": "stat-views",
-      "adapter": "mongoose",
-      "path": "/stat-views",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    statViews: {
+      name: 'statViews',
+      nameSingular: 'statView',
+      subFolder: 'v1',
+      fileName: 'stat-views',
+      adapter: 'mongoose',
+      path: '/stat-views',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "tags": {
-      "name": "tags",
-      "nameSingular": "tag",
-      "subFolder": "v1",
-      "fileName": "tags",
-      "adapter": "mongoose",
-      "path": "/tags",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    tags: {
+      name: 'tags',
+      nameSingular: 'tag',
+      subFolder: 'v1',
+      fileName: 'tags',
+      adapter: 'mongoose',
+      path: '/tags',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "tourMenuItems": {
-      "name": "tourMenuItems",
-      "nameSingular": "tourMenuItem",
-      "subFolder": "v1",
-      "fileName": "tour-menu-items",
-      "adapter": "mongoose",
-      "path": "/tour-menu-items",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    tourMenuItems: {
+      name: 'tourMenuItems',
+      nameSingular: 'tourMenuItem',
+      subFolder: 'v1',
+      fileName: 'tour-menu-items',
+      adapter: 'mongoose',
+      path: '/tour-menu-items',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "vr": {
-      "name": "vr",
-      "nameSingular": "vr",
-      "subFolder": "v1",
-      "fileName": "vr",
-      "adapter": "generic",
-      "path": "/vr",
-      "isAuthEntity": false,
-      "requiresAuth": false,
-      "graphql": true
+    vr: {
+      name: 'vr',
+      nameSingular: 'vr',
+      subFolder: 'v1',
+      fileName: 'vr',
+      adapter: 'generic',
+      path: '/vr',
+      isAuthEntity: false,
+      requiresAuth: false,
+      graphql: true
     },
-    "mapPoints": {
-      "name": "mapPoints",
-      "nameSingular": "mapPoint",
-      "subFolder": "v1",
-      "fileName": "map-points",
-      "adapter": "generic",
-      "path": "/map-points",
-      "isAuthEntity": false,
-      "requiresAuth": false,
-      "graphql": true
+    mapPoints: {
+      name: 'mapPoints',
+      nameSingular: 'mapPoint',
+      subFolder: 'v1',
+      fileName: 'map-points',
+      adapter: 'generic',
+      path: '/map-points',
+      isAuthEntity: false,
+      requiresAuth: false,
+      graphql: true
     },
-    "xmlCache": {
-      "name": "xmlCache",
-      "nameSingular": "xmlCache",
-      "subFolder": "v1",
-      "fileName": "xml-cache",
-      "adapter": "memory",
-      "path": "/xml-cache",
-      "isAuthEntity": false,
-      "requiresAuth": false,
-      "graphql": true
+    xmlCache: {
+      name: 'xmlCache',
+      nameSingular: 'xmlCache',
+      subFolder: 'v1',
+      fileName: 'xml-cache',
+      adapter: 'memory',
+      path: '/xml-cache',
+      isAuthEntity: false,
+      requiresAuth: false,
+      graphql: true
     }
   },
-  "hooks": {
-    "stash-populate": {
-      "fileName": "stash-populate",
-      "camelName": "stashPopulate",
-      "ifMulti": "y",
-      "multiServices": [
-        "clientUsers"
-      ],
-      "singleService": ""
+  hooks: {
+    'stash-populate': {
+      fileName: 'stash-populate',
+      camelName: 'stashPopulate',
+      ifMulti: 'y',
+      multiServices: ['clientUsers'],
+      singleService: ''
     },
-    "calculate-infobox-bubbles": {
-      "fileName": "calculate-infobox-bubbles",
-      "camelName": "calculateInfoboxBubbles",
-      "ifMulti": "n",
-      "multiServices": [],
-      "singleService": "envPanos"
+    'calculate-infobox-bubbles': {
+      fileName: 'calculate-infobox-bubbles',
+      camelName: 'calculateInfoboxBubbles',
+      ifMulti: 'n',
+      multiServices: [],
+      singleService: 'envPanos'
     },
-    "load-target-env-panos": {
-      "fileName": "load-target-env-panos",
-      "camelName": "loadTargetEnvPanos",
-      "ifMulti": "n",
-      "multiServices": [],
-      "singleService": "envPanos"
+    'load-target-env-panos': {
+      fileName: 'load-target-env-panos',
+      camelName: 'loadTargetEnvPanos',
+      ifMulti: 'n',
+      multiServices: [],
+      singleService: 'envPanos'
     },
-    "benchmark": {
-      "fileName": "benchmark",
-      "camelName": "benchmark",
-      "ifMulti": "y",
-      "multiServices": [
-        "*none"
-      ],
-      "singleService": ""
+    benchmark: {
+      fileName: 'benchmark',
+      camelName: 'benchmark',
+      ifMulti: 'y',
+      multiServices: ['*none'],
+      singleService: ''
     },
-    "map-by-attr": {
-      "fileName": "map-by-attr",
-      "camelName": "mapByAttr",
-      "ifMulti": "y",
-      "multiServices": [
-        "environments"
-      ],
-      "singleService": ""
+    'map-by-attr': {
+      fileName: 'map-by-attr',
+      camelName: 'mapByAttr',
+      ifMulti: 'y',
+      multiServices: ['environments'],
+      singleService: ''
     },
-    "remove-related-records": {
-      "fileName": "remove-related-records",
-      "camelName": "removeRelatedRecords",
-      "ifMulti": "y",
-      "multiServices": [
-        "infoboxes"
-      ],
-      "singleService": ""
+    'remove-related-records': {
+      fileName: 'remove-related-records',
+      camelName: 'removeRelatedRecords',
+      ifMulti: 'y',
+      multiServices: ['infoboxes'],
+      singleService: ''
     },
-    "calculate-coordinates": {
-      "fileName": "calculate-coordinates",
-      "camelName": "calculateCoordinates",
-      "ifMulti": "n",
-      "multiServices": [],
-      "singleService": "panoHotspots"
+    'calculate-coordinates': {
+      fileName: 'calculate-coordinates',
+      camelName: 'calculateCoordinates',
+      ifMulti: 'n',
+      multiServices: [],
+      singleService: 'panoHotspots'
     },
-    "sanitize-pano-hotspots": {
-      "fileName": "sanitize-pano-hotspots",
-      "camelName": "sanitizePanoHotspots",
-      "ifMulti": "n",
-      "multiServices": [],
-      "singleService": "panoHotspots"
+    'sanitize-pano-hotspots': {
+      fileName: 'sanitize-pano-hotspots',
+      camelName: 'sanitizePanoHotspots',
+      ifMulti: 'n',
+      multiServices: [],
+      singleService: 'panoHotspots'
     },
-    "fix-coordinates": {
-      "fileName": "fix-coordinates",
-      "camelName": "fixCoordinates",
-      "ifMulti": "n",
-      "multiServices": [],
-      "singleService": "panos"
+    'fix-coordinates': {
+      fileName: 'fix-coordinates',
+      camelName: 'fixCoordinates',
+      ifMulti: 'n',
+      multiServices: [],
+      singleService: 'panos'
     },
-    "verify-recaptcha": {
-      "fileName": "verify-recaptcha",
-      "camelName": "verifyRecaptcha",
-      "ifMulti": "n",
-      "multiServices": [],
-      "singleService": "salesLeads"
+    'verify-recaptcha': {
+      fileName: 'verify-recaptcha',
+      camelName: 'verifyRecaptcha',
+      ifMulti: 'n',
+      multiServices: [],
+      singleService: 'salesLeads'
     },
-    "require-query": {
-      "fileName": "require-query",
-      "camelName": "requireQuery",
-      "ifMulti": "y",
-      "multiServices": [
-        "mapPoints"
-      ],
-      "singleService": ""
+    'require-query': {
+      fileName: 'require-query',
+      camelName: 'requireQuery',
+      ifMulti: 'y',
+      multiServices: ['mapPoints'],
+      singleService: ''
     },
-    "clear-xml-cache": {
-      "fileName": "clear-xml-cache",
-      "camelName": "clearXmlCache",
-      "ifMulti": "y",
-      "multiServices": [
-        "envPanos",
-        "environments",
-        "panoHotspots"
-      ],
-      "singleService": ""
+    'clear-xml-cache': {
+      fileName: 'clear-xml-cache',
+      camelName: 'clearXmlCache',
+      ifMulti: 'y',
+      multiServices: ['envPanos', 'environments', 'panoHotspots'],
+      singleService: ''
     }
   },
-  "authentication": {
-    "strategies": [
-      "local",
-      "google",
-      "facebook"
-    ],
-    "entity": "users"
+  authentication: {
+    strategies: ['local', 'google', 'facebook'],
+    entity: 'users'
   },
-  "connections": {
-    "mongoose": {
-      "database": "mongodb",
-      "adapter": "mongoose",
-      "connectionString": "mongodb://localhost:27017/rovit_api"
+  connections: {
+    mongoose: {
+      database: 'mongodb',
+      adapter: 'mongoose',
+      connectionString: 'mongodb://localhost:27017/rovit_api'
     }
   }
-};
+}
 const fakeFeathersSchemas = {
   businesses: {
     // !<DEFAULT> code: schema_header
@@ -497,7 +474,7 @@ const fakeFeathersSchemas = {
         faker: 'lorem.paragraph'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   categories: {
@@ -544,7 +521,7 @@ const fakeFeathersSchemas = {
         default: false
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   clientUsers: {
@@ -572,7 +549,7 @@ const fakeFeathersSchemas = {
       clientId: { type: 'ID' },
       userId: { type: 'ID' }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   clients: {
@@ -603,7 +580,7 @@ const fakeFeathersSchemas = {
         faker: 'lorem.paragraph'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   config: {
@@ -631,7 +608,7 @@ const fakeFeathersSchemas = {
       name: {},
       value: {}
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   envPanos: {
@@ -663,7 +640,7 @@ const fakeFeathersSchemas = {
         type: 'ID'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   environments: {
@@ -717,7 +694,7 @@ const fakeFeathersSchemas = {
         properties: {}
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   faqs: {
@@ -753,7 +730,7 @@ const fakeFeathersSchemas = {
         default: false
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   hotspotIcons: {
@@ -785,7 +762,7 @@ const fakeFeathersSchemas = {
       },
       uploadInfo: {}
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   infoboxMedia: {
@@ -824,7 +801,7 @@ const fakeFeathersSchemas = {
       },
       type: {
         type: 'string',
-        enum:  [ 'photo', 'video', '360', 'content-image', 'content-markdown' ]
+        enum: ['photo', 'video', '360', 'content-image', 'content-markdown']
       },
       content: {
         faker: 'lorem.paragraph'
@@ -845,7 +822,7 @@ const fakeFeathersSchemas = {
         }
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   infoboxTypes: {
@@ -881,7 +858,7 @@ const fakeFeathersSchemas = {
         }
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   infoboxVideos: {
@@ -927,7 +904,7 @@ const fakeFeathersSchemas = {
       contentDetails: {},
       snippet: {}
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   infoboxes: {
@@ -1002,7 +979,7 @@ const fakeFeathersSchemas = {
       meta: {}
 
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   mapPoints: {
@@ -1024,7 +1001,7 @@ const fakeFeathersSchemas = {
     // Fields in the model.
     properties: {
       // !code: schema_properties // !end
-    },
+    }
     // !code: schema_more // !end
   },
   panoHotspots: {
@@ -1054,7 +1031,7 @@ const fakeFeathersSchemas = {
       // !code: schema_properties
       type: {
         type: 'string',
-        enum: [ 'pano', 'link', 'infobox' ]
+        enum: ['pano', 'link', 'infobox']
       },
       envPanoId: {
         type: 'ID'
@@ -1086,10 +1063,10 @@ const fakeFeathersSchemas = {
           },
           target: {
             type: 'string',
-            enum: [ '', 'current', 'blank' ],
+            enum: ['', 'current', 'blank'],
             default: ''
           }
-        },
+        }
       },
       percentX: {
         type: 'number',
@@ -1110,7 +1087,7 @@ const fakeFeathersSchemas = {
         }
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   panos: {
@@ -1194,7 +1171,7 @@ const fakeFeathersSchemas = {
         }
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   salesLeads: {
@@ -1251,7 +1228,7 @@ const fakeFeathersSchemas = {
         format: 'date-time'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   salesNotes: {
@@ -1288,7 +1265,7 @@ const fakeFeathersSchemas = {
         type: 'ID'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   statViews: {
@@ -1312,7 +1289,7 @@ const fakeFeathersSchemas = {
       // !code: schema_properties
       type: {
         type: 'string',
-        enum: [ 'environment', 'pano', 'infobox' ]
+        enum: ['environment', 'pano', 'infobox']
       },
       userId: {
         type: 'ID'
@@ -1325,10 +1302,10 @@ const fakeFeathersSchemas = {
       },
       infoboxId: {
         type: 'ID'
-      },
+      }
 
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   tags: {
@@ -1360,7 +1337,7 @@ const fakeFeathersSchemas = {
         type: 'string'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   tourMenuItems: {
@@ -1393,7 +1370,7 @@ const fakeFeathersSchemas = {
       },
       type: {
         type: 'string',
-        enum: [ 'Infobox', 'Pano']
+        enum: ['Infobox', 'Pano']
       },
       panoId: {
         type: 'ID'
@@ -1405,7 +1382,7 @@ const fakeFeathersSchemas = {
         type: 'number'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   users: {
@@ -1421,7 +1398,7 @@ const fakeFeathersSchemas = {
     required: [
       // !code: schema_required
       'email',
-      'password',
+      'password'
       // !end
     ],
     // Fields with unique values.
@@ -1438,7 +1415,7 @@ const fakeFeathersSchemas = {
       email: { faker: 'internet.email' },
       password: { chance: { hash: { length: 60 } } }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   vr: {
@@ -1460,7 +1437,7 @@ const fakeFeathersSchemas = {
     // Fields in the model.
     properties: {
       // !code: schema_properties // !end
-    },
+    }
     // !code: schema_more // !end
   },
   xmlCache: {
@@ -1496,248 +1473,175 @@ const fakeFeathersSchemas = {
         type: 'string'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
-  },
-};
+  }
+}
 
 // Expected results
 const expectedTypescriptTypes = {
-  users: [
-    "_id: unknown",
-    "email: string",
-    "password: string"
-  ],
-  clientUsers: [
-    "clientId: unknown",
-    "userId: unknown"
-  ],
+  users: ['_id: unknown', 'email: string', 'password: string'],
+  clientUsers: ['clientId: unknown', 'userId: unknown'],
   businesses: [
-    "name: string",
-    "phones: any[]",
-    "emails: any[]",
-    "primaryContact: string",
-    "notes: string"
+    'name: string',
+    'phones: any[]',
+    'emails: any[]',
+    'primaryContact: string',
+    'notes: string'
   ],
   categories: [
-    "name: string",
-    "path: string",
-    "sortOrder: number",
-    "clientId: unknown",
-    "environmentIds: string[]",
-    "isGlobal: boolean"
+    'name: string',
+    'path: string',
+    'sortOrder: number',
+    'clientId: unknown',
+    'environmentIds: string[]',
+    'isGlobal: boolean'
   ],
-  clients: [
-    "name: string",
-    "notes: string"
-  ],
-  config: [
-    "name: string",
-    "value: string"
-  ],
-  envPanos: [
-    "environmentId: unknown",
-    "panoId: unknown"
-  ],
+  clients: ['name: string', 'notes: string'],
+  config: ['name: string', 'value: string'],
+  envPanos: ['environmentId: unknown', 'panoId: unknown'],
   environments: [
-    "name: string",
-    "slug: string",
-    "clientId: unknown",
-    "notes: string",
-    "startingPanoId: unknown",
-    "headerColor: string",
-    "headerLogoUrl: string",
-    "headerLogoData: {\n\n}"
+    'name: string',
+    'slug: string',
+    'clientId: unknown',
+    'notes: string',
+    'startingPanoId: unknown',
+    'headerColor: string',
+    'headerLogoUrl: string',
+    'headerLogoData: {\n\n}'
   ],
-  faqs: [
-    "question: string",
-    "answer: string",
-    "isPublic: boolean"
-  ],
-  hotspotIcons: [
-    "name: string",
-    "fileUrl: string",
-    "uploadInfo: string"
-  ],
+  faqs: ['question: string', 'answer: string', 'isPublic: boolean'],
+  hotspotIcons: ['name: string', 'fileUrl: string', 'uploadInfo: string'],
   infoboxMedia: [
-    "infoboxId: unknown",
-    "panoId: unknown",
-    "name: string",
-    "description: string",
-    "type: string",
-    "content: string",
-    "mediaUrl: string",
-    "uploadInfo: string",
-    "location: {\n  type: string;\n  coordinates: string[]\n}"
+    'infoboxId: unknown',
+    'panoId: unknown',
+    'name: string',
+    'description: string',
+    'type: string',
+    'content: string',
+    'mediaUrl: string',
+    'uploadInfo: string',
+    'location: {\n  type: string;\n  coordinates: string[]\n}'
   ],
-  infoboxTypes: [
-    "name: string",
-    "slug: string"
-  ],
+  infoboxTypes: ['name: string', 'slug: string'],
   infoboxVideos: [
-    "infoboxId: unknown",
-    "url: string",
-    "videoId: unknown",
-    "service: string",
-    "contentDetails: string",
-    "snippet: string"
+    'infoboxId: unknown',
+    'url: string',
+    'videoId: unknown',
+    'service: string',
+    'contentDetails: string',
+    'snippet: string'
   ],
   infoboxes: [
-    "name: string",
-    "description: string",
-    "type: string",
-    "primaryPhotoUrl: string",
-    "primaryPhotoCoordinates: string",
-    "primaryPhotoUploadInfo: string",
-    "categories: any[]",
-    "location: {\n  type: string;\n  coordinates: string[]\n}",
-    "phone: string",
-    "tourLink: string",
-    "learnMoreLink: string",
-    "meta: string"
+    'name: string',
+    'description: string',
+    'type: string',
+    'primaryPhotoUrl: string',
+    'primaryPhotoCoordinates: string',
+    'primaryPhotoUploadInfo: string',
+    'categories: any[]',
+    'location: {\n  type: string;\n  coordinates: string[]\n}',
+    'phone: string',
+    'tourLink: string',
+    'learnMoreLink: string',
+    'meta: string'
   ],
   panoHotspots: [
-    "type: string",
-    "envPanoId: unknown",
-    "panoId: unknown",
-    "targetPanoId: unknown",
-    "infoboxId: unknown",
-    "hotspotIconId: unknown",
-    "hotspotIconSize: number",
-    "linkMeta: {\n  url: string;\n  target: string\n}",
-    "percentX: number",
-    "percentY: number",
-    "coordinates: number[]"
+    'type: string',
+    'envPanoId: unknown',
+    'panoId: unknown',
+    'targetPanoId: unknown',
+    'infoboxId: unknown',
+    'hotspotIconId: unknown',
+    'hotspotIconSize: number',
+    'linkMeta: {\n  url: string;\n  target: string\n}',
+    'percentX: number',
+    'percentY: number',
+    'coordinates: number[]'
   ],
   panos: [
-    "name: string",
-    "slug: string",
-    "imageUrl: string",
-    "uploadInfo: {\n\n}",
-    "location: {\n  type: string;\n  coordinates: any[]\n}",
-    "tags: string[]",
-    "tagIds: string[]"
+    'name: string',
+    'slug: string',
+    'imageUrl: string',
+    'uploadInfo: {\n\n}',
+    'location: {\n  type: string;\n  coordinates: any[]\n}',
+    'tags: string[]',
+    'tagIds: string[]'
   ],
   salesLeads: [
-    "name: string",
-    "email: string",
-    "phone: string",
-    "companyName: string",
-    "businessId: unknown",
-    "isSubscribedToNewsletter: boolean",
-    "remoteIp: string",
-    "callbackDateTime: string"
+    'name: string',
+    'email: string',
+    'phone: string',
+    'companyName: string',
+    'businessId: unknown',
+    'isSubscribedToNewsletter: boolean',
+    'remoteIp: string',
+    'callbackDateTime: string'
   ],
-  salesNotes: [
-    "salesLeadId: unknown",
-    "text: string",
-    "createdById: unknown"
-  ],
+  salesNotes: ['salesLeadId: unknown', 'text: string', 'createdById: unknown'],
   statViews: [
-    "type: string",
-    "userId: unknown",
-    "envId: unknown",
-    "panoId: unknown",
-    "infoboxId: unknown"
+    'type: string',
+    'userId: unknown',
+    'envId: unknown',
+    'panoId: unknown',
+    'infoboxId: unknown'
   ],
-  tags: [
-    "text: string",
-    "slug: string"
-  ],
+  tags: ['text: string', 'slug: string'],
   tourMenuItems: [
-    "text: string",
-    "envId: unknown",
-    "type: string",
-    "panoId: unknown",
-    "infoboxId: unknown",
-    "sortOrder: number"
+    'text: string',
+    'envId: unknown',
+    'type: string',
+    'panoId: unknown',
+    'infoboxId: unknown',
+    'sortOrder: number'
   ],
   vr: [],
   mapPoints: [],
-  xmlCache: [
-    "envId: unknown",
-    "envSlug: string",
-    "data: string"
-  ]
-};
+  xmlCache: ['envId: unknown', 'envSlug: string', 'data: string']
+}
 const expectedTypescriptExtends = {
-  users: [
-    "_id: any"
-  ],
-  clientUsers: [
-    "clientId: any",
-    "userId: any"
-  ],
+  users: ['_id: any'],
+  clientUsers: ['clientId: any', 'userId: any'],
   businesses: [],
-  categories: [
-    "clientId: any"
-  ],
+  categories: ['clientId: any'],
   clients: [],
   config: [],
-  envPanos: [
-    "environmentId: any",
-    "panoId: any"
-  ],
-  environments: [
-    "clientId: any",
-    "startingPanoId: any"
-  ],
+  envPanos: ['environmentId: any', 'panoId: any'],
+  environments: ['clientId: any', 'startingPanoId: any'],
   faqs: [],
   hotspotIcons: [],
-  infoboxMedia: [
-    "infoboxId: any",
-    "panoId: any"
-  ],
+  infoboxMedia: ['infoboxId: any', 'panoId: any'],
   infoboxTypes: [],
-  infoboxVideos: [
-    "infoboxId: any",
-    "videoId: any"
-  ],
+  infoboxVideos: ['infoboxId: any', 'videoId: any'],
   infoboxes: [],
   panoHotspots: [
-    "envPanoId: any",
-    "panoId: any",
-    "targetPanoId: any",
-    "infoboxId: any",
-    "hotspotIconId: any"
+    'envPanoId: any',
+    'panoId: any',
+    'targetPanoId: any',
+    'infoboxId: any',
+    'hotspotIconId: any'
   ],
   panos: [],
-  salesLeads: [
-    "businessId: any"
-  ],
-  salesNotes: [
-    "salesLeadId: any",
-    "createdById: any"
-  ],
-  statViews: [
-    "userId: any",
-    "envId: any",
-    "panoId: any",
-    "infoboxId: any"
-  ],
+  salesLeads: ['businessId: any'],
+  salesNotes: ['salesLeadId: any', 'createdById: any'],
+  statViews: ['userId: any', 'envId: any', 'panoId: any', 'infoboxId: any'],
   tags: [],
-  tourMenuItems: [
-    "envId: any",
-    "panoId: any",
-    "infoboxId: any"
-  ],
+  tourMenuItems: ['envId: any', 'panoId: any', 'infoboxId: any'],
   vr: [],
   mapPoints: [],
-  xmlCache: [
-    "envId: any"
-  ]
-};
+  xmlCache: ['envId: any']
+}
 const expectedMongoJsonSchema = {
   users: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       email: {
-        faker: "internet.email",
-        bsonType: "string"
+        faker: 'internet.email',
+        bsonType: 'string'
       },
       password: {
         chance: {
@@ -1745,620 +1649,555 @@ const expectedMongoJsonSchema = {
             length: 60
           }
         },
-        bsonType: "string"
+        bsonType: 'string'
       }
     },
-    required: [
-      "email",
-      "password"
-    ]
+    required: ['email', 'password']
   },
   clientUsers: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       clientId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       userId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       }
     },
-    required: [
-      "clientId",
-      "userId"
-    ]
+    required: ['clientId', 'userId']
   },
   businesses: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       name: {
-        faker: "company.companyName",
-        bsonType: "string"
+        faker: 'company.companyName',
+        bsonType: 'string'
       },
       phones: {
         items: {
-          type: "object",
+          type: 'object',
           properties: {
             type: {
               faker: {
-                exp: "[\"home\", \"work\"][Math.floor(Math.random() * 2)]"
+                exp: '["home", "work"][Math.floor(Math.random() * 2)]'
               }
             },
             number: {
-              faker: "phone.phoneNumber"
+              faker: 'phone.phoneNumber'
             }
           }
         },
-        bsonType: "array"
+        bsonType: 'array'
       },
       emails: {
         items: {
-          type: "object",
+          type: 'object',
           properties: {
             type: {
               faker: {
-                exp: "[\"home\", \"work\"][Math.floor(Math.random() * 2)]"
+                exp: '["home", "work"][Math.floor(Math.random() * 2)]'
               }
             },
             email: {
-              faker: "internet.email"
+              faker: 'internet.email'
             }
           }
         },
-        bsonType: "array"
+        bsonType: 'array'
       },
       primaryContact: {
-        faker: "name.findName",
-        bsonType: "string"
+        faker: 'name.findName',
+        bsonType: 'string'
       },
       notes: {
-        faker: "lorem.paragraph",
-        bsonType: "string"
+        faker: 'lorem.paragraph',
+        bsonType: 'string'
       }
     },
-    required: [
-      "name"
-    ]
+    required: ['name']
   },
   categories: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       name: {
-        faker: "lorem.word",
-        bsonType: "string"
+        faker: 'lorem.word',
+        bsonType: 'string'
       },
       path: {
         faker: {
-          exp: "rec.name"
+          exp: 'rec.name'
         },
-        bsonType: "string"
+        bsonType: 'string'
       },
       sortOrder: {
-        faker: "random.number",
-        bsonType: "number"
+        faker: 'random.number',
+        bsonType: 'number'
       },
       clientId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       environmentIds: {
         items: {
-          type: "ID"
+          type: 'ID'
         },
-        bsonType: "array"
+        bsonType: 'array'
       },
       isGlobal: {
         default: false,
-        bsonType: "boolean"
+        bsonType: 'boolean'
       }
     },
-    required: [
-      "name",
-      "path"
-    ]
+    required: ['name', 'path']
   },
   clients: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       name: {
-        faker: "name.findName",
-        bsonType: "string"
+        faker: 'name.findName',
+        bsonType: 'string'
       },
       notes: {
-        faker: "lorem.paragraph",
-        bsonType: "string"
+        faker: 'lorem.paragraph',
+        bsonType: 'string'
       }
     },
-    required: [
-      "name"
-    ]
+    required: ['name']
   },
   config: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       name: {
-        bsonType: "string"
+        bsonType: 'string'
       },
       value: {
-        bsonType: "string"
+        bsonType: 'string'
       }
     },
-    required: [
-      "name",
-      "value"
-    ]
+    required: ['name', 'value']
   },
   envPanos: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       environmentId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       panoId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       }
     },
-    required: [
-      "environmentId",
-      "panoId"
-    ]
+    required: ['environmentId', 'panoId']
   },
   environments: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       name: {
-        faker: "address.country",
-        bsonType: "string"
+        faker: 'address.country',
+        bsonType: 'string'
       },
       slug: {
         faker: {
-          exp: "rec.name.toLowerCase().replace(\" \", \"-\")"
+          exp: 'rec.name.toLowerCase().replace(" ", "-")'
         },
-        bsonType: "string"
+        bsonType: 'string'
       },
       clientId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       notes: {
-        faker: "lorem.paragraph",
-        bsonType: "string"
+        faker: 'lorem.paragraph',
+        bsonType: 'string'
       },
       startingPanoId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       headerColor: {
-        faker: "internet.color",
-        bsonType: "string"
+        faker: 'internet.color',
+        bsonType: 'string'
       },
       headerLogoUrl: {
-        faker: "random.image",
-        bsonType: "string"
+        faker: 'random.image',
+        bsonType: 'string'
       },
       headerLogoData: {
-        bsonType: "object",
+        bsonType: 'object',
         additionalProperties: false,
         properties: {
           _id: {
-            bsonType: "objectId"
+            bsonType: 'objectId'
           }
         }
       }
     },
-    required: [
-      "name",
-      "slug",
-      "clientId"
-    ]
+    required: ['name', 'slug', 'clientId']
   },
   faqs: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       question: {
-        faker: "lorem.sentence",
-        bsonType: "string"
+        faker: 'lorem.sentence',
+        bsonType: 'string'
       },
       answer: {
-        faker: "lorem.sentence",
-        bsonType: "string"
+        faker: 'lorem.sentence',
+        bsonType: 'string'
       },
       isPublic: {
         default: false,
-        bsonType: "boolean"
+        bsonType: 'boolean'
       }
     },
-    required: [
-      "question",
-      "answer"
-    ]
+    required: ['question', 'answer']
   },
   hotspotIcons: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       name: {
-        faker: "lorem.word",
-        bsonType: "string"
+        faker: 'lorem.word',
+        bsonType: 'string'
       },
       fileUrl: {
-        faker: "random.image",
-        bsonType: "string"
+        faker: 'random.image',
+        bsonType: 'string'
       },
       uploadInfo: {
-        bsonType: "string"
+        bsonType: 'string'
       }
     },
-    required: [
-      "fileUrl"
-    ]
+    required: ['fileUrl']
   },
   infoboxMedia: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       infoboxId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       panoId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       name: {
-        faker: "address.state",
-        bsonType: "string"
+        faker: 'address.state',
+        bsonType: 'string'
       },
       description: {
-        faker: "lorem.paragraph",
-        bsonType: "string"
+        faker: 'lorem.paragraph',
+        bsonType: 'string'
       },
       type: {
-        enum: [
-          "photo",
-          "video",
-          "360",
-          "content-image",
-          "content-markdown"
-        ],
-        bsonType: "string"
+        enum: ['photo', 'video', '360', 'content-image', 'content-markdown'],
+        bsonType: 'string'
       },
       content: {
-        faker: "lorem.paragraph",
-        bsonType: "string"
+        faker: 'lorem.paragraph',
+        bsonType: 'string'
       },
       mediaUrl: {
-        faker: "random.image",
-        bsonType: "string"
+        faker: 'random.image',
+        bsonType: 'string'
       },
       uploadInfo: {
-        bsonType: "string"
+        bsonType: 'string'
       },
       location: {
-        bsonType: "object",
+        bsonType: 'object',
         additionalProperties: false,
         properties: {
           _id: {
-            bsonType: "objectId"
+            bsonType: 'objectId'
           },
           type: {
-            default: "point",
-            bsonType: "string"
+            default: 'point',
+            bsonType: 'string'
           },
           coordinates: {
             items: {
-              type: "string"
+              type: 'string'
             },
-            bsonType: "array"
+            bsonType: 'array'
           }
         }
       }
     },
-    required: [
-      "infoboxId",
-      "name"
-    ]
+    required: ['infoboxId', 'name']
   },
   infoboxTypes: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       name: {
-        faker: "lorem.word",
-        bsonType: "string"
+        faker: 'lorem.word',
+        bsonType: 'string'
       },
       slug: {
         faker: {
-          exp: "rec.name.toLowerCase().replace(\" \", \"-\")"
+          exp: 'rec.name.toLowerCase().replace(" ", "-")'
         },
-        bsonType: "string"
+        bsonType: 'string'
       }
     },
-    required: [
-      "name",
-      "slug"
-    ]
+    required: ['name', 'slug']
   },
   infoboxVideos: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       infoboxId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       url: {
-        faker: "image.imageUrl",
-        bsonType: "string"
+        faker: 'image.imageUrl',
+        bsonType: 'string'
       },
       videoId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       service: {
-        bsonType: "string"
+        bsonType: 'string'
       },
       contentDetails: {
-        bsonType: "string"
+        bsonType: 'string'
       },
       snippet: {
-        bsonType: "string"
+        bsonType: 'string'
       }
     },
-    required: [
-      "infoboxId",
-      "url",
-      "videoId",
-      "service"
-    ]
+    required: ['infoboxId', 'url', 'videoId', 'service']
   },
   infoboxes: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       name: {
-        faker: "lorem.word",
-        bsonType: "string"
+        faker: 'lorem.word',
+        bsonType: 'string'
       },
       description: {
-        faker: "lorem.paragraph",
-        bsonType: "string"
+        faker: 'lorem.paragraph',
+        bsonType: 'string'
       },
       type: {
-        enum: [
-          "basic",
-          "extended",
-          "pano-gallery"
-        ],
-        bsonType: "string"
+        enum: ['basic', 'extended', 'pano-gallery'],
+        bsonType: 'string'
       },
       primaryPhotoUrl: {
-        faker: "image.imageUrl",
-        bsonType: "string"
+        faker: 'image.imageUrl',
+        bsonType: 'string'
       },
       primaryPhotoCoordinates: {
-        bsonType: "string"
+        bsonType: 'string'
       },
       primaryPhotoUploadInfo: {
-        bsonType: "string"
+        bsonType: 'string'
       },
       categories: {
         items: {
-          type: "object",
+          type: 'object',
           properties: {
             _id: {
-              type: "ID"
+              type: 'ID'
             },
             name: {},
             path: {}
           }
         },
-        bsonType: "array"
+        bsonType: 'array'
       },
       location: {
-        bsonType: "object",
+        bsonType: 'object',
         additionalProperties: false,
         properties: {
           _id: {
-            bsonType: "objectId"
+            bsonType: 'objectId'
           },
           type: {
-            default: "Point",
-            bsonType: "string"
+            default: 'Point',
+            bsonType: 'string'
           },
           coordinates: {
             items: {
-              type: "string"
+              type: 'string'
             },
-            bsonType: "array"
+            bsonType: 'array'
           }
         }
       },
       phone: {
-        faker: "phone.phoneNumber",
-        bsonType: "string"
+        faker: 'phone.phoneNumber',
+        bsonType: 'string'
       },
       tourLink: {
-        faker: "internet.url",
-        bsonType: "string"
+        faker: 'internet.url',
+        bsonType: 'string'
       },
       learnMoreLink: {
-        faker: "internet.url",
-        bsonType: "string"
+        faker: 'internet.url',
+        bsonType: 'string'
       },
       meta: {
-        bsonType: "string"
+        bsonType: 'string'
       }
     },
-    required: [
-      "name"
-    ]
+    required: ['name']
   },
   panoHotspots: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       type: {
-        enum: [
-          "pano",
-          "link",
-          "infobox"
-        ],
-        bsonType: "string"
+        enum: ['pano', 'link', 'infobox'],
+        bsonType: 'string'
       },
       envPanoId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       panoId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       targetPanoId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       infoboxId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       hotspotIconId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       hotspotIconSize: {
         faker: {
-          exp: "ctx.faker.random.number({min: 1, max: 10})"
+          exp: 'ctx.faker.random.number({min: 1, max: 10})'
         },
-        bsonType: "number"
+        bsonType: 'number'
       },
       linkMeta: {
-        bsonType: "object",
+        bsonType: 'object',
         additionalProperties: false,
         properties: {
           _id: {
-            bsonType: "objectId"
+            bsonType: 'objectId'
           },
           url: {
-            faker: "image.imageUrl",
-            bsonType: "string"
+            faker: 'image.imageUrl',
+            bsonType: 'string'
           },
           target: {
-            enum: [
-              "",
-              "current",
-              "blank"
-            ],
-            default: "",
-            bsonType: "string"
+            enum: ['', 'current', 'blank'],
+            default: '',
+            bsonType: 'string'
           }
         }
       },
       percentX: {
         faker: {
-          exp: "ctx.faker.random.number({min: 0, max: 100})"
+          exp: 'ctx.faker.random.number({min: 0, max: 100})'
         },
-        bsonType: "number"
+        bsonType: 'number'
       },
       percentY: {
         faker: {
-          exp: "ctx.faker.random.number({min: 0, max: 100})"
+          exp: 'ctx.faker.random.number({min: 0, max: 100})'
         },
-        bsonType: "number"
+        bsonType: 'number'
       },
       coordinates: {
         items: {
-          type: "number"
+          type: 'number'
         },
-        bsonType: "array"
+        bsonType: 'array'
       }
     },
-    required: [
-      "type",
-      "envPanoId",
-      "panoId",
-      "percentX",
-      "percentY"
-    ]
+    required: ['type', 'envPanoId', 'panoId', 'percentX', 'percentY']
   },
   panos: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       name: {
-        faker: "address.city",
-        bsonType: "string"
+        faker: 'address.city',
+        bsonType: 'string'
       },
       slug: {
         faker: {
           exp: "rec.name.toLowerCase().replace(' ', '-')"
         },
-        bsonType: "string"
+        bsonType: 'string'
       },
       imageUrl: {
-        faker: "image.imageUrl",
-        bsonType: "string"
+        faker: 'image.imageUrl',
+        bsonType: 'string'
       },
       uploadInfo: {
-        bsonType: "object",
+        bsonType: 'object',
         additionalProperties: false,
         properties: {
           _id: {
-            bsonType: "objectId"
+            bsonType: 'objectId'
           }
         }
       },
       location: {
-        bsonType: "object",
+        bsonType: 'object',
         additionalProperties: false,
         properties: {
           _id: {
-            bsonType: "objectId"
+            bsonType: 'objectId'
           },
           type: {
-            default: "Point",
-            bsonType: "string"
+            default: 'Point',
+            bsonType: 'string'
           },
           coordinates: {
             minItems: 2,
@@ -2366,232 +2205,205 @@ const expectedMongoJsonSchema = {
             additionalItems: false,
             items: [
               {
-                type: "number",
+                type: 'number',
                 minimum: -180,
                 maximum: 180
               },
               {
-                type: "number",
+                type: 'number',
                 minimum: -90,
                 maximum: 90
               }
             ],
-            bsonType: "array"
+            bsonType: 'array'
           }
         }
       },
       tags: {
         items: {
-          type: "string"
+          type: 'string'
         },
-        bsonType: "array"
+        bsonType: 'array'
       },
       tagIds: {
         items: {
-          type: "ID"
+          type: 'ID'
         },
-        bsonType: "array"
+        bsonType: 'array'
       }
     },
-    required: [
-      "name",
-      "slug",
-      "imageUrl"
-    ]
+    required: ['name', 'slug', 'imageUrl']
   },
   salesLeads: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       name: {
-        faker: "name.findName",
-        bsonType: "string"
+        faker: 'name.findName',
+        bsonType: 'string'
       },
       email: {
-        faker: "internet.email",
-        bsonType: "string"
+        faker: 'internet.email',
+        bsonType: 'string'
       },
       phone: {
-        faker: "phone.phoneNumber",
-        bsonType: "string"
+        faker: 'phone.phoneNumber',
+        bsonType: 'string'
       },
       companyName: {
-        faker: "company.companyName",
-        bsonType: "string"
+        faker: 'company.companyName',
+        bsonType: 'string'
       },
       businessId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       isSubscribedToNewsletter: {
         default: false,
-        bsonType: "boolean"
+        bsonType: 'boolean'
       },
       remoteIp: {
-        faker: "internet.ip",
-        bsonType: "string"
+        faker: 'internet.ip',
+        bsonType: 'string'
       },
       callbackDateTime: {
-        format: "date-time",
-        bsonType: "string"
+        format: 'date-time',
+        bsonType: 'string'
       }
     },
-    required: [
-      "name",
-      "email"
-    ]
+    required: ['name', 'email']
   },
   salesNotes: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       salesLeadId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       text: {
-        faker: "lorem.paragraph",
-        bsonType: "string"
+        faker: 'lorem.paragraph',
+        bsonType: 'string'
       },
       createdById: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       }
     },
-    required: [
-      "salesLeadId",
-      "text",
-      "createdBy"
-    ]
+    required: ['salesLeadId', 'text', 'createdBy']
   },
   statViews: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       type: {
-        enum: [
-          "environment",
-          "pano",
-          "infobox"
-        ],
-        bsonType: "string"
+        enum: ['environment', 'pano', 'infobox'],
+        bsonType: 'string'
       },
       userId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       envId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       panoId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       infoboxId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       }
     }
   },
   tags: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       text: {
-        bsonType: "string"
+        bsonType: 'string'
       },
       slug: {
-        bsonType: "string"
+        bsonType: 'string'
       }
     },
-    required: [
-      "text",
-      "slug"
-    ]
+    required: ['text', 'slug']
   },
   tourMenuItems: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       text: {
-        faker: "lorem.",
-        bsonType: "string"
+        faker: 'lorem.',
+        bsonType: 'string'
       },
       envId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       type: {
-        enum: [
-          "Infobox",
-          "Pano"
-        ],
-        bsonType: "string"
+        enum: ['Infobox', 'Pano'],
+        bsonType: 'string'
       },
       panoId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       infoboxId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       sortOrder: {
-        bsonType: "number"
+        bsonType: 'number'
       }
     },
-    required: [
-      "text"
-    ]
+    required: ['text']
   },
   vr: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       }
     }
   },
   mapPoints: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       }
     }
   },
   xmlCache: {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       envId: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       envSlug: {
-        bsonType: "string"
+        bsonType: 'string'
       },
       data: {
-        bsonType: "string"
+        bsonType: 'string'
       }
     },
-    required: [
-      "envId",
-      "envSlug",
-      "data"
-    ]
+    required: ['envId', 'envSlug', 'data']
   }
-};
+}
 const expectedMongooseSchema = {
   users: {
     email: {
@@ -2619,14 +2431,18 @@ const expectedMongooseSchema = {
       type: String,
       required: true
     },
-    phones: [{
-      number: String,
-      type: String
-    }],
-    emails: [{
-      email: String,
-      type: String
-    }],
+    phones: [
+      {
+        number: String,
+        type: String
+      }
+    ],
+    emails: [
+      {
+        email: String,
+        type: String
+      }
+    ],
     primaryContact: String,
     notes: String
   },
@@ -2641,9 +2457,7 @@ const expectedMongooseSchema = {
     },
     sortOrder: Number,
     clientId: mongoose.Schema.Types.ObjectId,
-    environmentIds: [
-      mongoose.Schema.Types.ObjectId
-    ],
+    environmentIds: [mongoose.Schema.Types.ObjectId],
     isGlobal: {
       type: Boolean,
       default: false
@@ -2730,13 +2544,7 @@ const expectedMongooseSchema = {
     description: String,
     type: {
       type: String,
-      enum: [
-        "photo",
-        "video",
-        "360",
-        "content-image",
-        "content-markdown"
-      ]
+      enum: ['photo', 'video', '360', 'content-image', 'content-markdown']
     },
     content: String,
     mediaUrl: String,
@@ -2744,11 +2552,9 @@ const expectedMongooseSchema = {
     location: {
       type: {
         type: String,
-        default: "point"
+        default: 'point'
       },
-      coordinates: [
-        String
-      ]
+      coordinates: [String]
     }
   },
   infoboxTypes: {
@@ -2789,27 +2595,23 @@ const expectedMongooseSchema = {
     description: String,
     type: {
       type: String,
-      enum: [
-        "basic",
-        "extended",
-        "pano-gallery"
-      ]
+      enum: ['basic', 'extended', 'pano-gallery']
     },
     primaryPhotoUrl: String,
     primaryPhotoCoordinates: String,
     primaryPhotoUploadInfo: String,
-    categories: [{
-      name: String,
-      path: String
-    }],
+    categories: [
+      {
+        name: String,
+        path: String
+      }
+    ],
     location: {
       type: {
         type: String,
-        default: "Point"
+        default: 'Point'
       },
-      coordinates: [
-        String
-      ]
+      coordinates: [String]
     },
     phone: String,
     tourLink: String,
@@ -2819,11 +2621,7 @@ const expectedMongooseSchema = {
   panoHotspots: {
     type: {
       type: String,
-      enum: [
-        "pano",
-        "link",
-        "infobox"
-      ],
+      enum: ['pano', 'link', 'infobox'],
       required: true
     },
     envPanoId: {
@@ -2842,12 +2640,8 @@ const expectedMongooseSchema = {
       url: String,
       target: {
         type: String,
-        default: "",
-        enum: [
-          "",
-          "current",
-          "blank"
-        ]
+        default: '',
+        enum: ['', 'current', 'blank']
       }
     },
     percentX: {
@@ -2858,9 +2652,7 @@ const expectedMongooseSchema = {
       type: Number,
       required: true
     },
-    coordinates: [
-      Number
-    ]
+    coordinates: [Number]
   },
   panos: {
     name: {
@@ -2879,20 +2671,18 @@ const expectedMongooseSchema = {
     location: {
       type: {
         type: String,
-        default: "Point"
+        default: 'Point'
       },
-      coordinates:  [{
-        max: 180,
-        min: -180,
-        type: Number
-      }]
+      coordinates: [
+        {
+          max: 180,
+          min: -180,
+          type: Number
+        }
+      ]
     },
-    tags: [
-      String
-    ],
-    tagIds: [
-      mongoose.Schema.Types.ObjectId
-    ]
+    tags: [String],
+    tagIds: [mongoose.Schema.Types.ObjectId]
   },
   salesLeads: {
     name: {
@@ -2927,11 +2717,7 @@ const expectedMongooseSchema = {
   statViews: {
     type: {
       type: String,
-      enum: [
-        "environment",
-        "pano",
-        "infobox"
-      ]
+      enum: ['environment', 'pano', 'infobox']
     },
     userId: mongoose.Schema.Types.ObjectId,
     envId: mongoose.Schema.Types.ObjectId,
@@ -2956,10 +2742,7 @@ const expectedMongooseSchema = {
     envId: mongoose.Schema.Types.ObjectId,
     type: {
       type: String,
-      enum: [
-        "Infobox",
-        "Pano"
-      ]
+      enum: ['Infobox', 'Pano']
     },
     panoId: mongoose.Schema.Types.ObjectId,
     infoboxId: mongoose.Schema.Types.ObjectId,
@@ -2981,7 +2764,7 @@ const expectedMongooseSchema = {
       required: true
     }
   }
-};
+}
 const expectedSeqModel = {
   users: {
     email: {
@@ -3145,7 +2928,13 @@ const expectedSeqModel = {
       type: sequelizeTypeEquivalences.text
     },
     type: {
-      type: Sequelize.ENUM(["photo","video","360","content-image","content-markdown"])
+      type: Sequelize.ENUM([
+        'photo',
+        'video',
+        '360',
+        'content-image',
+        'content-markdown'
+      ])
     },
     content: {
       type: sequelizeTypeEquivalences.text
@@ -3203,7 +2992,7 @@ const expectedSeqModel = {
       type: sequelizeTypeEquivalences.text
     },
     type: {
-      type: Sequelize.ENUM(["basic","extended","pano-gallery"])
+      type: Sequelize.ENUM(['basic', 'extended', 'pano-gallery'])
     },
     primaryPhotoUrl: {
       type: sequelizeTypeEquivalences.text
@@ -3235,7 +3024,7 @@ const expectedSeqModel = {
   },
   panoHotspots: {
     type: {
-      type: Sequelize.ENUM(["pano","link","infobox"]),
+      type: Sequelize.ENUM(['pano', 'link', 'infobox']),
       allowNull: false
     },
     envPanoId: {
@@ -3343,7 +3132,7 @@ const expectedSeqModel = {
   },
   statViews: {
     type: {
-      type: Sequelize.ENUM(["environment","pano","infobox"])
+      type: Sequelize.ENUM(['environment', 'pano', 'infobox'])
     },
     userId: {
       type: sequelizeTypeEquivalences.integer
@@ -3377,7 +3166,7 @@ const expectedSeqModel = {
       type: sequelizeTypeEquivalences.integer
     },
     type: {
-      type: Sequelize.ENUM(["Infobox","Pano"])
+      type: Sequelize.ENUM(['Infobox', 'Pano'])
     },
     panoId: {
       type: sequelizeTypeEquivalences.integer
@@ -3405,78 +3194,51 @@ const expectedSeqModel = {
       allowNull: false
     }
   }
-};
+}
 const expectedSeqFks = {
   users: [],
-  clientUsers: [
-    "clientId",
-    "userId"
-  ],
+  clientUsers: ['clientId', 'userId'],
   businesses: [],
-  categories: [
-    "clientId"
-  ],
+  categories: ['clientId'],
   clients: [],
   config: [],
-  envPanos: [
-    "environmentId",
-    "panoId"
-  ],
-  environments: [
-    "clientId",
-    "startingPanoId"
-  ],
+  envPanos: ['environmentId', 'panoId'],
+  environments: ['clientId', 'startingPanoId'],
   faqs: [],
   hotspotIcons: [],
-  infoboxMedia: [
-    "infoboxId",
-    "panoId"
-  ],
+  infoboxMedia: ['infoboxId', 'panoId'],
   infoboxTypes: [],
-  infoboxVideos: [
-    "infoboxId",
-    "videoId"
-  ],
+  infoboxVideos: ['infoboxId', 'videoId'],
   infoboxes: [],
   panoHotspots: [
-    "envPanoId",
-    "panoId",
-    "targetPanoId",
-    "infoboxId",
-    "hotspotIconId"
+    'envPanoId',
+    'panoId',
+    'targetPanoId',
+    'infoboxId',
+    'hotspotIconId'
   ],
   panos: [],
-  salesLeads: [
-    "businessId"
-  ],
-  salesNotes: [
-    "salesLeadId",
-    "createdById"
-  ],
-  statViews: [
-    "userId",
-    "envId",
-    "panoId",
-    "infoboxId"
-  ],
+  salesLeads: ['businessId'],
+  salesNotes: ['salesLeadId', 'createdById'],
+  statViews: ['userId', 'envId', 'panoId', 'infoboxId'],
   tags: [],
-  tourMenuItems: [
-    "envId",
-    "panoId",
-    "infoboxId"
-  ],
+  tourMenuItems: ['envId', 'panoId', 'infoboxId'],
   vr: [],
   mapPoints: [],
-  xmlCache: [
-    "envId"
-  ]
-};
+  xmlCache: ['envId']
+}
 
 describe('marshall-app.test.js', () => {
   it('correctly converts schema to targets', () => {
     jsonSchemaRunner({
-      specs, fakeFeathersSchemas, expectedTypescriptTypes, expectedTypescriptExtends,
-      expectedMongoJsonSchema, expectedMongooseSchema, expectedSeqModel, expectedSeqFks
-    });
-  });
-});
+      specs,
+      fakeFeathersSchemas,
+      expectedTypescriptTypes,
+      expectedTypescriptExtends,
+      expectedMongoJsonSchema,
+      expectedMongooseSchema,
+      expectedSeqModel,
+      expectedSeqFks
+    })
+  })
+})

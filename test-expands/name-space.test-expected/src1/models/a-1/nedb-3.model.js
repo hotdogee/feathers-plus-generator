@@ -1,11 +1,10 @@
-
 // nedb3-model.js - An nedb model
 const NeDB = require('nedb');
 const path = require('path');
 // !code: nedb_imports // !end
 // !code: nedb_init // !end
 
-let moduleExports = function (app) {
+let moduleExports = function(app) {
   const dbPath = app.get('nedb');
   // !<DEFAULT> code: nedb_client
   let Model = new NeDB({

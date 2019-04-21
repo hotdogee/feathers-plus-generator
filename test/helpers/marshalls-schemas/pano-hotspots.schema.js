@@ -1,4 +1,3 @@
-
 // Define the Feathers schema for service `panoHotspots`. (Can be re-generated.)
 // !code: imports // !end
 // !code: init // !end
@@ -31,7 +30,7 @@ let schema = {
     // !code: schema_properties
     type: {
       type: 'string',
-      enum: [ 'pano', 'link', 'infobox' ]
+      enum: ['pano', 'link', 'infobox']
     },
     envPanoId: {
       type: 'ID'
@@ -63,10 +62,10 @@ let schema = {
         },
         target: {
           type: 'string',
-          enum: [ '', 'current', 'blank' ],
+          enum: ['', 'current', 'blank'],
           default: ''
         }
-      },
+      }
     },
     percentX: {
       type: 'number',
@@ -87,7 +86,7 @@ let schema = {
       }
     }
     // !end
-  },
+  }
   // !code: schema_more // !end
 }
 
@@ -98,7 +97,7 @@ let extensions = {
     // !code: graphql_header
     name: 'PanoHotspot',
     service: {
-      sort: { _id: 1 },
+      sort: { _id: 1 }
     },
     // sql: {
     //   sqlTable: 'PanoHotspots',
@@ -115,16 +114,16 @@ let extensions = {
       // !<DEFAULT> code: graphql_add
       // __author__: { type: '__User__!', args: false, relation: { ourTable: '__authorId__', otherTable: '_id' } },
       // !end
-    },
+    }
     // !code: graphql_more // !end
-  },
+  }
 }
 
 // !code: more // !end
 
 let moduleExports = {
   schema,
-  extensions,
+  extensions
   // !code: moduleExports // !end
 }
 

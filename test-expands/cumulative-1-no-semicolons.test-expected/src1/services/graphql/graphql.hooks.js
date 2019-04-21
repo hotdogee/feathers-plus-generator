@@ -1,11 +1,10 @@
-
 // Hooks for service `graphql`. (Can be re-generated.)
-const commonHooks = require('feathers-hooks-common')
+const commonHooks = require('feathers-hooks-common');
 // !code: imports // !end
 
 // !<DEFAULT> code: used
 // eslint-disable-next-line no-unused-vars
-const { iff } = commonHooks
+const { iff } = commonHooks;
 // !end
 
 // !code: init // !end
@@ -45,12 +44,12 @@ let moduleExports = {
     patch: [],
     remove: []
     // !end
-  },
+  }
   // !code: moduleExports // !end
-}
+};
 
 // !code: exports // !end
-module.exports = moduleExports
+module.exports = moduleExports;
 
 // !code: funcs // !end
 // !code: end // !end

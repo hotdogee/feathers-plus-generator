@@ -1,4 +1,3 @@
-
 const assert = require('assert');
 const feathers = require('@feathersjs/feathers');
 const { join } = require('path');
@@ -7,7 +6,8 @@ const hookApp1 = require('../../src1/hooks/hook.app1');
 
 // Get generated fake data
 // eslint-disable-next-line no-unused-vars
-const fakeData = readJsonFileSync(join(__dirname, '../../seeds/fake-data.json')) || {};
+const fakeData =
+  readJsonFileSync(join(__dirname, '../../seeds/fake-data.json')) || {};
 
 describe('Test /hooks/hook.app1.integ.test.js', () => {
   let app, params;
@@ -34,10 +34,8 @@ describe('Test /hooks/hook.app1.integ.test.js', () => {
       user: (fakeData['users1'] || [])[0] || {
         email: 'test@example.com'
       }
-
     };
   });
-
 
   it('Hook exists', () => {
     assert(typeof hookApp1 === 'function', 'Hook is not a function.');

@@ -64,15 +64,14 @@ const specs = {
 // })
 const testConfig = {
   tests: {
-    environmentsAllowingSeedData: [
-    ],
+    environmentsAllowingSeedData: [],
     local: {
       password: 'password'
     },
     client: {
       port: 3030,
       ioOptions: {
-        transports: [ 'websocket' ],
+        transports: ['websocket'],
         forceNew: true,
         reconnection: false,
         extraHeaders: {}
@@ -84,13 +83,11 @@ const testConfig = {
   }
 }
 const testConfigObjectExpression = template.ast(
-  prettier.format(`module.exports = ${JSON.stringify(testConfig)}`,
-    {
-      semi: false,
-      singleQuote: true,
-      parser: 'babel'
-    }
-  ),
+  prettier.format(`module.exports = ${JSON.stringify(testConfig)}`, {
+    semi: false,
+    singleQuote: true,
+    parser: 'babel'
+  }),
   {
     reserveComments: true
   }
@@ -107,9 +104,15 @@ function astObjectExpressionMerge (a, b) {
     if (aMap.has(key)) {
       const aOp = a.properties[aMap.get(key)]
       // key node exists
-      if (aOp.value.type === 'ObjectExpression' && bOp.value.type === 'ObjectExpression') {
+      if (
+        aOp.value.type === 'ObjectExpression' &&
+        bOp.value.type === 'ObjectExpression'
+      ) {
         astObjectExpressionMerge(aOp.value, bOp.value)
-      } else if (aOp.value.type === 'ArrayExpression' && bOp.value.type === 'ArrayExpression') {
+      } else if (
+        aOp.value.type === 'ArrayExpression' &&
+        bOp.value.type === 'ArrayExpression'
+      ) {
         if (bOp.value.elements.length !== 0) {
           a.properties[aMap.get(key)] = bOp
         }
@@ -131,11 +134,16 @@ function astObjectExpressionMerge (a, b) {
 }
 astObjectExpressionMerge(moduleExports.node, testConfigObjectExpression)
 
-console.log(prettier.format(generate(ast, { retainLines: true, retainFunctionParens: true }, code).code, {
-  semi: false,
-  singleQuote: true,
-  parser: 'babel'
-}))
+console.log(
+  prettier.format(
+    generate(ast, { retainLines: true, retainFunctionParens: true }, code).code,
+    {
+      semi: false,
+      singleQuote: true,
+      parser: 'babel'
+    }
+  )
+)
 
 // console.log(template.ast('tests: {}', { preserveComments: true }))
 // console.log(

@@ -1,4 +1,3 @@
-
 const makeDebug = require('debug')
 const jsonSchemaSeeder = require('json-schema-seeder')
 const { join } = require('path')
@@ -79,9 +78,12 @@ function fakes (generator, props, specs, context, state) {
   const adapters = {}
 
   // Get the app's existing default.js or the default one.
-  const existingDefaultJsPath = generator.destinationPath(join(appConfigPath, 'default.js'))
+  const existingDefaultJsPath = generator.destinationPath(
+    join(appConfigPath, 'default.js')
+  )
   const defaultJsPath = doesFileExist(existingDefaultJsPath)
-    ? existingDefaultJsPath : `${configPath}/default`
+    ? existingDefaultJsPath
+    : `${configPath}/default`
 
   const defaultJs = require(defaultJsPath)
   if (defaultJs.fakeData && defaultJs.fakeData.noFakesOnAll) return
@@ -131,7 +133,8 @@ function fakes (generator, props, specs, context, state) {
   // load default
   const fakeConfigPath = `${configPath}/default.js`
   const fakeConfigCode = fs.readFileSync(fakeConfigPath, 'utf8')
-  const fakeConfigObjectExpression = parse(fakeConfigCode).program.body[0].expression.right
+  const fakeConfigObjectExpression = parse(fakeConfigCode).program.body[0]
+    .expression.right
   // update AST
   // merge two ObjectExpressions
   function astObjectExpressionMerge (a, b) {
@@ -144,9 +147,15 @@ function fakes (generator, props, specs, context, state) {
       if (aMap.has(key)) {
         const aOp = a.properties[aMap.get(key)]
         // key node exists
-        if (aOp.value.type === 'ObjectExpression' && bOp.value.type === 'ObjectExpression') {
+        if (
+          aOp.value.type === 'ObjectExpression' &&
+          bOp.value.type === 'ObjectExpression'
+        ) {
           astObjectExpressionMerge(aOp.value, bOp.value)
-        } else if (aOp.value.type === 'ArrayExpression' && bOp.value.type === 'ArrayExpression') {
+        } else if (
+          aOp.value.type === 'ArrayExpression' &&
+          bOp.value.type === 'ArrayExpression'
+        ) {
           if (bOp.value.elements.length !== 0) {
             a.properties[aMap.get(key)] = bOp
           }
@@ -168,12 +177,15 @@ function fakes (generator, props, specs, context, state) {
   }
   astObjectExpressionMerge(moduleExports.node, fakeConfigObjectExpression)
 
-  const jssOptions = merge({
-    faker: {
-      fk: str => `->${str}`,
-      exp: str => `=>${str}`
-    }
-  }, defaultJs.fakeData || {})
+  const jssOptions = merge(
+    {
+      faker: {
+        fk: str => `->${str}`,
+        exp: str => `=>${str}`
+      }
+    },
+    defaultJs.fakeData || {}
+  )
 
   Object.keys(specs.services || {}).forEach(serviceName => {
     const specsServices = specs.services[serviceName]
@@ -187,21 +199,19 @@ function fakes (generator, props, specs, context, state) {
   const seeder = jsonSchemaSeeder(jssOptions)
   const data = seeder(schemas, adapters, { expContext: jssOptions.expContext })
   const fakeData = jssOptions.postGeneration
-    ? jssOptions.postGeneration(data) : data
+    ? jssOptions.postGeneration(data)
+    : data
 
   const todos = [
     // copy([tpl, '_configs', 'default.js'], [appConfigPath, 'default.js'], WRITE_IF_NEW),
     source(
-      [prettier.format(
-        generate(
-          configDefaultAst
-        ).code,
-        {
+      [
+        prettier.format(generate(configDefaultAst).code, {
           semi: false,
           singleQuote: true,
           parser: 'babel'
-        }
-      )],
+        })
+      ],
       [appConfigPath, 'default.js']
     ),
     json(fakeData, ['seeds', 'fake-data.json'])

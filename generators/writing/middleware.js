@@ -1,4 +1,3 @@
-
 const makeDebug = require('debug')
 const { inspect } = require('util')
 const { generatorFs } = require('../../lib/generator-fs')
@@ -59,13 +58,26 @@ function middleware (generator, props, specs, context, state) {
     tmpl([mwPath, 'index.ejs'], [src, 'middleware', `index.${js}`])
   ]
 
-  Object.keys(specs.middlewares || {}).sort().forEach(mwName => {
-    const fileName = specs.middlewares[mwName].kebab
-    todos.push(
-      tmpl([mwPath, 'middleware.ejs'], [libDir, 'middleware', `${fileName}.${js}`], WRITE_IF_NEW, DONT_SKIP_WRITE, { mwName }),
-      tmpl([tpl, 'src', 'typings.d.ejs'], [src, 'typings.d.ts'], WRITE_ALWAYS, isJs)
-    )
-  })
+  Object.keys(specs.middlewares || {})
+    .sort()
+    .forEach(mwName => {
+      const fileName = specs.middlewares[mwName].kebab
+      todos.push(
+        tmpl(
+          [mwPath, 'middleware.ejs'],
+          [libDir, 'middleware', `${fileName}.${js}`],
+          WRITE_IF_NEW,
+          DONT_SKIP_WRITE,
+          { mwName }
+        ),
+        tmpl(
+          [tpl, 'src', 'typings.d.ejs'],
+          [src, 'typings.d.ts'],
+          WRITE_ALWAYS,
+          isJs
+        )
+      )
+    })
 
   // Generate modules
   generatorFs(generator, context, todos)

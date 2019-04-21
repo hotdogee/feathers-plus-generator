@@ -1,4 +1,3 @@
-
 // users-model.js - A Sequelize model. (Can be re-generated.)
 //
 // See http://docs.sequelizejs.com/en/latest/docs/models-definition/
@@ -10,11 +9,12 @@ const sequelizeSchema = require('../services/users/users.sequelize');
 // !code: sequelize_imports // !end
 // !code: sequelize_init // !end
 
-let moduleExports = function (app) {
+let moduleExports = function(app) {
   let sequelizeClient = app.get('sequelizeClient');
   // !code: sequelize_func_init // !end
 
-  const users = sequelizeClient.define('users',
+  const users = sequelizeClient.define(
+    'users',
     // !<DEFAULT> code: sequelize_model
     sequelizeSchema,
     // !end
@@ -24,16 +24,16 @@ let moduleExports = function (app) {
         hooks: {
           beforeCount(options) {
             options.raw = true;
-          },
-        },
-      },
+          }
+        }
+      }
       // !end
       // !code: sequelize_define // !end
     )
   );
 
   // eslint-disable-next-line no-unused-vars
-  users.associate = function (models) {
+  users.associate = function(models) {
     // Define associations here for foreign keys
     //   - No foreign keys defined.
     // See http://docs.sequelizejs.com/en/latest/docs/associations/

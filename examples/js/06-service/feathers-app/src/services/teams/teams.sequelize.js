@@ -1,4 +1,3 @@
-
 /* eslint quotes: 0 */
 // Defines Sequelize model for service `teams`. (Can be re-generated.)
 const merge = require('lodash.merge');
@@ -8,7 +7,8 @@ const DataTypes = Sequelize.DataTypes;
 // !code: imports // !end
 // !code: init // !end
 
-let moduleExports = merge({},
+let moduleExports = merge(
+  {},
   // !<DEFAULT> code: sequelize_model
   {
     id: {
@@ -24,7 +24,7 @@ let moduleExports = merge({},
       type: DataTypes.JSONB,
       allowNull: false
     }
-  },
+  }
   // !end
   // !code: moduleExports // !end
 );

@@ -1,4 +1,3 @@
-
 const feathersSpecs = {
   nedb1: {
     title: 'Nedb1',
@@ -41,7 +40,7 @@ const feathersSpecs = {
         serviceSortParams: ', { query: { $sort: {   _id: 1 } } }'
       },
       primaryKey: { idName: '_id', idType: 'string' },
-      foreignKeys: [ 'id', '_id', 'nedb2Id' ],
+      foreignKeys: ['id', '_id', 'nedb2Id'],
       _ifGraphql: true
     }
   },
@@ -86,7 +85,7 @@ const feathersSpecs = {
         serviceSortParams: ', { query: { $sort: {   _id: 1 } } }'
       },
       primaryKey: { idName: '_id', idType: 'string' },
-      foreignKeys: [ 'id', '_id', 'nedb1Id' ],
+      foreignKeys: ['id', '_id', 'nedb1Id'],
       _ifGraphql: true
     }
   },
@@ -95,7 +94,8 @@ const feathersSpecs = {
     description: 'Users1 database.',
     _extensions: {
       primaryKey: {
-        idName: '_id', idType: 'string'
+        idName: '_id',
+        idType: 'string'
       },
       foreignKeys: [],
       graphql: {
@@ -110,4 +110,4 @@ const feathersSpecs = {
     uniqueItemProperties: [],
     properties: {}
   }
-};
+}

@@ -1,4 +1,3 @@
-
 const { join } = require('path');
 const { authenticationServices } = require('@feathers-plus/test-utils');
 const config = require('../config/default.json');

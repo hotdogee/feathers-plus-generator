@@ -1,4 +1,3 @@
-
 // Class for the custom service `nedb2` on path `/nedb-2`. (Can be re-generated.)
 /* eslint-disable no-unused-vars */
 
@@ -6,27 +5,28 @@
 // !code: init // !end
 
 class Service {
-  constructor (options) {
+  constructor(options) {
     this.options = options || {};
     // !code: constructor1 // !end
   }
 
   // !<DEFAULT> code: find
-  async find (params) {
+  async find(params) {
     return [];
   }
   // !end
 
   // !<DEFAULT> code: get
-  async get (id, params) {
+  async get(id, params) {
     return {
-      id, text: `A new message with ID: ${id}!`
+      id,
+      text: `A new message with ID: ${id}!`
     };
   }
   // !end
 
   // !<DEFAULT> code: create
-  async create (data, params) {
+  async create(data, params) {
     if (Array.isArray(data)) {
       return Promise.all(data.map(current => this.create(current, params)));
     }
@@ -36,26 +36,26 @@ class Service {
   // !end
 
   // !<DEFAULT> code: update
-  async update (id, data, params) {
+  async update(id, data, params) {
     return data;
   }
   // !end
 
   // !<DEFAULT> code: patch
-  async patch (id, data, params) {
+  async patch(id, data, params) {
     return data;
   }
   // !end
 
   // !<DEFAULT> code: remove
-  async remove (id, params) {
+  async remove(id, params) {
     return { id };
   }
   // !end
   // !code: more // !end
 }
 
-const moduleExports = function (options) {
+const moduleExports = function(options) {
   return new Service(options);
 };
 

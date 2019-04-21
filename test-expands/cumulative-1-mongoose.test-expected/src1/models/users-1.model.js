@@ -1,4 +1,3 @@
-
 // users1-model.js - A Mongoose model for a user entity
 //
 // See http://mongoosejs.com/docs/models.html
@@ -9,12 +8,14 @@ const mongooseSchema = require('../services/users-1/users-1.mongoose');
 // !code: mongoose_imports // !end
 // !code: mongoose_init // !end
 
-let moduleExports = function (app) {
+let moduleExports = function(app) {
   let mongooseClient = app.get('mongooseClient');
   // !code: mongoose_func_init // !end
 
   // !<DEFAULT> code: mongoose_client
-  const users1 = new mongooseClient.Schema(mongooseSchema, { timestamps: true });
+  const users1 = new mongooseClient.Schema(mongooseSchema, {
+    timestamps: true
+  });
   // !end
 
   let existingModel = mongooseClient.models['users1']; // needed for client/server tests

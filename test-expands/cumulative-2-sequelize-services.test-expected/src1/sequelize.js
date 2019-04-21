@@ -1,4 +1,3 @@
-
 // sequelize.js - Sequelize adapter (other than SQL server)
 const Sequelize = require('sequelize');
 let { Op } = Sequelize;
@@ -42,7 +41,7 @@ const operatorsAliases = {
   $col: Op.col
 };
 
-module.exports = function (app) {
+module.exports = function(app) {
   let connectionString = app.get('sqlite');
   let sequelize = new Sequelize(connectionString, {
     dialect: 'sqlite',
@@ -58,7 +57,7 @@ module.exports = function (app) {
 
   app.set('sequelizeClient', sequelize);
 
-  app.setup = function (...args) {
+  app.setup = function(...args) {
     let result = oldSetup.call(this, ...args);
     // !code: func_init // !end
 

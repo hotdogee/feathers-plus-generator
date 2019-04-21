@@ -1,10 +1,10 @@
-const assert = require('assert')
-const app = require('../../src1/app')
+const assert = require('assert');
+const app = require('../../src1/app');
 
 describe('\'graphql\' service', () => {
   it('registered the service', () => {
-    const service = app.service('graphql')
+    const service = app.service('graphql');
 
-    assert.ok(service, 'Registered the service')
-  })
-})
+    assert.ok(service, 'Registered the service');
+  });
+});

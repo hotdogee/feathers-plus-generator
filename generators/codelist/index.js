@@ -1,10 +1,12 @@
-
 const chalk = require('chalk')
 const { cwd } = require('process')
 const { join, parse } = require('path')
 
 const Generator = require('../../lib/generator')
-const { insertRequiredCustomResources, getFragments } = require('../../lib/code-fragments')
+const {
+  insertRequiredCustomResources,
+  getFragments
+} = require('../../lib/code-fragments')
 
 module.exports = class CodelistGenerator extends Generator {
   async prompting () {
@@ -20,11 +22,13 @@ module.exports = class CodelistGenerator extends Generator {
     const dirLen = process.cwd().length + 1
 
     this.log()
-    this.log([
-      chalk.green.bold('The custom code found in generated modules in dir '),
-      chalk.yellow.bold(parse(cwd()).base),
-      ':'
-    ].join(''))
+    this.log(
+      [
+        chalk.green.bold('The custom code found in generated modules in dir '),
+        chalk.yellow.bold(parse(cwd()).base),
+        ':'
+      ].join('')
+    )
 
     Object.keys(code).forEach(filePath => {
       const codeFilePath = code[filePath]

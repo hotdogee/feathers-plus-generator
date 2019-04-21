@@ -1,8 +1,7 @@
-
 // Application hooks that run for every service. (Can be re-generated.)
-const commonHooks = require('feathers-hooks-common');
+const commonHooks = require("feathers-hooks-common");
 // !<DEFAULT> code: imports
-const log = require('./hooks/log');
+const log = require("./hooks/log");
 // !end
 
 // !<DEFAULT> code: used
@@ -14,7 +13,7 @@ const { iff } = commonHooks;
 let moduleExports = {
   before: {
     // !<DEFAULT> code: before
-    all: [ log() ],
+    all: [log()],
     find: [],
     get: [],
     create: [],
@@ -26,7 +25,7 @@ let moduleExports = {
 
   after: {
     // !<DEFAULT> code: after
-    all: [ log() ],
+    all: [log()],
     find: [],
     get: [],
     create: [],
@@ -38,7 +37,7 @@ let moduleExports = {
 
   error: {
     // !<DEFAULT> code: error
-    all: [ log() ],
+    all: [log()],
     find: [],
     get: [],
     create: [],
@@ -46,7 +45,7 @@ let moduleExports = {
     patch: [],
     remove: []
     // !end
-  },
+  }
   // !code: moduleExports // !end
 };
 

@@ -1,4 +1,3 @@
-
 // Hooks for service `nedb2`. (Can be re-generated.)
 const commonHooks = require('feathers-hooks-common');
 const { authenticate } = require('@feathersjs/authentication').hooks;
@@ -10,7 +9,14 @@ const nedb2Populate = require('./nedb-2.populate');
 // eslint-disable-next-line no-unused-vars
 const { iff } = commonHooks;
 // eslint-disable-next-line no-unused-vars
-const { create, update, patch, validateCreate, validateUpdate, validatePatch } = require('./nedb-2.validate');
+const {
+  create,
+  update,
+  patch,
+  validateCreate,
+  validateUpdate,
+  validatePatch
+} = require('./nedb-2.validate');
 // !end
 
 // !code: init // !end
@@ -20,7 +26,7 @@ let moduleExports = {
     // Your hooks should include:
     //   all   : authenticate('jwt')
     // !<DEFAULT> code: before
-    all: [ authenticate('jwt') ],
+    all: [authenticate('jwt')],
     find: [],
     get: [],
     create: [],
@@ -52,7 +58,7 @@ let moduleExports = {
     patch: [],
     remove: []
     // !end
-  },
+  }
   // !code: moduleExports // !end
 };
 

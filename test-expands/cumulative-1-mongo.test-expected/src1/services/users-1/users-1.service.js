@@ -1,4 +1,3 @@
-
 // Initializes the `users1` service on path `/users-1`
 const createService = require('feathers-mongodb');
 const hooks = require('./users-1.hooks');
@@ -7,7 +6,7 @@ const hooks = require('./users-1.hooks');
 // !end
 // !code: init // !end
 
-let moduleExports = function (app) {
+let moduleExports = function(app) {
   let paginate = app.get('paginate');
   let mongoClient = app.get('mongoClient');
   let options = { paginate };
@@ -22,15 +21,16 @@ let moduleExports = function (app) {
   const service = app.service('users-1');
 
   // eslint-disable-next-line no-unused-vars
-  let promise = mongoClient.then(db => {
-    return db.createCollection('users-1', {
-      // !<DEFAULT> code: create_collection
-      // validator: { $jsonSchema: $jsonSchema },
-      // validationLevel: 'strict', // The MongoDB default
-      // validationAction: 'error', // The MongoDB default
-      // !end
-    });
-  })
+  let promise = mongoClient
+    .then(db => {
+      return db.createCollection('users-1', {
+        // !<DEFAULT> code: create_collection
+        // validator: { $jsonSchema: $jsonSchema },
+        // validationLevel: 'strict', // The MongoDB default
+        // validationAction: 'error', // The MongoDB default
+        // !end
+      });
+    })
     .then(serviceModel => {
       service.Model = serviceModel;
     });

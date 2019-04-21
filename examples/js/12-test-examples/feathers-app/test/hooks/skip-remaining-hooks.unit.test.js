@@ -1,4 +1,3 @@
-
 const assert = require('assert');
 const SKIP = require('@feathersjs/feathers').SKIP;
 const skipRemainingHooks = require('../../src/hooks/skip-remaining-hooks');
@@ -11,7 +10,8 @@ describe('Test /hooks/skip-remaining-hooks.unit.test.js', () => {
       type: 'before',
       params: { provider: 'socketio' },
       data: {
-        first: 'John', last: 'Doe'
+        first: 'John',
+        last: 'Doe'
       }
     };
 
@@ -19,7 +19,8 @@ describe('Test /hooks/skip-remaining-hooks.unit.test.js', () => {
       type: 'after',
       params: { provider: 'socketio' },
       result: {
-        first: 'Jane', last: 'Doe'
+        first: 'Jane',
+        last: 'Doe'
       }
     };
   });
@@ -64,5 +65,3 @@ describe('Test /hooks/skip-remaining-hooks.unit.test.js', () => {
     });
   });
 });
-
-

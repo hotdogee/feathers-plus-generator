@@ -1,4 +1,3 @@
-
 // Configure authentication. (Can be re-generated.)
 const authentication = require('@feathersjs/authentication');
 const jwt = require('@feathersjs/authentication-jwt');
@@ -12,7 +11,7 @@ const GithubStrategy = require('passport-github');
 // !code: imports // !end
 // !code: init // !end
 
-let moduleExports = function (app) {
+let moduleExports = function(app) {
   const config = app.get('authentication');
 
   // Set up authentication with the secret
@@ -21,25 +20,53 @@ let moduleExports = function (app) {
   app.configure(local());
   // !code: loc_1 // !end
 
-  app.configure(oauth2(Object.assign({
-    name: 'auth0',
-    Strategy: Auth0Strategy,
-  }, config.auth0)));
+  app.configure(
+    oauth2(
+      Object.assign(
+        {
+          name: 'auth0',
+          Strategy: Auth0Strategy
+        },
+        config.auth0
+      )
+    )
+  );
 
-  app.configure(oauth2(Object.assign({
-    name: 'google',
-    Strategy: GoogleStrategy,
-  }, config.google)));
+  app.configure(
+    oauth2(
+      Object.assign(
+        {
+          name: 'google',
+          Strategy: GoogleStrategy
+        },
+        config.google
+      )
+    )
+  );
 
-  app.configure(oauth2(Object.assign({
-    name: 'facebook',
-    Strategy: FacebookStrategy,
-  }, config.facebook)));
+  app.configure(
+    oauth2(
+      Object.assign(
+        {
+          name: 'facebook',
+          Strategy: FacebookStrategy
+        },
+        config.facebook
+      )
+    )
+  );
 
-  app.configure(oauth2(Object.assign({
-    name: 'github',
-    Strategy: GithubStrategy,
-  }, config.github)));
+  app.configure(
+    oauth2(
+      Object.assign(
+        {
+          name: 'github',
+          Strategy: GithubStrategy
+        },
+        config.github
+      )
+    )
+  );
 
   // !code: loc_2 // !end
 
@@ -48,13 +75,9 @@ let moduleExports = function (app) {
   // to create a new valid JWT (e.g. local or oauth2)
   app.service('authentication').hooks({
     before: {
-      create: [
-        authentication.hooks.authenticate(config.strategies),
-      ],
-      remove: [
-        authentication.hooks.authenticate('jwt'),
-      ],
-    },
+      create: [authentication.hooks.authenticate(config.strategies)],
+      remove: [authentication.hooks.authenticate('jwt')]
+    }
   });
   // !code: func_return // !end
 };

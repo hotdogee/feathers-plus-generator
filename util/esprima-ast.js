@@ -9,8 +9,18 @@ const default2Path = './config/default.js'
 const code = fs.readFileSync(defaultPath, 'utf8')
 const code2 = fs.readFileSync(default2Path, 'utf8')
 
-const ast = esprima.parse(code, { range: true, loc: true, tokens: true, comment: true })
-const ast3 = esprima.parse(code, { range: true, loc: true, tokens: true, comment: true })
+const ast = esprima.parse(code, {
+  range: true,
+  loc: true,
+  tokens: true,
+  comment: true
+})
+const ast3 = esprima.parse(code, {
+  range: true,
+  loc: true,
+  tokens: true,
+  comment: true
+})
 const ast2 = esprima.parse(code2, { range: true, tokens: true, comment: true })
 const astC = escodegen.attachComments(ast, ast.comments, ast.tokens)
 const astC3 = escodegen.attachComments(ast3, ast3.comments, ast3.tokens)

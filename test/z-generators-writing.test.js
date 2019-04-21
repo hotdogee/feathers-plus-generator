@@ -1,4 +1,3 @@
-
 const assert = require('yeoman-assert')
 const cp = require('child_process')
 const fs = require('fs-extra')
@@ -36,11 +35,24 @@ const tests = [
   // t0, z0 Test scaffolding to execute multiple generate calls and check the final result.
   // Also test a missing specs.options is created.
   //  generate app            # z-1, Project z-1, npm, src1, REST and socketio
-  { testName: 'scaffolding.test',
+  {
+    testName: 'scaffolding.test',
     specsChanges: [
-      { generate: 'all', before: specs => delete specs.app.providers, merge: { app: { providers: ['primus'] } } },
-      { generate: 'all', before: specs => delete specs.app.providers, merge: { app: { providers: ['rest'] } } },
-      { generate: 'all', before: specs => delete specs.app.providers, merge: { app: { providers: ['rest', 'socketio'] } } },
+      {
+        generate: 'all',
+        before: specs => delete specs.app.providers,
+        merge: { app: { providers: ['primus'] } }
+      },
+      {
+        generate: 'all',
+        before: specs => delete specs.app.providers,
+        merge: { app: { providers: ['rest'] } }
+      },
+      {
+        generate: 'all',
+        before: specs => delete specs.app.providers,
+        merge: { app: { providers: ['rest', 'socketio'] } }
+      },
       { generate: 'all', prompts: { confirmation: true } }
     ],
     compareDirs: true,
@@ -169,38 +181,83 @@ const tests = [
   { testName: 'cumulative-2-hooks.test' },
 
   // Test generating unit hook tests
-  { testName: 'a-gens/js/test-hook-unit.test',
+  {
+    testName: 'a-gens/js/test-hook-unit.test',
     specsChanges: [
-      { generate: 'test', prompts: { testType: 'hookUnit', hookName: 'hook.app1' } },
-      { generate: 'test', prompts: { testType: 'hookUnit', hookName: 'hook.nedb12' } },
-      { generate: 'test', prompts: { testType: 'hookUnit', hookName: 'hook.manual' } },
-      { generate: 'test', prompts: { testType: 'hookUnit', hookName: 'hook.nedb1' } },
-      { generate: 'test', prompts: { testType: 'hookUnit', hookName: 'hook.nedb2' } }
+      {
+        generate: 'test',
+        prompts: { testType: 'hookUnit', hookName: 'hook.app1' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookUnit', hookName: 'hook.nedb12' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookUnit', hookName: 'hook.manual' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookUnit', hookName: 'hook.nedb1' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookUnit', hookName: 'hook.nedb2' }
+      }
     ],
     compareDirs: true,
     execute: false
   },
 
   // Test generating integration hook tests
-  { testName: 'a-gens/js/test-hook-integ.test',
+  {
+    testName: 'a-gens/js/test-hook-integ.test',
     specsChanges: [
-      { generate: 'test', prompts: { testType: 'hookInteg', hookName: 'hook.app1' } },
-      { generate: 'test', prompts: { testType: 'hookInteg', hookName: 'hook.nedb12' } },
-      { generate: 'test', prompts: { testType: 'hookInteg', hookName: 'hook.manual' } },
-      { generate: 'test', prompts: { testType: 'hookInteg', hookName: 'hook.nedb1' } },
-      { generate: 'test', prompts: { testType: 'hookInteg', hookName: 'hook.nedb2' } }
+      {
+        generate: 'test',
+        prompts: { testType: 'hookInteg', hookName: 'hook.app1' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookInteg', hookName: 'hook.nedb12' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookInteg', hookName: 'hook.manual' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookInteg', hookName: 'hook.nedb1' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookInteg', hookName: 'hook.nedb2' }
+      }
     ],
     compareDirs: true,
     execute: false
   },
 
   // Test generating service tests
-  { testName: 'a-gens/js/test-service.test',
+  {
+    testName: 'a-gens/js/test-service.test',
     specsChanges: [
-      { generate: 'test', prompts: { testType: 'serviceUnit', serviceName: 'nedb1' } },
-      { generate: 'test', prompts: { testType: 'serviceUnit', serviceName: 'nedb2' } },
-      { generate: 'test', prompts: { testType: 'serviceInteg', serviceName: 'nedb1' } },
-      { generate: 'test', prompts: { testType: 'serviceInteg', serviceName: 'users1' } }
+      {
+        generate: 'test',
+        prompts: { testType: 'serviceUnit', serviceName: 'nedb1' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'serviceUnit', serviceName: 'nedb2' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'serviceInteg', serviceName: 'nedb1' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'serviceInteg', serviceName: 'users1' }
+      }
     ],
     compareDirs: true,
     execute: false
@@ -208,7 +265,8 @@ const tests = [
 
   // Test generating authentication tests
   // Its tests TEST AUTHENTICATION and should be periodically run with dependency loading
-  { testName: 'a-gens/js/test-authentication.test',
+  {
+    testName: 'a-gens/js/test-authentication.test',
     specsChanges: [
       { generate: 'test', prompts: { testType: 'authBase' } },
       { generate: 'test', prompts: { testType: 'authServices' } }
@@ -230,9 +288,11 @@ const tests = [
   //  generate authentication # Local+Auth0+Google+Facebook+GitHub,
   //                            users1, Nedb, /users-1, nedb://../data, auth Y, graphql N
   //  generate service        # NeDB, nedb1, /nedb-1, auth Y (line not needed in test as test regens whole app)
-  { testName: 'regen-user-entity.test',
+  {
+    testName: 'regen-user-entity.test',
     specsChanges: [
-      { generate: 'all',
+      {
+        generate: 'all',
         merge: {
           authentication: { entity: 'users1' },
           services: {
@@ -249,7 +309,8 @@ const tests = [
               graphql: false
             }
           }
-        } }
+        }
+      }
     ]
   },
 
@@ -258,19 +319,22 @@ const tests = [
   //  generate app            # z-1, Project z-1, npm, src1, socketio (only)
   //  generate service        # MongoDB, nedb1, /nedb-1, mongodb://localhost:27017/z_1, auth N, graphql Y
   //  generate service        # NeDB,    nedb1, /nedb-1, nedb://../data,                auth N, graphql Y
-  { testName: 'regen-adapters-1.test',
+  {
+    testName: 'regen-adapters-1.test',
     specsChanges: [
-      { generate: 'all',
+      {
+        generate: 'all',
         merge: {
           services: { nedb1: { adapter: 'nedb' } },
           connections: {
-            'nedb': {
+            nedb: {
               database: 'nedb',
               adapter: 'nedb',
               connectionString: 'nedb://../data'
             }
           }
-        } }
+        }
+      }
     ]
   },
 
@@ -302,45 +366,91 @@ const tests = [
   { testName: 'ts-cumulative-2-hooks.test' },
 
   // Test generating unit hook tests
-  { testName: 'a-gens/ts/test-hook-unit.test',
+  {
+    testName: 'a-gens/ts/test-hook-unit.test',
     specsChanges: [
-      { generate: 'test', prompts: { testType: 'hookUnit', hookName: 'hook.app1' } },
-      { generate: 'test', prompts: { testType: 'hookUnit', hookName: 'hook.nedb12' } },
-      { generate: 'test', prompts: { testType: 'hookUnit', hookName: 'hook.manual' } },
-      { generate: 'test', prompts: { testType: 'hookUnit', hookName: 'hook.nedb1' } },
-      { generate: 'test', prompts: { testType: 'hookUnit', hookName: 'hook.nedb2' } }
+      {
+        generate: 'test',
+        prompts: { testType: 'hookUnit', hookName: 'hook.app1' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookUnit', hookName: 'hook.nedb12' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookUnit', hookName: 'hook.manual' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookUnit', hookName: 'hook.nedb1' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookUnit', hookName: 'hook.nedb2' }
+      }
     ],
     compareDirs: true,
     execute: false
   },
 
   // Test generating integration hook tests
-  { testName: 'a-gens/ts/test-hook-integ.test',
+  {
+    testName: 'a-gens/ts/test-hook-integ.test',
     specsChanges: [
-      { generate: 'test', prompts: { testType: 'hookInteg', hookName: 'hook.app1' } },
-      { generate: 'test', prompts: { testType: 'hookInteg', hookName: 'hook.nedb12' } },
-      { generate: 'test', prompts: { testType: 'hookInteg', hookName: 'hook.manual' } },
-      { generate: 'test', prompts: { testType: 'hookInteg', hookName: 'hook.nedb1' } },
-      { generate: 'test', prompts: { testType: 'hookInteg', hookName: 'hook.nedb2' } }
+      {
+        generate: 'test',
+        prompts: { testType: 'hookInteg', hookName: 'hook.app1' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookInteg', hookName: 'hook.nedb12' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookInteg', hookName: 'hook.manual' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookInteg', hookName: 'hook.nedb1' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'hookInteg', hookName: 'hook.nedb2' }
+      }
     ],
     compareDirs: true,
     execute: false
   },
 
   // Test generating service tests
-  { testName: 'a-gens/ts/test-service.test',
+  {
+    testName: 'a-gens/ts/test-service.test',
     specsChanges: [
-      { generate: 'test', prompts: { testType: 'serviceUnit', serviceName: 'nedb1' } },
-      { generate: 'test', prompts: { testType: 'serviceUnit', serviceName: 'nedb2' } },
-      { generate: 'test', prompts: { testType: 'serviceInteg', serviceName: 'nedb1' } },
-      { generate: 'test', prompts: { testType: 'serviceInteg', serviceName: 'users1' } }
+      {
+        generate: 'test',
+        prompts: { testType: 'serviceUnit', serviceName: 'nedb1' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'serviceUnit', serviceName: 'nedb2' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'serviceInteg', serviceName: 'nedb1' }
+      },
+      {
+        generate: 'test',
+        prompts: { testType: 'serviceInteg', serviceName: 'users1' }
+      }
     ],
     compareDirs: true,
     execute: false
   },
 
   // Test generating authentication tests
-  { testName: 'a-gens/ts/test-authentication.test',
+  {
+    testName: 'a-gens/ts/test-authentication.test',
     specsChanges: [
       { generate: 'test', prompts: { testType: 'authBase' } },
       { generate: 'test', prompts: { testType: 'authServices' } }
@@ -353,9 +463,11 @@ const tests = [
   { testName: 'ts-name-space.test' },
 
   // Test specs created by generator prompts
-  { testName: 'a-specs/connection-memory.test',
+  {
+    testName: 'a-specs/connection-memory.test',
     specsChanges: [
-      { generate: 'connection',
+      {
+        generate: 'connection',
         prompts: { database: 'memory' },
         calledByTest: { prompts: { database: 'memory' } }
       }
@@ -368,9 +480,17 @@ const tests = [
     specsChanges: [
       {
         generate: 'connection',
-        prompts: { database: 'mongodb', adapter: 'mongodb', connectionString: 'mongodb://localhost:27017/zz' },
+        prompts: {
+          database: 'mongodb',
+          adapter: 'mongodb',
+          connectionString: 'mongodb://localhost:27017/zz'
+        },
         calledByTest: {
-          prompts: { database: 'mongodb', adapter: 'mongodb', connectionString: 'mongodb://localhost:27017/zz' }
+          prompts: {
+            database: 'mongodb',
+            adapter: 'mongodb',
+            connectionString: 'mongodb://localhost:27017/zz'
+          }
         }
       }
     ],
@@ -382,9 +502,17 @@ const tests = [
     specsChanges: [
       {
         generate: 'connection',
-        prompts: { database: 'mongodb', adapter: 'mongoose', connectionString: 'mongodb://localhost:27017/zz' },
+        prompts: {
+          database: 'mongodb',
+          adapter: 'mongoose',
+          connectionString: 'mongodb://localhost:27017/zz'
+        },
         calledByTest: {
-          prompts: { database: 'mongodb', adapter: 'mongoose', connectionString: 'mongodb://localhost:27017/zz' }
+          prompts: {
+            database: 'mongodb',
+            adapter: 'mongoose',
+            connectionString: 'mongodb://localhost:27017/zz'
+          }
         }
       }
     ],
@@ -396,9 +524,17 @@ const tests = [
     specsChanges: [
       {
         generate: 'connection',
-        prompts: { database: 'mysql', adapter: 'sequelize', connectionString: 'mysql://root:@localhost:3306/zz' },
+        prompts: {
+          database: 'mysql',
+          adapter: 'sequelize',
+          connectionString: 'mysql://root:@localhost:3306/zz'
+        },
         calledByTest: {
-          prompts: { database: 'mysql', adapter: 'sequelize', connectionString: 'mysql://root:@localhost:3306/zz' }
+          prompts: {
+            database: 'mysql',
+            adapter: 'sequelize',
+            connectionString: 'mysql://root:@localhost:3306/zz'
+          }
         }
       }
     ],
@@ -410,9 +546,17 @@ const tests = [
     specsChanges: [
       {
         generate: 'connection',
-        prompts: { database: 'mysql', adapter: 'knex', connectionString: 'mysql://root:@localhost:3306/zz' },
+        prompts: {
+          database: 'mysql',
+          adapter: 'knex',
+          connectionString: 'mysql://root:@localhost:3306/zz'
+        },
         calledByTest: {
-          prompts: { database: 'mysql', adapter: 'knex', connectionString: 'mysql://root:@localhost:3306/zz' }
+          prompts: {
+            database: 'mysql',
+            adapter: 'knex',
+            connectionString: 'mysql://root:@localhost:3306/zz'
+          }
         }
       }
     ],
@@ -425,7 +569,9 @@ const tests = [
       {
         generate: 'connection',
         prompts: { database: 'nedb', connectionString: '../data' },
-        calledByTest: { prompts: { database: 'nedb', connectionString: '../data' } }
+        calledByTest: {
+          prompts: { database: 'nedb', connectionString: '../data' }
+        }
       }
     ],
     compareOnlySpecs: true
@@ -436,9 +582,17 @@ const tests = [
     specsChanges: [
       {
         generate: 'connection',
-        prompts: { database: 'postgres', adapter: 'sequelize', connectionString: 'postgres://postgres:@localhost:5432/zz' },
+        prompts: {
+          database: 'postgres',
+          adapter: 'sequelize',
+          connectionString: 'postgres://postgres:@localhost:5432/zz'
+        },
         calledByTest: {
-          prompts: { database: 'postgres', adapter: 'sequelize', connectionString: 'postgres://postgres:@localhost:5432/zz' }
+          prompts: {
+            database: 'postgres',
+            adapter: 'sequelize',
+            connectionString: 'postgres://postgres:@localhost:5432/zz'
+          }
         }
       }
     ],
@@ -450,9 +604,17 @@ const tests = [
     specsChanges: [
       {
         generate: 'connection',
-        prompts: { database: 'postgres', adapter: 'knex', connectionString: 'postgres://postgres:@localhost:5432/zz' },
+        prompts: {
+          database: 'postgres',
+          adapter: 'knex',
+          connectionString: 'postgres://postgres:@localhost:5432/zz'
+        },
         calledByTest: {
-          prompts: { database: 'postgres', adapter: 'knex', connectionString: 'postgres://postgres:@localhost:5432/zz' }
+          prompts: {
+            database: 'postgres',
+            adapter: 'knex',
+            connectionString: 'postgres://postgres:@localhost:5432/zz'
+          }
         }
       }
     ],
@@ -464,9 +626,15 @@ const tests = [
     specsChanges: [
       {
         generate: 'connection',
-        prompts: { database: 'rethinkdb', connectionString: 'rethinkdb://localhost:28015/zz' },
+        prompts: {
+          database: 'rethinkdb',
+          connectionString: 'rethinkdb://localhost:28015/zz'
+        },
         calledByTest: {
-          prompts: { database: 'rethinkdb', connectionString: 'rethinkdb://localhost:28015/zz' }
+          prompts: {
+            database: 'rethinkdb',
+            connectionString: 'rethinkdb://localhost:28015/zz'
+          }
         }
       }
     ],
@@ -478,9 +646,17 @@ const tests = [
     specsChanges: [
       {
         generate: 'connection',
-        prompts: { database: 'sqlite', adapter: 'sequelize', connectionString: 'sqlite://zz.sqlite' },
+        prompts: {
+          database: 'sqlite',
+          adapter: 'sequelize',
+          connectionString: 'sqlite://zz.sqlite'
+        },
         calledByTest: {
-          prompts: { database: 'sqlite', adapter: 'sequelize', connectionString: 'sqlite://zz.sqlite' }
+          prompts: {
+            database: 'sqlite',
+            adapter: 'sequelize',
+            connectionString: 'sqlite://zz.sqlite'
+          }
         }
       }
     ],
@@ -492,9 +668,17 @@ const tests = [
     specsChanges: [
       {
         generate: 'connection',
-        prompts: { database: 'sqlite', adapter: 'knex', connectionString: 'sqlite://zz.sqlite' },
+        prompts: {
+          database: 'sqlite',
+          adapter: 'knex',
+          connectionString: 'sqlite://zz.sqlite'
+        },
         calledByTest: {
-          prompts: { database: 'sqlite', adapter: 'knex', connectionString: 'sqlite://zz.sqlite' }
+          prompts: {
+            database: 'sqlite',
+            adapter: 'knex',
+            connectionString: 'sqlite://zz.sqlite'
+          }
         }
       }
     ],
@@ -506,9 +690,17 @@ const tests = [
     specsChanges: [
       {
         generate: 'connection',
-        prompts: { database: 'mssql', adapter: 'sequelize', connectionString: 'mssql://root:password@localhost:1433/zz' },
+        prompts: {
+          database: 'mssql',
+          adapter: 'sequelize',
+          connectionString: 'mssql://root:password@localhost:1433/zz'
+        },
         calledByTest: {
-          prompts: { database: 'mssql', adapter: 'sequelize', connectionString: 'mssql://root:password@localhost:1433/zz' }
+          prompts: {
+            database: 'mssql',
+            adapter: 'sequelize',
+            connectionString: 'mssql://root:password@localhost:1433/zz'
+          }
         }
       }
     ],
@@ -520,9 +712,17 @@ const tests = [
     specsChanges: [
       {
         generate: 'connection',
-        prompts: { database: 'mssql', adapter: 'knex', connectionString: 'mssql://root:password@localhost:1433/zz' },
+        prompts: {
+          database: 'mssql',
+          adapter: 'knex',
+          connectionString: 'mssql://root:password@localhost:1433/zz'
+        },
         calledByTest: {
-          prompts: { database: 'mssql', adapter: 'knex', connectionString: 'mssql://root:password@localhost:1433/zz' }
+          prompts: {
+            database: 'mssql',
+            adapter: 'knex',
+            connectionString: 'mssql://root:password@localhost:1433/zz'
+          }
         }
       }
     ],
@@ -1041,15 +1241,17 @@ const tests = [
   //
   // We therefore standardized on passing the prompts in specsChanges.calledByTest.prompts as well.
   // "Missing" prompt values can be set by the generator at the end of prompting().
-  { testName: 'a-gens/js/cumulative.test',
+  {
+    testName: 'a-gens/js/cumulative.test',
     specsChanges: [
-      { generate: 'app',
+      {
+        generate: 'app',
         prompts: {
           name: 'z-1',
           src: 'src1',
           description: 'Project z-1',
           packager: 'npm@>= 3.0.0',
-          providers: [ 'rest', 'socketio' ],
+          providers: ['rest', 'socketio'],
           environmentsAllowingSeedData: 'test',
           seedData: false
         },
@@ -1059,13 +1261,14 @@ const tests = [
             src: 'src1',
             description: 'Project z-1',
             packager: 'npm@>= 3.0.0',
-            providers: [ 'rest', 'socketio' ],
+            providers: ['rest', 'socketio'],
             environmentsAllowingSeedData: 'test',
             seedData: false
           }
         }
       },
-      { generate: 'connection',
+      {
+        generate: 'connection',
         prompts: {
           adapter: 'nedb',
           database: 'nedb',
@@ -1079,7 +1282,8 @@ const tests = [
           }
         }
       },
-      { generate: 'service',
+      {
+        generate: 'service',
         prompts: {
           name: 'users1',
           nameSingular: 'users1',
@@ -1100,19 +1304,21 @@ const tests = [
           }
         }
       },
-      { generate: 'authentication',
+      {
+        generate: 'authentication',
         prompts: {
-          strategies: [ 'local', 'auth0', 'google', 'facebook', 'github' ],
+          strategies: ['local', 'auth0', 'google', 'facebook', 'github'],
           entity: 'users1'
         },
         calledByTest: {
           prompts: {
-            strategies: [ 'local', 'auth0', 'google', 'facebook', 'github' ],
+            strategies: ['local', 'auth0', 'google', 'facebook', 'github'],
             entity: 'users1'
           }
         }
       },
-      { generate: 'service',
+      {
+        generate: 'service',
         prompts: {
           isAuthEntity: false,
           requiresAuth: true,
@@ -1137,7 +1343,8 @@ const tests = [
           }
         }
       },
-      { generate: 'service',
+      {
+        generate: 'service',
         prompts: {
           isAuthEntity: false,
           requiresAuth: false,
@@ -1162,7 +1369,8 @@ const tests = [
           }
         }
       },
-      { generate: 'middleware',
+      {
+        generate: 'middleware',
         prompts: {
           name: 'mw1',
           path: '*',
@@ -1178,7 +1386,8 @@ const tests = [
           }
         }
       },
-      { generate: 'middleware',
+      {
+        generate: 'middleware',
         prompts: {
           name: 'mw2',
           path: 'mw2',
@@ -1194,7 +1403,8 @@ const tests = [
           }
         }
       },
-      { generate: 'graphql',
+      {
+        generate: 'graphql',
         prompts: {
           strategy: 'services',
           path: '/graphql',
@@ -1229,71 +1439,91 @@ const executeAll = false
 let runTests = !runFromTest
 
 describe('generators-writing.test.js', function () {
-  tests.forEach(({ testName, specsChanges = [], compareDirs = true, compareOnlySpecs = false, execute = false }) => {
-    if (runFromTest && runFromTest === testName) runTests = true
-    if (runToTest && runToTest === testName) runTests = false
-    if (!runTests) return
+  tests.forEach(
+    ({
+      testName,
+      specsChanges = [],
+      compareDirs = true,
+      compareOnlySpecs = false,
+      execute = false
+    }) => {
+      if (runFromTest && runFromTest === testName) runTests = true
+      if (runToTest && runToTest === testName) runTests = false
+      if (!runTests) return
 
-    describe(testName, function () {
-      it('writes code expected', () => {
-        return runFirstGeneration(testName, { skipInstall: true })
-          .then(dir => {
-            // There is no second generation step
-            if (!specsChanges.length) {
-              return compareOnlySpecs
-                ? compareSpecs(appDir, `${testName}-expected`)
-                : compareCode(dir, `${testName}-expected`, compareDirs)
-            }
+      describe(testName, function () {
+        it('writes code expected', () => {
+          return runFirstGeneration(testName, { skipInstall: true }).then(
+            dir => {
+              // There is no second generation step
+              if (!specsChanges.length) {
+                return compareOnlySpecs
+                  ? compareSpecs(appDir, `${testName}-expected`)
+                  : compareCode(dir, `${testName}-expected`, compareDirs)
+              }
 
-            // Generate on top of contents of working directory
-            return runNextGenerator(dir, specsChanges, { skipInstall: true })
-              .then(dir => {
+              // Generate on top of contents of working directory
+              return runNextGenerator(dir, specsChanges, {
+                skipInstall: true
+              }).then(dir => {
                 return compareOnlySpecs
                   ? compareSpecs(appDir, `${testName}-expected`)
                   : compareCode(dir, `${testName}-expected`, compareDirs)
               })
-          })
-      })
+            }
+          )
+        })
 
-      if (executeAll || execute) {
-        it('runs test generated', () => {
-          return runFirstGeneration(testName, { skipInstall: false })
-            .then(dir => {
-              // There is no second generation step
-              if (!specsChanges.length) {
-                return runExecute(dir)
-              }
+        if (executeAll || execute) {
+          it('runs test generated', () => {
+            return runFirstGeneration(testName, { skipInstall: false }).then(
+              dir => {
+                // There is no second generation step
+                if (!specsChanges.length) {
+                  return runExecute(dir)
+                }
 
-              // Generate on top of contents of working directory
-              return runNextGenerator(dir, specsChanges, { skipInstall: false })
-                .then(dir => runExecute(dir))
+                // Generate on top of contents of working directory
+                return runNextGenerator(dir, specsChanges, {
+                  skipInstall: false
+                }).then(dir => runExecute(dir))
 
-              function runExecute (dir) {
-                return runGeneratedTests('starts and shows the index page')
-                  .then(() => {
+                function runExecute (dir) {
+                  return runGeneratedTests(
+                    'starts and shows the index page'
+                  ).then(() => {
                     const pkg = require(path.join(dir, 'package.json'))
 
                     // Weak test that dependencies were added
-                    assert.ok(pkg.devDependencies.mocha, 'Added mocha as a devDependency')
+                    assert.ok(
+                      pkg.devDependencies.mocha,
+                      'Added mocha as a devDependency'
+                    )
                   })
+                }
               }
-            })
-        })
-      }
-    })
-  })
+            )
+          })
+        }
+      })
+    }
+  )
 })
 
 // Run the first generator
 function runFirstGeneration (testName, withOptions) {
   // console.log('>runFirstGeneration', testName, withOptions);
-  return helpers.run(path.join(__dirname, '..', 'generators', 'all'))
+  return helpers
+    .run(path.join(__dirname, '..', 'generators', 'all'))
     .inTmpDir(dir => {
       appDir = dir
       // specs.app.name must be 'z-1' not 'z1' as Feathers-generate app converts the project name
       // to kebab-case during the prompt.
       // console.log('288', path.join(__dirname, '..', 'test-expands', `${testName}-copy`), dir);
-      fs.copySync(path.join(__dirname, '..', 'test-expands', `${testName}-copy`), dir)
+      fs.copySync(
+        path.join(__dirname, '..', 'test-expands', `${testName}-copy`),
+        dir
+      )
 
       resetSpecs()
     })
@@ -1318,21 +1548,35 @@ function runNextGenerator (dir, specsChanges, withOptions, index = 1) {
   }
 
   function doGenerate (specsChg) {
-    return helpers.run(path.join(__dirname, '..', 'generators', specsChg.generate))
+    return helpers
+      .run(path.join(__dirname, '..', 'generators', specsChg.generate))
       .inTmpDir(dirNext => {
         appDir = dirNext
-        console.log(`      ${index + 1} "generate ${specsChg.generate}" with ${JSON.stringify(specsChg.prompts).substr(0, 60)}`)
+        console.log(
+          `      ${index + 1} "generate ${
+            specsChg.generate
+          }" with ${JSON.stringify(specsChg.prompts).substr(0, 60)}`
+        )
 
         // console.log('314', dir, dirNext);
         fs.copySync(dir, dirNext)
 
         resetSpecs()
       })
-      .withPrompts(Object.assign({},
-        specsChg.prompts,
-        { action: 'force' } // force file overwrites
-      ))
-      .withOptions(Object.assign({}, { calledByTest: specsChg.calledByTest || true }, withOptions))
+      .withPrompts(
+        Object.assign(
+          {},
+          specsChg.prompts,
+          { action: 'force' } // force file overwrites
+        )
+      )
+      .withOptions(
+        Object.assign(
+          {},
+          { calledByTest: specsChg.calledByTest || true },
+          withOptions
+        )
+      )
       .then(dir => {
         // There are no more generation steps
         if (!specsChanges.length) {
@@ -1344,25 +1588,35 @@ function runNextGenerator (dir, specsChanges, withOptions, index = 1) {
   }
 
   function doSpecChange (specsChg) {
-    return helpers.run(path.join(__dirname, '..', 'generators', 'all'))
+    return helpers
+      .run(path.join(__dirname, '..', 'generators', 'all'))
       .inTmpDir(dirNext => {
         let nextJson
 
         appDir = dirNext
-        console.log(`      ${index + 1} change specs ${JSON.stringify(specsChg.merge).substr(0, 65)}`)
+        console.log(
+          `      ${index + 1} change specs ${JSON.stringify(
+            specsChg.merge
+          ).substr(0, 65)}`
+        )
 
         // console.log('314', dir, dirNext);
         fs.copySync(dir, dirNext)
 
         // console.log('317', path.join(dir, 'feathers-gen-specs.json'));
-        const prevJson = fs.readJsonSync(path.join(dir, 'feathers-gen-specs.json'))
+        const prevJson = fs.readJsonSync(
+          path.join(dir, 'feathers-gen-specs.json')
+        )
         if (specsChg.before) {
           specsChg.before(prevJson)
         }
         nextJson = specsChg.merge ? merge(prevJson, specsChg.merge) : prevJson
 
         // console.log('322', path.join(dirNext, 'feathers-gen-specs.json'));
-        fs.writeFileSync(path.join(dirNext, 'feathers-gen-specs.json'), JSON.stringify(nextJson, null, 2))
+        fs.writeFileSync(
+          path.join(dirNext, 'feathers-gen-specs.json'),
+          JSON.stringify(nextJson, null, 2)
+        )
 
         resetSpecs()
       })
@@ -1385,16 +1639,21 @@ function runNextGenerator (dir, specsChanges, withOptions, index = 1) {
 // Run the 'test' script in package.json
 function runGeneratedTests (expectedText) {
   // console.log('>runGeneratedTests');
-  return runCommand(packageInstaller, ['test'], { cwd: appDir })
-    .then(({ buffer }) => {
+  return runCommand(packageInstaller, ['test'], { cwd: appDir }).then(
+    ({ buffer }) => {
       if (buffer.indexOf(expectedText) === -1) {
-        console.log(`\n\n===== runGeneratedTests. Expected "${expectedText}". Found:`)
+        console.log(
+          `\n\n===== runGeneratedTests. Expected "${expectedText}". Found:`
+        )
         console.log(buffer)
       }
 
-      assert.ok(buffer.indexOf(expectedText) !== -1,
-        'Ran test with text: ' + expectedText)
-    })
+      assert.ok(
+        buffer.indexOf(expectedText) !== -1,
+        'Ran test with text: ' + expectedText
+      )
+    }
+  )
 }
 
 // Start a process and wait either for it to exit
@@ -1437,7 +1696,11 @@ function compareCode (appDir, testDir, compareDirs) {
   const actualPaths = getFileNames(appDir)
 
   if (compareDirs === true) {
-    assert.deepEqual(actualPaths.relativePaths, expectedPaths.relativePaths, 'Unexpected files in generated dir')
+    assert.deepEqual(
+      actualPaths.relativePaths,
+      expectedPaths.relativePaths,
+      'Unexpected files in generated dir'
+    )
   }
 
   actualPaths.paths.forEach(actualPath => {
@@ -1490,9 +1753,10 @@ function compare (fileName, appDir, expectedDir) {
     let str = diff.reduce(function (accum, part) {
       // green for additions, red for deletions
       // grey for common parts
-      const color = part.added ? 'bgGreen'
-        : part.removed ? 'bgRed' : 'grey'
-      const value = /(\r\n)|(\r)|(\n)/.test(part.value) ? '<EOL DIFF>' : part.value
+      const color = part.added ? 'bgGreen' : part.removed ? 'bgRed' : 'grey'
+      const value = /(\r\n)|(\r)|(\n)/.test(part.value)
+        ? '<EOL DIFF>'
+        : part.value
 
       return accum + value[color]
     }, '')
@@ -1501,15 +1765,22 @@ function compare (fileName, appDir, expectedDir) {
     process.stderr.write(str)
     console.log('\n^^^^^')
 
-    assert.equal(actual, expected, `Unexpected contents for file ${appDir}${fileName}`)
+    assert.equal(
+      actual,
+      expected,
+      `Unexpected contents for file ${appDir}${fileName}`
+    )
     // assert(diff.length === 1, `Unexpected contents for file ${appDir}${fileName}`);
   }
 }
 
 function getFileNames (dir) {
   // console.log('>getFileNames', dir);
-  const nodes = klawSync(dir, { nodir: true })
-    .filter(obj => obj.path.indexOf(`${path.sep}node_modules${path.sep}`) === -1 && obj.path.indexOf(`${path.sep}data${path.sep}`) === -1)
+  const nodes = klawSync(dir, { nodir: true }).filter(
+    obj =>
+      obj.path.indexOf(`${path.sep}node_modules${path.sep}`) === -1 &&
+      obj.path.indexOf(`${path.sep}data${path.sep}`) === -1
+  )
 
   return {
     paths: nodes,

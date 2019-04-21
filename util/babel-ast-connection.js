@@ -46,9 +46,7 @@ const specs = {
 // update AST
 // create dbConfigs ObjectExpression node
 const dbConfigsObjectExpression = template.ast(
-  `module.exports = ${JSON.stringify(
-    specs._dbConfigs
-  )}`,
+  `module.exports = ${JSON.stringify(specs._dbConfigs)}`,
   {
     reserveComments: true
   }
@@ -71,11 +69,16 @@ dbConfigsObjectExpression.properties.forEach(objectProperty => {
   }
 })
 
-console.log(prettier.format(generate(ast, { retainLines: true, retainFunctionParens: true }, code).code, {
-  semi: false,
-  singleQuote: true,
-  parser: 'babel'
-}))
+console.log(
+  prettier.format(
+    generate(ast, { retainLines: true, retainFunctionParens: true }, code).code,
+    {
+      semi: false,
+      singleQuote: true,
+      parser: 'babel'
+    }
+  )
+)
 
 // console.log(template.ast('tests: {}', { preserveComments: true }))
 // console.log(

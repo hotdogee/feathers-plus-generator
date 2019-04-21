@@ -1,4 +1,3 @@
-
 // Define the Feathers schema for service `clientUsers`. (Can be re-generated.)
 // !code: imports // !end
 // !code: init // !end
@@ -29,7 +28,7 @@ let schema = {
     clientId: { type: 'ID' },
     userId: { type: 'ID' }
     // !end
-  },
+  }
   // !code: schema_more // !end
 }
 
@@ -40,7 +39,7 @@ let extensions = {
     // !code: graphql_header
     name: 'Client-user',
     service: {
-      sort: { _id: 1 },
+      sort: { _id: 1 }
     },
     // sql: {
     //   sqlTable: 'Client-users',
@@ -57,16 +56,16 @@ let extensions = {
       // !<DEFAULT> code: graphql_add
       // __author__: { type: '__User__!', args: false, relation: { ourTable: '__authorId__', otherTable: '_id' } },
       // !end
-    },
+    }
     // !code: graphql_more // !end
-  },
+  }
 }
 
 // !code: more // !end
 
 let moduleExports = {
   schema,
-  extensions,
+  extensions
   // !code: moduleExports // !end
 }
 

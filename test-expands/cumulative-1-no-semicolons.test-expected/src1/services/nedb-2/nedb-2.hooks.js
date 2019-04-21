@@ -1,15 +1,21 @@
-
 // Hooks for service `nedb2`. (Can be re-generated.)
-const commonHooks = require('feathers-hooks-common')
+const commonHooks = require('feathers-hooks-common');
 // eslint-disable-next-line no-unused-vars
-const nedb2Populate = require('./nedb-2.populate')
+const nedb2Populate = require('./nedb-2.populate');
 // !code: imports // !end
 
 // !<DEFAULT> code: used
 // eslint-disable-next-line no-unused-vars
-const { iff } = commonHooks
+const { iff } = commonHooks;
 // eslint-disable-next-line no-unused-vars
-const { create, update, patch, validateCreate, validateUpdate, validatePatch } = require('./nedb-2.validate')
+const {
+  create,
+  update,
+  patch,
+  validateCreate,
+  validateUpdate,
+  validatePatch
+} = require('./nedb-2.validate');
 // !end
 
 // !code: init // !end
@@ -49,12 +55,12 @@ let moduleExports = {
     patch: [],
     remove: []
     // !end
-  },
+  }
   // !code: moduleExports // !end
-}
+};
 
 // !code: exports // !end
-module.exports = moduleExports
+module.exports = moduleExports;
 
 // !code: funcs // !end
 // !code: end // !end

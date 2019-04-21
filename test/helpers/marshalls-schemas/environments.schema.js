@@ -1,4 +1,3 @@
-
 // Define the Feathers schema for service `environments`. (Can be re-generated.)
 // !code: imports // !end
 // !code: init // !end
@@ -55,7 +54,7 @@ let schema = {
       properties: {}
     }
     // !end
-  },
+  }
   // !code: schema_more // !end
 }
 
@@ -66,7 +65,7 @@ let extensions = {
     // !code: graphql_header
     name: 'Environment',
     service: {
-      sort: { _id: 1 },
+      sort: { _id: 1 }
     },
     // sql: {
     //   sqlTable: 'Environments',
@@ -83,16 +82,16 @@ let extensions = {
       // !<DEFAULT> code: graphql_add
       // __author__: { type: '__User__!', args: false, relation: { ourTable: '__authorId__', otherTable: '_id' } },
       // !end
-    },
+    }
     // !code: graphql_more // !end
-  },
+  }
 }
 
 // !code: more // !end
 
 let moduleExports = {
   schema,
-  extensions,
+  extensions
   // !code: moduleExports // !end
 }
 

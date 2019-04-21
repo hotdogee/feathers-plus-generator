@@ -1,4 +1,3 @@
-
 const makeDebug = require('debug')
 const { inspect } = require('util')
 const { generatorFs } = require('../../lib/generator-fs')
@@ -61,11 +60,19 @@ function hook (generator, name, props, specs, context, state) {
     const sfa = generator.getNameSpace(specsService.subFolder)[1]
 
     todos = [
-      tmpl([namePath, 'hooks', 'hook.ejs'], [libDir, 'services', ...sfa, sn, 'hooks', `${hookFile}.${js}`], WRITE_IF_NEW)
+      tmpl(
+        [namePath, 'hooks', 'hook.ejs'],
+        [libDir, 'services', ...sfa, sn, 'hooks', `${hookFile}.${js}`],
+        WRITE_IF_NEW
+      )
     ]
   } else {
     todos = [
-      tmpl([srcPath, 'hooks', 'hook.ejs'], [libDir, 'hooks', `${hookFile}.${js}`], WRITE_IF_NEW)
+      tmpl(
+        [srcPath, 'hooks', 'hook.ejs'],
+        [libDir, 'hooks', `${hookFile}.${js}`],
+        WRITE_IF_NEW
+      )
     ]
   }
 

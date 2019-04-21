@@ -1,21 +1,20 @@
-
 // Given specs and JSON-schema from services, log the models generated for each service.
-const { assert }= require('chai');
-const mongoose = require('mongoose');
-const Sequelize = require('sequelize');
-const traverse = require('traverse');
-const { inspect } = require('util');
-const serviceSpecsExpand = require('../../lib/service-specs-expand');
-const serviceSpecsToTypescript = require('../../lib/service-specs-to-typescript');
-const serviceSpecsToMongoJsonSchema = require('../../lib/service-specs-to-mongo-json-schema');
-const serviceSpecsToMongoose = require('../../lib/service-specs-to-mongoose');
-const serviceSpecsToSequelize = require('../../lib/service-specs-to-sequelize');
-const stringifyPlus = require('../../lib/stringify-plus');
+const { assert } = require('chai')
+const mongoose = require('mongoose')
+const Sequelize = require('sequelize')
+const traverse = require('traverse')
+const { inspect } = require('util')
+const serviceSpecsExpand = require('../../lib/service-specs-expand')
+const serviceSpecsToTypescript = require('../../lib/service-specs-to-typescript')
+const serviceSpecsToMongoJsonSchema = require('../../lib/service-specs-to-mongo-json-schema')
+const serviceSpecsToMongoose = require('../../lib/service-specs-to-mongoose')
+const serviceSpecsToSequelize = require('../../lib/service-specs-to-sequelize')
+const stringifyPlus = require('../../lib/stringify-plus')
 
 const mongooseNativeFuncs = {
   [mongoose.Schema.Types.Mixed]: 'mongoose.Schema.Types.Mixed',
   [mongoose.Schema.Types.ObjectId]: 'mongoose.Schema.Types.ObjectId'
-};
+}
 
 let sequelizeNativeFuncs = {
   [Sequelize.BOOLEAN]: 'sequelizeTypeEquivalences.boolean',
@@ -26,413 +25,390 @@ let sequelizeNativeFuncs = {
   [Sequelize.STRING]: 'sequelizeTypeEquivalences.string',
   [Sequelize.TEXT]: 'sequelizeTypeEquivalences.text',
   [Sequelize.DATE]: 'sequelizeTypeEquivalences.date',
-  [Sequelize.DATEONLY]: 'sequelizeTypeEquivalences.dateonly',
-};
+  [Sequelize.DATEONLY]: 'sequelizeTypeEquivalences.dateonly'
+}
 
 const specs = {
-  "options": {
-    "ver": "1.0.0",
-    "inspectConflicts": false,
-    "semicolons": false,
-    "freeze": [
-      "src/app.js"
-    ],
-    "ts": false
+  options: {
+    ver: '1.0.0',
+    inspectConflicts: false,
+    semicolons: false,
+    freeze: ['src/app.js'],
+    ts: false
   },
-  "app": {
-    "environmentsAllowingSeedData": "development,test",
-    "seedData": true,
-    "name": "rovit-api",
-    "description": "Project rovit-api",
-    "src": "src",
-    "packager": "npm@>= 3.0.0",
-    "providers": [
-      "rest",
-      "socketio"
-    ]
+  app: {
+    environmentsAllowingSeedData: 'development,test',
+    seedData: true,
+    name: 'rovit-api',
+    description: 'Project rovit-api',
+    src: 'src',
+    packager: 'npm@>= 3.0.0',
+    providers: ['rest', 'socketio']
   },
-  "services": {
-    "users": {
-      "name": "users",
-      "nameSingular": "user",
-      "subFolder": "v1",
-      "fileName": "users",
-      "adapter": "mongoose",
-      "path": "/users",
-      "isAuthEntity": true,
-      "requiresAuth": true,
-      "graphql": true
+  services: {
+    users: {
+      name: 'users',
+      nameSingular: 'user',
+      subFolder: 'v1',
+      fileName: 'users',
+      adapter: 'mongoose',
+      path: '/users',
+      isAuthEntity: true,
+      requiresAuth: true,
+      graphql: true
     },
-    "clientUsers": {
-      "name": "clientUsers",
-      "nameSingular": "clientUser",
-      "subFolder": "v1",
-      "fileName": "client-users",
-      "adapter": "mongoose",
-      "path": "/client-users",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    clientUsers: {
+      name: 'clientUsers',
+      nameSingular: 'clientUser',
+      subFolder: 'v1',
+      fileName: 'client-users',
+      adapter: 'mongoose',
+      path: '/client-users',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "businesses": {
-      "name": "businesses",
-      "nameSingular": "business",
-      "subFolder": "v1",
-      "fileName": "businesses",
-      "adapter": "mongoose",
-      "path": "/businesses",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    businesses: {
+      name: 'businesses',
+      nameSingular: 'business',
+      subFolder: 'v1',
+      fileName: 'businesses',
+      adapter: 'mongoose',
+      path: '/businesses',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "categories": {
-      "name": "categories",
-      "nameSingular": "category",
-      "subFolder": "v1",
-      "fileName": "categories",
-      "adapter": "mongoose",
-      "path": "/categories",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    categories: {
+      name: 'categories',
+      nameSingular: 'category',
+      subFolder: 'v1',
+      fileName: 'categories',
+      adapter: 'mongoose',
+      path: '/categories',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "clients": {
-      "name": "clients",
-      "nameSingular": "client",
-      "subFolder": "v1",
-      "fileName": "clients",
-      "adapter": "mongoose",
-      "path": "/clients",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    clients: {
+      name: 'clients',
+      nameSingular: 'client',
+      subFolder: 'v1',
+      fileName: 'clients',
+      adapter: 'mongoose',
+      path: '/clients',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "config": {
-      "name": "config",
-      "nameSingular": "config",
-      "subFolder": "v1",
-      "fileName": "config",
-      "adapter": "mongoose",
-      "path": "/config",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    config: {
+      name: 'config',
+      nameSingular: 'config',
+      subFolder: 'v1',
+      fileName: 'config',
+      adapter: 'mongoose',
+      path: '/config',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "envPanos": {
-      "name": "envPanos",
-      "nameSingular": "envPano",
-      "subFolder": "v1",
-      "fileName": "env-panos",
-      "adapter": "mongoose",
-      "path": "/env-panos",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    envPanos: {
+      name: 'envPanos',
+      nameSingular: 'envPano',
+      subFolder: 'v1',
+      fileName: 'env-panos',
+      adapter: 'mongoose',
+      path: '/env-panos',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "environments": {
-      "name": "environments",
-      "nameSingular": "environment",
-      "subFolder": "v1",
-      "fileName": "environments",
-      "adapter": "mongoose",
-      "path": "/environments",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    environments: {
+      name: 'environments',
+      nameSingular: 'environment',
+      subFolder: 'v1',
+      fileName: 'environments',
+      adapter: 'mongoose',
+      path: '/environments',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "faqs": {
-      "name": "faqs",
-      "nameSingular": "faq",
-      "subFolder": "v1",
-      "fileName": "faqs",
-      "adapter": "mongoose",
-      "path": "/faqs",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    faqs: {
+      name: 'faqs',
+      nameSingular: 'faq',
+      subFolder: 'v1',
+      fileName: 'faqs',
+      adapter: 'mongoose',
+      path: '/faqs',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "hotspotIcons": {
-      "name": "hotspotIcons",
-      "nameSingular": "hotspotIcon",
-      "subFolder": "v1",
-      "fileName": "hotspot-icons",
-      "adapter": "mongoose",
-      "path": "/hotspot-icons",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    hotspotIcons: {
+      name: 'hotspotIcons',
+      nameSingular: 'hotspotIcon',
+      subFolder: 'v1',
+      fileName: 'hotspot-icons',
+      adapter: 'mongoose',
+      path: '/hotspot-icons',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "infoboxMedia": {
-      "name": "infoboxMedia",
-      "nameSingular": "infoboxMedia",
-      "subFolder": "v1",
-      "fileName": "infobox-media",
-      "adapter": "mongoose",
-      "path": "/infobox-media",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    infoboxMedia: {
+      name: 'infoboxMedia',
+      nameSingular: 'infoboxMedia',
+      subFolder: 'v1',
+      fileName: 'infobox-media',
+      adapter: 'mongoose',
+      path: '/infobox-media',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "infoboxTypes": {
-      "name": "infoboxTypes",
-      "nameSingular": "infoboxType",
-      "subFolder": "v1",
-      "fileName": "infobox-types",
-      "adapter": "mongoose",
-      "path": "/infobox-types",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    infoboxTypes: {
+      name: 'infoboxTypes',
+      nameSingular: 'infoboxType',
+      subFolder: 'v1',
+      fileName: 'infobox-types',
+      adapter: 'mongoose',
+      path: '/infobox-types',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "infoboxVideos": {
-      "name": "infoboxVideos",
-      "nameSingular": "infoboxVideo",
-      "subFolder": "v1",
-      "fileName": "infobox-videos",
-      "adapter": "mongoose",
-      "path": "/infobox-videos",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    infoboxVideos: {
+      name: 'infoboxVideos',
+      nameSingular: 'infoboxVideo',
+      subFolder: 'v1',
+      fileName: 'infobox-videos',
+      adapter: 'mongoose',
+      path: '/infobox-videos',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "infoboxes": {
-      "name": "infoboxes",
-      "nameSingular": "infobox",
-      "subFolder": "v1",
-      "fileName": "infoboxes",
-      "adapter": "mongoose",
-      "path": "/infoboxes",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    infoboxes: {
+      name: 'infoboxes',
+      nameSingular: 'infobox',
+      subFolder: 'v1',
+      fileName: 'infoboxes',
+      adapter: 'mongoose',
+      path: '/infoboxes',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "panoHotspots": {
-      "name": "panoHotspots",
-      "nameSingular": "panoHotspot",
-      "subFolder": "v1",
-      "fileName": "pano-hotspots",
-      "adapter": "mongoose",
-      "path": "/pano-hotspots",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    panoHotspots: {
+      name: 'panoHotspots',
+      nameSingular: 'panoHotspot',
+      subFolder: 'v1',
+      fileName: 'pano-hotspots',
+      adapter: 'mongoose',
+      path: '/pano-hotspots',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "panos": {
-      "name": "panos",
-      "nameSingular": "pano",
-      "subFolder": "v1",
-      "fileName": "panos",
-      "adapter": "mongoose",
-      "path": "/panos",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    panos: {
+      name: 'panos',
+      nameSingular: 'pano',
+      subFolder: 'v1',
+      fileName: 'panos',
+      adapter: 'mongoose',
+      path: '/panos',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "salesLeads": {
-      "name": "salesLeads",
-      "nameSingular": "salesLead",
-      "subFolder": "v1",
-      "fileName": "sales-leads",
-      "adapter": "mongoose",
-      "path": "/sales-leads",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    salesLeads: {
+      name: 'salesLeads',
+      nameSingular: 'salesLead',
+      subFolder: 'v1',
+      fileName: 'sales-leads',
+      adapter: 'mongoose',
+      path: '/sales-leads',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "salesNotes": {
-      "name": "salesNotes",
-      "nameSingular": "salesNote",
-      "subFolder": "v1",
-      "fileName": "sales-notes",
-      "adapter": "mongoose",
-      "path": "/sales-notes",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    salesNotes: {
+      name: 'salesNotes',
+      nameSingular: 'salesNote',
+      subFolder: 'v1',
+      fileName: 'sales-notes',
+      adapter: 'mongoose',
+      path: '/sales-notes',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "statViews": {
-      "name": "statViews",
-      "nameSingular": "statView",
-      "subFolder": "v1",
-      "fileName": "stat-views",
-      "adapter": "mongoose",
-      "path": "/stat-views",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    statViews: {
+      name: 'statViews',
+      nameSingular: 'statView',
+      subFolder: 'v1',
+      fileName: 'stat-views',
+      adapter: 'mongoose',
+      path: '/stat-views',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "tags": {
-      "name": "tags",
-      "nameSingular": "tag",
-      "subFolder": "v1",
-      "fileName": "tags",
-      "adapter": "mongoose",
-      "path": "/tags",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    tags: {
+      name: 'tags',
+      nameSingular: 'tag',
+      subFolder: 'v1',
+      fileName: 'tags',
+      adapter: 'mongoose',
+      path: '/tags',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "tourMenuItems": {
-      "name": "tourMenuItems",
-      "nameSingular": "tourMenuItem",
-      "subFolder": "v1",
-      "fileName": "tour-menu-items",
-      "adapter": "mongoose",
-      "path": "/tour-menu-items",
-      "isAuthEntity": false,
-      "requiresAuth": true,
-      "graphql": true
+    tourMenuItems: {
+      name: 'tourMenuItems',
+      nameSingular: 'tourMenuItem',
+      subFolder: 'v1',
+      fileName: 'tour-menu-items',
+      adapter: 'mongoose',
+      path: '/tour-menu-items',
+      isAuthEntity: false,
+      requiresAuth: true,
+      graphql: true
     },
-    "vr": {
-      "name": "vr",
-      "nameSingular": "vr",
-      "subFolder": "v1",
-      "fileName": "vr",
-      "adapter": "generic",
-      "path": "/vr",
-      "isAuthEntity": false,
-      "requiresAuth": false,
-      "graphql": true
+    vr: {
+      name: 'vr',
+      nameSingular: 'vr',
+      subFolder: 'v1',
+      fileName: 'vr',
+      adapter: 'generic',
+      path: '/vr',
+      isAuthEntity: false,
+      requiresAuth: false,
+      graphql: true
     },
-    "mapPoints": {
-      "name": "mapPoints",
-      "nameSingular": "mapPoint",
-      "subFolder": "v1",
-      "fileName": "map-points",
-      "adapter": "generic",
-      "path": "/map-points",
-      "isAuthEntity": false,
-      "requiresAuth": false,
-      "graphql": true
+    mapPoints: {
+      name: 'mapPoints',
+      nameSingular: 'mapPoint',
+      subFolder: 'v1',
+      fileName: 'map-points',
+      adapter: 'generic',
+      path: '/map-points',
+      isAuthEntity: false,
+      requiresAuth: false,
+      graphql: true
     },
-    "xmlCache": {
-      "name": "xmlCache",
-      "nameSingular": "xmlCache",
-      "subFolder": "v1",
-      "fileName": "xml-cache",
-      "adapter": "memory",
-      "path": "/xml-cache",
-      "isAuthEntity": false,
-      "requiresAuth": false,
-      "graphql": true
+    xmlCache: {
+      name: 'xmlCache',
+      nameSingular: 'xmlCache',
+      subFolder: 'v1',
+      fileName: 'xml-cache',
+      adapter: 'memory',
+      path: '/xml-cache',
+      isAuthEntity: false,
+      requiresAuth: false,
+      graphql: true
     }
   },
-  "hooks": {
-    "stash-populate": {
-      "fileName": "stash-populate",
-      "camelName": "stashPopulate",
-      "ifMulti": "y",
-      "multiServices": [
-        "clientUsers"
-      ],
-      "singleService": ""
+  hooks: {
+    'stash-populate': {
+      fileName: 'stash-populate',
+      camelName: 'stashPopulate',
+      ifMulti: 'y',
+      multiServices: ['clientUsers'],
+      singleService: ''
     },
-    "calculate-infobox-bubbles": {
-      "fileName": "calculate-infobox-bubbles",
-      "camelName": "calculateInfoboxBubbles",
-      "ifMulti": "n",
-      "multiServices": [],
-      "singleService": "envPanos"
+    'calculate-infobox-bubbles': {
+      fileName: 'calculate-infobox-bubbles',
+      camelName: 'calculateInfoboxBubbles',
+      ifMulti: 'n',
+      multiServices: [],
+      singleService: 'envPanos'
     },
-    "load-target-env-panos": {
-      "fileName": "load-target-env-panos",
-      "camelName": "loadTargetEnvPanos",
-      "ifMulti": "n",
-      "multiServices": [],
-      "singleService": "envPanos"
+    'load-target-env-panos': {
+      fileName: 'load-target-env-panos',
+      camelName: 'loadTargetEnvPanos',
+      ifMulti: 'n',
+      multiServices: [],
+      singleService: 'envPanos'
     },
-    "benchmark": {
-      "fileName": "benchmark",
-      "camelName": "benchmark",
-      "ifMulti": "y",
-      "multiServices": [
-        "*none"
-      ],
-      "singleService": ""
+    benchmark: {
+      fileName: 'benchmark',
+      camelName: 'benchmark',
+      ifMulti: 'y',
+      multiServices: ['*none'],
+      singleService: ''
     },
-    "map-by-attr": {
-      "fileName": "map-by-attr",
-      "camelName": "mapByAttr",
-      "ifMulti": "y",
-      "multiServices": [
-        "environments"
-      ],
-      "singleService": ""
+    'map-by-attr': {
+      fileName: 'map-by-attr',
+      camelName: 'mapByAttr',
+      ifMulti: 'y',
+      multiServices: ['environments'],
+      singleService: ''
     },
-    "remove-related-records": {
-      "fileName": "remove-related-records",
-      "camelName": "removeRelatedRecords",
-      "ifMulti": "y",
-      "multiServices": [
-        "infoboxes"
-      ],
-      "singleService": ""
+    'remove-related-records': {
+      fileName: 'remove-related-records',
+      camelName: 'removeRelatedRecords',
+      ifMulti: 'y',
+      multiServices: ['infoboxes'],
+      singleService: ''
     },
-    "calculate-coordinates": {
-      "fileName": "calculate-coordinates",
-      "camelName": "calculateCoordinates",
-      "ifMulti": "n",
-      "multiServices": [],
-      "singleService": "panoHotspots"
+    'calculate-coordinates': {
+      fileName: 'calculate-coordinates',
+      camelName: 'calculateCoordinates',
+      ifMulti: 'n',
+      multiServices: [],
+      singleService: 'panoHotspots'
     },
-    "sanitize-pano-hotspots": {
-      "fileName": "sanitize-pano-hotspots",
-      "camelName": "sanitizePanoHotspots",
-      "ifMulti": "n",
-      "multiServices": [],
-      "singleService": "panoHotspots"
+    'sanitize-pano-hotspots': {
+      fileName: 'sanitize-pano-hotspots',
+      camelName: 'sanitizePanoHotspots',
+      ifMulti: 'n',
+      multiServices: [],
+      singleService: 'panoHotspots'
     },
-    "fix-coordinates": {
-      "fileName": "fix-coordinates",
-      "camelName": "fixCoordinates",
-      "ifMulti": "n",
-      "multiServices": [],
-      "singleService": "panos"
+    'fix-coordinates': {
+      fileName: 'fix-coordinates',
+      camelName: 'fixCoordinates',
+      ifMulti: 'n',
+      multiServices: [],
+      singleService: 'panos'
     },
-    "verify-recaptcha": {
-      "fileName": "verify-recaptcha",
-      "camelName": "verifyRecaptcha",
-      "ifMulti": "n",
-      "multiServices": [],
-      "singleService": "salesLeads"
+    'verify-recaptcha': {
+      fileName: 'verify-recaptcha',
+      camelName: 'verifyRecaptcha',
+      ifMulti: 'n',
+      multiServices: [],
+      singleService: 'salesLeads'
     },
-    "require-query": {
-      "fileName": "require-query",
-      "camelName": "requireQuery",
-      "ifMulti": "y",
-      "multiServices": [
-        "mapPoints"
-      ],
-      "singleService": ""
+    'require-query': {
+      fileName: 'require-query',
+      camelName: 'requireQuery',
+      ifMulti: 'y',
+      multiServices: ['mapPoints'],
+      singleService: ''
     },
-    "clear-xml-cache": {
-      "fileName": "clear-xml-cache",
-      "camelName": "clearXmlCache",
-      "ifMulti": "y",
-      "multiServices": [
-        "envPanos",
-        "environments",
-        "panoHotspots"
-      ],
-      "singleService": ""
+    'clear-xml-cache': {
+      fileName: 'clear-xml-cache',
+      camelName: 'clearXmlCache',
+      ifMulti: 'y',
+      multiServices: ['envPanos', 'environments', 'panoHotspots'],
+      singleService: ''
     }
   },
-  "authentication": {
-    "strategies": [
-      "local",
-      "google",
-      "facebook"
-    ],
-    "entity": "users"
+  authentication: {
+    strategies: ['local', 'google', 'facebook'],
+    entity: 'users'
   },
-  "connections": {
-    "mongoose": {
-      "database": "mongodb",
-      "adapter": "mongoose",
-      "connectionString": "mongodb://localhost:27017/rovit_api"
+  connections: {
+    mongoose: {
+      database: 'mongodb',
+      adapter: 'mongoose',
+      connectionString: 'mongodb://localhost:27017/rovit_api'
     }
   }
-};
+}
 
 const fakeFeathersSchemas = {
   businesses: {
@@ -498,7 +474,7 @@ const fakeFeathersSchemas = {
         faker: 'lorem.paragraph'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   categories: {
@@ -545,7 +521,7 @@ const fakeFeathersSchemas = {
         default: false
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   clientUsers: {
@@ -573,7 +549,7 @@ const fakeFeathersSchemas = {
       clientId: { type: 'ID' },
       userId: { type: 'ID' }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   clients: {
@@ -604,7 +580,7 @@ const fakeFeathersSchemas = {
         faker: 'lorem.paragraph'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   config: {
@@ -632,7 +608,7 @@ const fakeFeathersSchemas = {
       name: {},
       value: {}
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   envPanos: {
@@ -664,7 +640,7 @@ const fakeFeathersSchemas = {
         type: 'ID'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   environments: {
@@ -718,7 +694,7 @@ const fakeFeathersSchemas = {
         properties: {}
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   faqs: {
@@ -754,7 +730,7 @@ const fakeFeathersSchemas = {
         default: false
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   hotspotIcons: {
@@ -786,7 +762,7 @@ const fakeFeathersSchemas = {
       },
       uploadInfo: {}
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   infoboxMedia: {
@@ -825,7 +801,7 @@ const fakeFeathersSchemas = {
       },
       type: {
         type: 'string',
-        enum:  [ 'photo', 'video', '360', 'content-image', 'content-markdown' ]
+        enum: ['photo', 'video', '360', 'content-image', 'content-markdown']
       },
       content: {
         faker: 'lorem.paragraph'
@@ -846,7 +822,7 @@ const fakeFeathersSchemas = {
         }
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   infoboxTypes: {
@@ -882,7 +858,7 @@ const fakeFeathersSchemas = {
         }
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   infoboxVideos: {
@@ -928,7 +904,7 @@ const fakeFeathersSchemas = {
       contentDetails: {},
       snippet: {}
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   infoboxes: {
@@ -1003,7 +979,7 @@ const fakeFeathersSchemas = {
       meta: {}
 
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   mapPoints: {
@@ -1025,7 +1001,7 @@ const fakeFeathersSchemas = {
     // Fields in the model.
     properties: {
       // !code: schema_properties // !end
-    },
+    }
     // !code: schema_more // !end
   },
   panoHotspots: {
@@ -1055,7 +1031,7 @@ const fakeFeathersSchemas = {
       // !code: schema_properties
       type: {
         type: 'string',
-        enum: [ 'pano', 'link', 'infobox' ]
+        enum: ['pano', 'link', 'infobox']
       },
       envPanoId: {
         type: 'ID'
@@ -1087,10 +1063,10 @@ const fakeFeathersSchemas = {
           },
           target: {
             type: 'string',
-            enum: [ '', 'current', 'blank' ],
+            enum: ['', 'current', 'blank'],
             default: ''
           }
-        },
+        }
       },
       percentX: {
         type: 'number',
@@ -1111,7 +1087,7 @@ const fakeFeathersSchemas = {
         }
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   panos: {
@@ -1195,7 +1171,7 @@ const fakeFeathersSchemas = {
         }
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   salesLeads: {
@@ -1252,7 +1228,7 @@ const fakeFeathersSchemas = {
         format: 'date-time'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   salesNotes: {
@@ -1289,7 +1265,7 @@ const fakeFeathersSchemas = {
         type: 'ID'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   statViews: {
@@ -1313,7 +1289,7 @@ const fakeFeathersSchemas = {
       // !code: schema_properties
       type: {
         type: 'string',
-        enum: [ 'environment', 'pano', 'infobox' ]
+        enum: ['environment', 'pano', 'infobox']
       },
       userId: {
         type: 'ID'
@@ -1326,10 +1302,10 @@ const fakeFeathersSchemas = {
       },
       infoboxId: {
         type: 'ID'
-      },
+      }
 
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   tags: {
@@ -1361,7 +1337,7 @@ const fakeFeathersSchemas = {
         type: 'string'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   tourMenuItems: {
@@ -1394,7 +1370,7 @@ const fakeFeathersSchemas = {
       },
       type: {
         type: 'string',
-        enum: [ 'Infobox', 'Pano']
+        enum: ['Infobox', 'Pano']
       },
       panoId: {
         type: 'ID'
@@ -1406,7 +1382,7 @@ const fakeFeathersSchemas = {
         type: 'number'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   users: {
@@ -1422,7 +1398,7 @@ const fakeFeathersSchemas = {
     required: [
       // !code: schema_required
       'email',
-      'password',
+      'password'
       // !end
     ],
     // Fields with unique values.
@@ -1439,7 +1415,7 @@ const fakeFeathersSchemas = {
       email: { faker: 'internet.email' },
       password: { chance: { hash: { length: 60 } } }
       // !end
-    },
+    }
     // !code: schema_more // !end
   },
   vr: {
@@ -1461,7 +1437,7 @@ const fakeFeathersSchemas = {
     // Fields in the model.
     properties: {
       // !code: schema_properties // !end
-    },
+    }
     // !code: schema_more // !end
   },
   xmlCache: {
@@ -1497,72 +1473,92 @@ const fakeFeathersSchemas = {
         type: 'string'
       }
       // !end
-    },
+    }
     // !code: schema_more // !end
-  },
-};
+  }
+}
 
-const expectedIypescriptTypes = {};
-const expectedTypescriptExtends = {};
-const expectedMongoJsonSchema = {};
-const expectedMongooseSchema = {};
-const expectedSeqModel = {};
-const expectedSeqFks = {};
+const expectedIypescriptTypes = {}
+const expectedTypescriptExtends = {}
+const expectedMongoJsonSchema = {}
+const expectedMongooseSchema = {}
+const expectedSeqModel = {}
+const expectedSeqFks = {}
 
-const { mapping, feathersSpecs } = serviceSpecsExpand(specs, null, fakeFeathersSchemas);
+const { mapping, feathersSpecs } = serviceSpecsExpand(
+  specs,
+  null,
+  fakeFeathersSchemas
+)
 // inspector('...mapping', mapping);
 // inspector('...feathersSpecs', feathersSpecs);
 
 Object.keys(specs.services).forEach(name => {
-  console.log('...extract-module. Extract for serviceName=', name);
-  const specsService = specs.services[name];
+  console.log('...extract-module. Extract for serviceName=', name)
+  const specsService = specs.services[name]
 
-  const { typescriptTypes, typescriptExtends } =
-    serviceSpecsToTypescript(specsService, feathersSpecs[name], feathersSpecs[name]._extensions);
+  const { typescriptTypes, typescriptExtends } = serviceSpecsToTypescript(
+    specsService,
+    feathersSpecs[name],
+    feathersSpecs[name]._extensions
+  )
   // inspector(`\n\n.....${name} typescriptTypes`, typescriptTypes);
   // inspector(`.....${name} typescriptExtends`, typescriptExtends);
 
-  expectedIypescriptTypes[name] = typescriptTypes;
-  expectedTypescriptExtends[name] = typescriptExtends;
+  expectedIypescriptTypes[name] = typescriptTypes
+  expectedTypescriptExtends[name] = typescriptExtends
 
-  const mongoJsonSchema = serviceSpecsToMongoJsonSchema(feathersSpecs[name], feathersSpecs[name]._extensions);
+  const mongoJsonSchema = serviceSpecsToMongoJsonSchema(
+    feathersSpecs[name],
+    feathersSpecs[name]._extensions
+  )
   // inspector(`.....${name} mongoJsonSchema`, mongoJsonSchema);
 
-  expectedMongoJsonSchema[name] = mongoJsonSchema;
+  expectedMongoJsonSchema[name] = mongoJsonSchema
 
-  const mongooseSchema = serviceSpecsToMongoose(feathersSpecs[name], feathersSpecs[name]._extensions);
+  const mongooseSchema = serviceSpecsToMongoose(
+    feathersSpecs[name],
+    feathersSpecs[name]._extensions
+  )
   // inspector(`.....${name} mongooseSchema`, mongooseSchema);
 
-  expectedMongooseSchema[name] = mongooseSchema;
+  expectedMongooseSchema[name] = mongooseSchema
 
-  const { seqModel, seqFks } = serviceSpecsToSequelize(feathersSpecs[name], feathersSpecs[name]._extensions);
+  const { seqModel, seqFks } = serviceSpecsToSequelize(
+    feathersSpecs[name],
+    feathersSpecs[name]._extensions
+  )
   // inspector(`.....${name} seqModel`, seqModel);
   // inspector(`.....${name} seqFks`, seqFks);
 
-  expectedSeqModel[name] = seqModel;
-  expectedSeqFks[name] = seqFks;
-});
+  expectedSeqModel[name] = seqModel
+  expectedSeqFks[name] = seqFks
+})
 
 // Process objects created by Sequelize.ENUM([option1, option2, ...])
 traverse(expectedSeqModel).forEach(function (value) {
   if (typeof value === 'object' && value instanceof Sequelize.ENUM) {
     // Replace Sequelize.ENUM object with a unique func that stringify-plus will replace
-    const uniqueFunc = new Function(`return ${Math.random()};`);
-    this.update(uniqueFunc);
+    const uniqueFunc = new Function(`return ${Math.random()};`)
+    this.update(uniqueFunc)
 
     // Identify what stringify-plus should replace that unique function by
-    const str = `Sequelize.ENUM(${JSON.stringify(value.values)})`;
-    Object.assign(sequelizeNativeFuncs, { [uniqueFunc]: str });
+    const str = `Sequelize.ENUM(${JSON.stringify(value.values)})`
+    Object.assign(sequelizeNativeFuncs, { [uniqueFunc]: str })
   }
-});
+})
 
-const typescriptTypesStr = stringifyPlus(expectedIypescriptTypes);
-const typescriptExtendsStr = stringifyPlus(expectedTypescriptExtends);
-const mongoJsonSchemaStr = stringifyPlus(expectedMongoJsonSchema);
-const mongooseSchemaStr = stringifyPlus(expectedMongooseSchema, { nativeFuncs: mongooseNativeFuncs });
-const seqModelStr = stringifyPlus(expectedSeqModel, { nativeFuncs: sequelizeNativeFuncs });
-const seqFksStr = stringifyPlus(expectedSeqFks);
-console.log(`\nconst expectedSeqModel = ${seqModelStr};`);
+const typescriptTypesStr = stringifyPlus(expectedIypescriptTypes)
+const typescriptExtendsStr = stringifyPlus(expectedTypescriptExtends)
+const mongoJsonSchemaStr = stringifyPlus(expectedMongoJsonSchema)
+const mongooseSchemaStr = stringifyPlus(expectedMongooseSchema, {
+  nativeFuncs: mongooseNativeFuncs
+})
+const seqModelStr = stringifyPlus(expectedSeqModel, {
+  nativeFuncs: sequelizeNativeFuncs
+})
+const seqFksStr = stringifyPlus(expectedSeqFks)
+console.log(`\nconst expectedSeqModel = ${seqModelStr};`)
 /*
 console.log('===========================================================');
 console.log(`\nconst expectedTypescriptTypes = ${typescriptTypesStr};`);

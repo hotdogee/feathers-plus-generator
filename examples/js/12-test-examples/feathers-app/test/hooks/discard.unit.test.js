@@ -1,19 +1,21 @@
-
 const assert = require('assert');
 const discard = require('../../src/hooks/discard');
 
 describe('Test /hooks/discard.unit.test.js', () => {
   // eslint-disable-next-line no-unused-vars
-  let contextBefore, contextAfterPaginated,
+  let contextBefore,
+    contextAfterPaginated,
     // eslint-disable-next-line no-unused-vars
-    contextAfter, contextAfterMultiple;
+    contextAfter,
+    contextAfterMultiple;
 
   beforeEach(() => {
     contextBefore = {
       type: 'before',
       params: { provider: 'socketio' },
       data: {
-        first: 'John', last: 'Doe'
+        first: 'John',
+        last: 'Doe'
       }
     };
 
@@ -21,17 +23,15 @@ describe('Test /hooks/discard.unit.test.js', () => {
       type: 'after',
       params: { provider: 'socketio' },
       result: {
-        first: 'Jane', last: 'Doe'
+        first: 'Jane',
+        last: 'Doe'
       }
     };
 
     contextAfterMultiple = {
       type: 'after',
       params: { provider: 'socketio' },
-      result: [
-        { first: 'John', last: 'Doe' },
-        { first: 'Jane', last: 'Doe' }
-      ]
+      result: [{ first: 'John', last: 'Doe' }, { first: 'Jane', last: 'Doe' }]
     };
 
     contextAfterPaginated = {
@@ -39,13 +39,11 @@ describe('Test /hooks/discard.unit.test.js', () => {
       method: 'find',
       params: { provider: 'socketio' },
       result: {
-        data: [
-          { first: 'John', last: 'Doe' },
-          { first: 'Jane', last: 'Doe' }
-        ]
+        data: [{ first: 'John', last: 'Doe' }, { first: 'Jane', last: 'Doe' }]
       }
     };
-    contextAfterPaginated.result.total = contextAfterPaginated.result.data.length;
+    contextAfterPaginated.result.total =
+      contextAfterPaginated.result.data.length;
   });
 
   it('Hook exists', () => {

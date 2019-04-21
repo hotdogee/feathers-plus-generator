@@ -1,4 +1,3 @@
-
 // Configure the Feathers services. (Can be re-generated.)
 let users = require('./users/users.service');
 
@@ -6,7 +5,7 @@ let users = require('./users/users.service');
 // !code: init // !end
 
 // eslint-disable-next-line no-unused-vars
-let moduleExports = function (app) {
+let moduleExports = function(app) {
   app.configure(users);
   // !code: func_return // !end
 };

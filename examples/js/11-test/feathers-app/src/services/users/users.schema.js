@@ -1,4 +1,3 @@
-
 // Define the Feathers schema for service `users`. (Can be re-generated.)
 // !code: imports // !end
 // !code: init // !end
@@ -28,14 +27,14 @@ let schema = {
   // Fields in the model.
   properties: {
     // !code: schema_properties
-    id:        { type: 'ID' },
-    email:     { minLength: 8, maxLength: 40, faker: 'internet.email' },
+    id: { type: 'ID' },
+    email: { minLength: 8, maxLength: 40, faker: 'internet.email' },
     firstName: { minLength: 2, maxLength: 15, faker: 'name.firstName' },
-    lastName:  { minLength: 2, maxLength: 30, faker: 'name.lastName' },
-    password:  { chance: { hash: { length: 60 } } },
-    roleId:    { type: 'ID', faker: { fk: 'roles:random' } },
+    lastName: { minLength: 2, maxLength: 30, faker: 'name.lastName' },
+    password: { chance: { hash: { length: 60 } } },
+    roleId: { type: 'ID', faker: { fk: 'roles:random' } }
     // !end
-  },
+  }
   // !code: schema_more // !end
 };
 
@@ -46,7 +45,7 @@ let extensions = {
     // !code: graphql_header
     name: 'User',
     service: {
-      sort: { lastName: 1, firstName: 1 },
+      sort: { lastName: 1, firstName: 1 }
     },
     // sql: {
     //   sqlTable: 'Users',
@@ -62,20 +61,28 @@ let extensions = {
     add: {
       // !code: graphql_add
       fullName: { type: 'String!', args: false },
-      role: { type: 'Role', args: true, relation: { ourTable: 'roleId', otherTable: '_id' } },
-      teams: { type: '[Team!]', args: true, relation: { ourTable: '_id', otherTable: 'memberIds' },
-        sort: { name: 1 } },
+      role: {
+        type: 'Role',
+        args: true,
+        relation: { ourTable: 'roleId', otherTable: '_id' }
+      },
+      teams: {
+        type: '[Team!]',
+        args: true,
+        relation: { ourTable: '_id', otherTable: 'memberIds' },
+        sort: { name: 1 }
+      }
       // !end
-    },
+    }
     // !code: graphql_more // !end
-  },
+  }
 };
 
 // !code: more // !end
 
 let moduleExports = {
   schema,
-  extensions,
+  extensions
   // !code: moduleExports // !end
 };
 

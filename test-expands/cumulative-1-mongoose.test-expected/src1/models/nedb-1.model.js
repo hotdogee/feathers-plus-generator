@@ -1,4 +1,3 @@
-
 // nedb1-model.js - A Mongoose model
 //
 // See http://mongoosejs.com/docs/models.html
@@ -9,7 +8,7 @@ const mongooseSchema = require('../services/nedb-1/nedb-1.mongoose');
 // !code: mongoose_imports // !end
 // !code: mongoose_init // !end
 
-let moduleExports = function (app) {
+let moduleExports = function(app) {
   let mongooseClient = app.get('mongooseClient');
   // !code: mongoose_func_init // !end
 

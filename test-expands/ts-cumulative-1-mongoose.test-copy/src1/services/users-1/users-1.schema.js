@@ -1,4 +1,3 @@
-
 // Define the Feathers schema for service `users1`. (Can be re-generated.)
 // !code: imports // !end
 // !code: init // !end
@@ -25,9 +24,9 @@ let schema = {
     // !code: schema_properties
     name: {}
     // !end
-  },
+  }
   // !code: schema_more // !end
-};
+}
 
 // Define optional, non-JSON-schema extensions.
 let extensions = {
@@ -36,7 +35,7 @@ let extensions = {
     // !code: graphql_header
     name: 'Users1',
     service: {
-      sort: { _id: 1 },
+      sort: { _id: 1 }
     },
     // sql: {
     //   sqlTable: 'Users1',
@@ -53,21 +52,21 @@ let extensions = {
       // !<DEFAULT> code: graphql_add
       // __author__: { type: '__User__!', args: false, relation: { ourTable: '__authorId__', otherTable: '_id' } },
       // !end
-    },
+    }
     // !code: graphql_more // !end
-  },
-};
+  }
+}
 
 // !code: more // !end
 
 let moduleExports = {
   schema,
-  extensions,
+  extensions
   // !code: moduleExports // !end
-};
+}
 
 // !code: exports // !end
-module.exports = moduleExports;
+module.exports = moduleExports
 
 // !code: funcs // !end
 // !code: end // !end

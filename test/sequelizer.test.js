@@ -1,4 +1,3 @@
-
 const { assert } = require('chai')
 
 const Sequelize = require('sequelize')
@@ -34,8 +33,18 @@ describe('sequelizer.test', () => {
         // !code: schema_properties
         id: { type: 'string' },
         email: { type: 'string', format: 'email' },
-        firstName: { type: 'string', minLength: 2, maxLength: 100, faker: 'name.firstName' },
-        lastName: { type: 'string', minLenth: 2, maxLength: 100, faker: 'name.lastName' },
+        firstName: {
+          type: 'string',
+          minLength: 2,
+          maxLength: 100,
+          faker: 'name.firstName'
+        },
+        lastName: {
+          type: 'string',
+          minLenth: 2,
+          maxLength: 100,
+          faker: 'name.lastName'
+        },
         password: { type: 'string', chance: { hash: { length: 60 } } },
         roleId: { type: 'string', faker: { fk: 'roles: random' } }
         // !end
@@ -90,7 +99,8 @@ describe('sequelizer.test', () => {
       properties: {
         xx: {
           type: 'array',
-          items: { type: 'string' } }
+          items: { type: 'string' }
+        }
       }
     }
 

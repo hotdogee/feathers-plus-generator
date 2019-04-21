@@ -1,4 +1,3 @@
-
 // Define the Feathers schema for service `nedb4`. (Can be re-generated.)
 // !code: imports // !end
 // !code: init // !end
@@ -25,9 +24,9 @@ let schema = {
     // !code: schema_properties
     id: { type: 'ID' },
     _id: { type: 'ID' },
-    nedb2Id: { type: 'ID' },
+    nedb2Id: { type: 'ID' }
     // !end
-  },
+  }
   // !code: schema_more // !end
 };
 
@@ -38,7 +37,7 @@ let extensions = {
     // !code: graphql_header
     name: 'Nedb4',
     service: {
-      sort: { _id: 1 },
+      sort: { _id: 1 }
     },
     // sql: {
     //   sqlTable: 'Nedb4',
@@ -53,18 +52,22 @@ let extensions = {
     ],
     add: {
       // !code: graphql_add
-      nedb2: { type: 'Nedb2!', args: false, relation: { ourTable: 'nedb2Id', otherTable: '_id' } },
+      nedb2: {
+        type: 'Nedb2!',
+        args: false,
+        relation: { ourTable: 'nedb2Id', otherTable: '_id' }
+      }
       // !end
-    },
+    }
     // !code: graphql_more // !end
-  },
+  }
 };
 
 // !code: more // !end
 
 let moduleExports = {
   schema,
-  extensions,
+  extensions
   // !code: moduleExports // !end
 };
 

@@ -1,4 +1,3 @@
-
 /* eslint quotes: 0 */
 // Validation definitions for validateSchema hook for service `users`. (Can be re-generated.)
 const { validateSchema } = require('feathers-hooks-common');
@@ -12,57 +11,56 @@ const ajv = require('ajv');
 const ID = 'string';
 // !end
 
-let base = merge({},
+let base = merge(
+  {},
   // !<DEFAULT> code: base
   {
-    title: "Users",
-    description: "Users database.",
-    required: [
-      "email",
-      "firstName",
-      "lastName",
-      "roleId"
-    ],
+    title: 'Users',
+    description: 'Users database.',
+    required: ['email', 'firstName', 'lastName', 'roleId'],
     uniqueItemProperties: [],
     properties: {
       id: {
         type: ID
       },
       email: {
-        type: "string"
+        type: 'string'
       },
       firstName: {
-        type: "string"
+        type: 'string'
       },
       lastName: {
-        type: "string"
+        type: 'string'
       },
       password: {
-        type: "string"
+        type: 'string'
       },
       roleId: {
         type: ID
       }
     }
-  },
+  }
   // !end
   // !code: base_more // !end
 );
 // !code: base_change // !end
 
-let create = merge({},
-  base,
+let create = merge(
+  {},
+  base
   // !code: create_more // !end
 );
 
-let update = merge({},
-  base,
+let update = merge(
+  {},
+  base
   // !code: update_more // !end
 );
 
-let patch = merge({},
+let patch = merge(
+  {},
   base,
-  { required: undefined },
+  { required: undefined }
   // !code: patch_more // !end
 );
 // !code: all_change // !end
@@ -87,9 +85,15 @@ let validatePatch = options => {
 
 let quickValidate = (method, data, options) => {
   try {
-    if (method === 'create') { validateCreate(options)({ type: 'before', method: 'create', data }); }
-    if (method === 'update') { validateCreate(options)({ type: 'before', method: 'update', data }); }
-    if (method === 'patch') { validateCreate(options)({ type: 'before', method: 'patch', data }); }
+    if (method === 'create') {
+      validateCreate(options)({ type: 'before', method: 'create', data });
+    }
+    if (method === 'update') {
+      validateCreate(options)({ type: 'before', method: 'update', data });
+    }
+    if (method === 'patch') {
+      validateCreate(options)({ type: 'before', method: 'patch', data });
+    }
   } catch (err) {
     return err;
   }
@@ -103,7 +107,7 @@ let moduleExports = {
   validateCreate,
   validateUpdate,
   validatePatch,
-  quickValidate,
+  quickValidate
   // !code: moduleExports // !end
 };
 

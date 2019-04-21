@@ -1,4 +1,3 @@
-
 // Execute raw SQL statement for GraphQL using Sequelize. (Can be re-generated.)
 // !code: imports // !end
 
@@ -20,14 +19,19 @@ let moduleExports = function sqlExecuteSequelize(app) {
   // !<DEFAULT> code: func_dialect
   let dialect = dialects[sequelize.getDialect()];
   if (!dialect) {
-    throw new Error('Unsupported Sequelize dialect: \'' + sequelize.getDialect() + '\'. (sql.execute.sequelize.*s)');
+    throw new Error(
+      'Unsupported Sequelize dialect: \'' +
+        sequelize.getDialect() +
+        '\'. (sql.execute.sequelize.*s)'
+    );
   }
   // !end
   // !code: func_init // !end
 
   // !<DEFAULT> code: func_exec
   let executeSql = sql => {
-    return sequelize.query(sql)
+    return sequelize
+      .query(sql)
       .then(([result]) => result)
       .catch(err => {
         // eslint-disable-next-line no-console

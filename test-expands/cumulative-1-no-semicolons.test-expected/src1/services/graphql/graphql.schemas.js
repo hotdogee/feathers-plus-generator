@@ -1,4 +1,3 @@
-
 // Define the combined GraphQL schema. (Can be re-generated.)
 // !code: imports // !end
 // !code: init // !end
@@ -25,10 +24,10 @@ type Query {
   getNedb2(key: JSON, query: JSON, params: JSON): Nedb2
   findNedb2(query: JSON, params: JSON): [Nedb2]!
 }
-`
+`;
 
 // !code: exports // !end
-module.exports = moduleExports
+module.exports = moduleExports;
 
 // !code: funcs // !end
 // !code: end // !end

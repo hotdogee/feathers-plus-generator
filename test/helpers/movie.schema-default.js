@@ -32,9 +32,9 @@ let schema = {
       type: 'date',
       default: function () {
         if (this.released) {
-          return Date.now();
+          return Date.now()
         }
-        return null;
+        return null
       }
     },
     registerdDate: {
@@ -50,9 +50,9 @@ let schema = {
       default: 'active'
     }
     // !end
-  },
+  }
   // !code: schema_more // !end
-};
+}
 
 // Define optional, non-JSON-schema extensions.
 let extensions = {
@@ -63,7 +63,7 @@ let extensions = {
     service: {
       sort: {
         _id: 1
-      },
+      }
     },
     // sql: {
     //   sqlTable: 'Movies',
@@ -80,21 +80,21 @@ let extensions = {
       // !<DEFAULT> code: graphql_add
       // __author__: { type: '__Movie__!', args: false, relation: { ourTable: '__authorId__', otherTable: '_id' } },
       // !end
-    },
+    }
     // !code: graphql_more // !end
-  },
-};
+  }
+}
 
 // !code: more // !end
 
 let moduleExports = {
   schema,
-  extensions,
+  extensions
   // !code: moduleExports // !end
-};
+}
 
 // !code: exports // !end
-module.exports = moduleExports;
+module.exports = moduleExports
 
 // !code: funcs // !end
 // !code: end // !end

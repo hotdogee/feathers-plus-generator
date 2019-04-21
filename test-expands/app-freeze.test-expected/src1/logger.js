@@ -1,6 +1,5 @@
-
 // Logger. (Can be re-generated.)
-const { createLogger, format, transports } = require('winston');
+const { createLogger, format, transports } = require("winston");
 // !code: imports // !end
 // !code: init // !end
 
@@ -8,18 +7,13 @@ const { createLogger, format, transports } = require('winston');
 const moduleExports = createLogger({
   // !<DEFAULT> code: level
   // To see more detailed errors, change this to debug'
-  level: 'info',
+  level: "info",
   // !end
   // !<DEFAULT> code: format
-  format: format.combine(
-    format.splat(),
-    format.simple()
-  ),
+  format: format.combine(format.splat(), format.simple()),
   // !end
   // !<DEFAULT> code: transport
-  transports: [
-    new transports.Console()
-  ],
+  transports: [new transports.Console()]
   // !end
   // !code: moduleExports // !end
 });

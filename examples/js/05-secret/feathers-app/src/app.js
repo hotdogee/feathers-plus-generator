@@ -1,4 +1,3 @@
-
 // Configure Feathers app. (Can be re-generated.)
 const path = require('path');
 const compress = require('compression');

@@ -1,24 +1,24 @@
-
 /* eslint quotes: 0 */
 // Defines the MongoDB $jsonSchema for service `users1`. (Can be re-generated.)
 const merge = require('lodash.merge');
 // !code: imports // !end
 // !code: init // !end
 
-let moduleExports = merge({},
+let moduleExports = merge(
+  {},
   // !<DEFAULT> code: model
   {
-    bsonType: "object",
+    bsonType: 'object',
     additionalProperties: false,
     properties: {
       _id: {
-        bsonType: "objectId"
+        bsonType: 'objectId'
       },
       name: {
-        bsonType: "string"
+        bsonType: 'string'
       }
     }
-  },
+  }
   // !end
   // !code: moduleExports // !end
 );
