@@ -61,6 +61,10 @@
     "lib": "lib"
   },
   "dependencies": {
+    "@babel/generator": "^7.4.0",
+    "@babel/parser": "^7.4.3",
+    "@babel/traverse": "^7.4.3",
+    "@babel/types": "^7.4.0",
     "@feathers-plus/common": "0.1.0",
     "@feathersjs/tools": "0.1.7",
     "ajv": "^6.10.0",

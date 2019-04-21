@@ -5,6 +5,11 @@ const prettier = require('prettier')
 const makeConfig = require('./templates/_configs')
 const { generatorFs } = require('../../lib/generator-fs')
 
+const { parse } = require('@babel/parser')
+const { default: template } = require('@babel/template')
+const { default: traverse } = require('@babel/traverse')
+const { default: generate } = require('@babel/generator')
+
 const debug = makeDebug('generator-feathers-plus:writing:app')
 
 module.exports = {
@@ -27,6 +32,7 @@ function app (generator, props, specs, context, state) {
     tmpl,
     copy,
     json,
+    source,
     // Abbreviations for paths to templates used in building 'todos'.
     tpl,
     src,
@@ -63,15 +69,85 @@ function app (generator, props, specs, context, state) {
   const configDefaultPath = generator.destinationPath(
     `${appConfigPath}/default.js`
   )
-  const configDefault = (specs._defaultJson =
-    (generator.fs.exists(configDefaultPath) && require(configDefaultPath)) ||
-    makeConfig.configDefault(generator))
-
-  // Update older configs with current specs
-  configDefault.tests = configDefault.tests || {}
-  configDefault.tests.environmentsAllowingSeedData = specs.app.environmentsAllowingSeedData.split(
+  let configDefault
+  let configDefaultCode
+  if (generator.fs.exists(configDefaultPath)) {
+    configDefault = specs._defaultJson = require(configDefaultPath)
+    configDefaultCode = generator.fs.read(configDefaultPath)
+  } else {
+    configDefault = specs._defaultJson = makeConfig.configDefault(generator)
+    configDefaultCode = prettier.format(
+      'module.exports = ' + JSON.stringify(configDefault),
+      {
+        semi: false,
+        singleQuote: true,
+        parser: 'babel'
+      }
+    )
+  }
+  // AST
+  const configDefaultAst = parse(configDefaultCode)
+  let moduleExports
+  traverse(configDefaultAst, {
+    AssignmentExpression (path) {
+      if (
+        path
+          .get('left')
+          .get('object')
+          .isIdentifier({ name: 'module' }) &&
+        path
+          .get('left')
+          .get('property')
+          .isIdentifier({ name: 'exports' })
+      ) {
+        console.log(`module.exports node FOUND`)
+        moduleExports = path.get('right')
+      } else {
+        console.log(`module.exports node NOT found`)
+      }
+    }
+  })
+  // test environments
+  const environmentsAllowingSeedData = specs.app.environmentsAllowingSeedData.split(
     ','
   )
+  // create tests node
+  const testsObjectProperty = template.ast(
+    `module.exports = { tests: { environmentsAllowingSeedData: ${JSON.stringify(
+      environmentsAllowingSeedData
+    )} } }`,
+    {
+      reserveComments: true
+    }
+  ).expression.right.properties[0]
+  // Update older configs with current specs
+  if (configDefault.tests) {
+    // tests node exists
+    // find and replace current tests node
+    for (let i = 0; i < moduleExports.node.properties.length; i++) {
+      if (moduleExports.node.properties[i].key.name === 'tests') {
+        moduleExports.node.properties[i] = testsObjectProperty
+      }
+    }
+  } else {
+    // no tests node
+    configDefault.tests = {}
+    // insert into last position
+    moduleExports.node.properties.push(testsObjectProperty)
+  }
+  configDefault.tests.environmentsAllowingSeedData = environmentsAllowingSeedData
+  debug(prettier.format(
+    generate(
+      configDefaultAst
+    ).code,
+    {
+      semi: false,
+      singleQuote: true,
+      parser: 'babel'
+    }
+  ))
+
+  // package.json
   pkg.scripts['test:all'] =
     pkg.scripts['test:all'] ||
     (isJs
@@ -91,7 +167,8 @@ function app (generator, props, specs, context, state) {
   const configProdPath = generator.destinationPath(
     `${appConfigPath}/production.js`
   )
-  const configProd = (generator.fs.exists(configProdPath) && require(configProdPath)) ||
+  const configProd =
+    (generator.fs.exists(configProdPath) && require(configProdPath)) ||
     makeConfig.configProduction(generator)
 
   // update test:all script for first test environment
@@ -214,15 +291,28 @@ function app (generator, props, specs, context, state) {
     json(configNodemon, 'nodemon.json'),
     // json(configDefault, [appConfigPath, 'default.js']),
     // tmpl (src, dest, ifNew, ifSkip, ctx)
-    tmpl([tpl, 'json.ejs'], [appConfigPath, 'default.js'], false, false, {
-      json: prettier
-        .format('let a = ' + JSON.stringify(configDefault), {
+    // tmpl([tpl, 'json.ejs'], [appConfigPath, 'default.js'], false, false, {
+    //   json: prettier
+    //     .format('let a = ' + JSON.stringify(configDefault), {
+    //       semi: false,
+    //       singleQuote: true,
+    //       parser: 'babel'
+    //     })
+    //     .slice(8)
+    // }),
+    source(
+      [prettier.format(
+        generate(
+          configDefaultAst
+        ).code,
+        {
           semi: false,
           singleQuote: true,
           parser: 'babel'
-        })
-        .slice(8)
-    }),
+        }
+      )],
+      [appConfigPath, 'default.js']
+    ),
     // json(configProd, [appConfigPath, 'production.json']),
     tmpl([tpl, 'json.ejs'], [appConfigPath, 'production.js'], false, false, {
       json: prettier

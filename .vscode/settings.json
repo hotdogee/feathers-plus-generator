@@ -17,5 +17,5 @@
   "eslint.autoFixOnSave": true,
   "eslint.alwaysShowStatus": true,
   "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
-  "javascript.format.enable": false
+  "javascript.format.enable": true
 }

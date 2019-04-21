@@ -5,6 +5,13 @@ const { join } = require('path')
 const doesFileExist = require('../../lib/does-file-exist')
 const { generatorFs } = require('../../lib/generator-fs')
 
+const fs = require('fs')
+const prettier = require('prettier')
+const { parse } = require('@babel/parser')
+const { default: template } = require('@babel/template')
+const { default: traverse } = require('@babel/traverse')
+const { default: generate } = require('@babel/generator')
+
 const debug = makeDebug('generator-feathers-plus:writing:fakes')
 
 module.exports = {
@@ -78,6 +85,85 @@ function fakes (generator, props, specs, context, state) {
 
   const defaultJs = require(defaultJsPath)
   if (defaultJs.fakeData && defaultJs.fakeData.noFakesOnAll) return
+  if (!defaultJs.fakeData) {
+    // load defaults
+  }
+
+  // CODE
+  const configDefaultPath = generator.destinationPath(
+    `${context.appConfigPath}/default.js`
+  )
+  let configDefaultCode
+  if (generator.fs.exists(configDefaultPath)) {
+    configDefaultCode = generator.fs.read(configDefaultPath)
+  } else {
+    configDefaultCode = prettier.format(
+      'module.exports = ' + JSON.stringify(generator._specs._defaultJson),
+      {
+        semi: false,
+        singleQuote: true,
+        parser: 'babel'
+      }
+    )
+  }
+  // AST
+  const configDefaultAst = parse(configDefaultCode)
+  let moduleExports
+  traverse(configDefaultAst, {
+    AssignmentExpression (path) {
+      if (
+        path
+          .get('left')
+          .get('object')
+          .isIdentifier({ name: 'module' }) &&
+        path
+          .get('left')
+          .get('property')
+          .isIdentifier({ name: 'exports' })
+      ) {
+        console.log(`module.exports node FOUND`)
+        moduleExports = path.get('right')
+      } else {
+        console.log(`module.exports node NOT found`)
+      }
+    }
+  })
+  // load default
+  const fakeConfigPath = `${configPath}/default.js`
+  const fakeConfigCode = fs.readFileSync(fakeConfigPath, 'utf8')
+  const fakeConfigObjectExpression = parse(fakeConfigCode).program.body[0].expression.right
+  // update AST
+  // merge two ObjectExpressions
+  function astObjectExpressionMerge (a, b) {
+    const aMap = new Map(a.properties.map((o, i) => [o.key.name, i]))
+    b.properties.forEach(bOp => {
+      const key = bOp.key.name // 'mongodb'
+      if (aMap.has(key)) {
+        const aOp = a.properties[aMap.get(key)]
+        // key node exists
+        if (aOp.value.type === 'ObjectExpression' && bOp.value.type === 'ObjectExpression') {
+          astObjectExpressionMerge(aOp, bOp)
+        } else if (aOp.value.type === 'ArrayExpression' && bOp.value.type === 'ArrayExpression') {
+          if (bOp.value.elements.length !== 0) {
+            a.properties[aMap.get(key)] = bOp
+          }
+        } else {
+          // find and replace current key node
+          a.properties[aMap.get(key)] = bOp
+          // for (let i = 0; i < a.properties.length; i++) {
+          //   if (a.properties[i].key.name === key) {
+          //     a.properties[i] = bOp
+          //   }
+          // }
+        }
+      } else {
+        // no key node
+        // insert into last position
+        a.properties.push(bOp)
+      }
+    })
+  }
+  astObjectExpressionMerge(moduleExports.node, fakeConfigObjectExpression)
 
   const jssOptions = merge({
     faker: {
@@ -101,7 +187,20 @@ function fakes (generator, props, specs, context, state) {
     ? jssOptions.postGeneration(data) : data
 
   const todos = [
-    copy([tpl, '_configs', 'default.js'], [appConfigPath, 'default.js'], WRITE_IF_NEW),
+    // copy([tpl, '_configs', 'default.js'], [appConfigPath, 'default.js'], WRITE_IF_NEW),
+    source(
+      [prettier.format(
+        generate(
+          configDefaultAst
+        ).code,
+        {
+          semi: false,
+          singleQuote: true,
+          parser: 'babel'
+        }
+      )],
+      [appConfigPath, 'default.js']
+    ),
     json(fakeData, ['seeds', 'fake-data.json'])
   ]
 

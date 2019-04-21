@@ -6,6 +6,11 @@ const prettier = require('prettier')
 const { generatorFs } = require('../../lib/generator-fs')
 const { insertFragment } = require('../../lib/code-fragments')
 
+const { parse } = require('@babel/parser')
+const { default: template } = require('@babel/template')
+const { default: traverse } = require('@babel/traverse')
+const { default: generate } = require('@babel/generator')
+
 const debug = makeDebug('generator-feathers-plus:writing:authentication')
 
 const OAUTH2_STRATEGY_MAPPINGS = {
@@ -186,26 +191,102 @@ function writeAuthenticationConfiguration (generator, context1) {
     }
   }
 
+  // CODE
+  const configDefaultPath = generator.destinationPath(
+    `${context1.appConfigPath}/default.js`
+  )
+  let configDefaultCode
+  if (generator.fs.exists(configDefaultPath)) {
+    configDefaultCode = generator.fs.read(configDefaultPath)
+  } else {
+    configDefaultCode = prettier.format(
+      'module.exports = ' + JSON.stringify(generator._specs._defaultJson),
+      {
+        semi: false,
+        singleQuote: true,
+        parser: 'babel'
+      }
+    )
+  }
+  // AST
+  const configDefaultAst = parse(configDefaultCode)
+  let moduleExports
+  traverse(configDefaultAst, {
+    AssignmentExpression (path) {
+      if (
+        path
+          .get('left')
+          .get('object')
+          .isIdentifier({ name: 'module' }) &&
+        path
+          .get('left')
+          .get('property')
+          .isIdentifier({ name: 'exports' })
+      ) {
+        console.log(`module.exports node FOUND`)
+        moduleExports = path.get('right')
+      } else {
+        console.log(`module.exports node NOT found`)
+      }
+    }
+  })
+  // create authentication node
+  const authenticationObjectProperty = template.ast(
+    `module.exports = { authentication: ${JSON.stringify(
+      configAuth
+    )} }`,
+    {
+      reserveComments: true
+    }
+  ).expression.right.properties[0]
+  // update AST
+  if (generator._specs._defaultJson.authentication) {
+    // authentication node exists
+    // find and replace current authentication node
+    for (let i = 0; i < moduleExports.node.properties.length; i++) {
+      if (moduleExports.node.properties[i].key.name === 'authentication') {
+        moduleExports.node.properties[i] = authenticationObjectProperty
+      }
+    }
+  } else {
+    // no authentication node
+    // insert into last position
+    moduleExports.node.properties.push(authenticationObjectProperty)
+  }
+
   generator._specs._defaultJson = config
 
   // generator.fs.writeJSON(
   //   generator.destinationPath(context1.appConfigPath, 'default.json'),
   //   config
   // )
-  generator.fs.copyTpl(
-    generator.templatePath(join(__dirname, 'templates', 'json.ejs')),
-    generator.destinationPath(join(context1.appConfigPath, 'default.js')),
-    Object.assign({}, context1, {
-      insertFragment: insertFragment(generator.destinationPath(join(context1.appConfigPath, 'default.js')))
-    }, {
-      json: prettier
-        .format('let a = ' + JSON.stringify(config), {
-          semi: false,
-          singleQuote: true,
-          parser: 'babel'
-        })
-        .slice(8)
-    })
+  // generator.fs.copyTpl(
+  //   generator.templatePath(join(__dirname, 'templates', 'json.ejs')),
+  //   generator.destinationPath(join(context1.appConfigPath, 'default.js')),
+  //   Object.assign({}, context1, {
+  //     insertFragment: insertFragment(generator.destinationPath(join(context1.appConfigPath, 'default.js')))
+  //   }, {
+  //     json: prettier
+  //       .format('let a = ' + JSON.stringify(config), {
+  //         semi: false,
+  //         singleQuote: true,
+  //         parser: 'babel'
+  //       })
+  //       .slice(8)
+  //   })
+  // )
+  generator.fs.write(
+    configDefaultPath,
+    prettier.format(
+      generate(
+        configDefaultAst
+      ).code,
+      {
+        semi: false,
+        singleQuote: true,
+        parser: 'babel'
+      }
+    )
   )
 }
 

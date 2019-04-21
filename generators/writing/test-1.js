@@ -5,6 +5,11 @@ const prettier = require('prettier')
 const { generatorFs } = require('../../lib/generator-fs')
 const { insertFragment } = require('../../lib/code-fragments')
 
+const { parse } = require('@babel/parser')
+const { default: template } = require('@babel/template')
+const { default: traverse } = require('@babel/traverse')
+const { default: generate } = require('@babel/generator')
+
 const debug = makeDebug('generator-feathers-plus:writing:test')
 
 module.exports = {
@@ -187,7 +192,7 @@ function test (generator, props, specs, context, state) {
 }
 
 function writeDefaultJsonClient (generator, context) {
-  const config = context.merge({}, generator._specs._defaultJson, {
+  const testConfig = {
     tests: {
       environmentsAllowingSeedData: [
       ],
@@ -207,7 +212,102 @@ function writeDefaultJsonClient (generator, context) {
         overriddenAuth: {}
       }
     }
+  }
+  const config = context.merge({}, generator._specs._defaultJson, testConfig)
+
+  // CODE
+  const configDefaultPath = generator.destinationPath(
+    `${context.appConfigPath}/default.js`
+  )
+  let configDefaultCode
+  if (generator.fs.exists(configDefaultPath)) {
+    configDefaultCode = generator.fs.read(configDefaultPath)
+  } else {
+    configDefaultCode = prettier.format(
+      'module.exports = ' + JSON.stringify(generator._specs._defaultJson),
+      {
+        semi: false,
+        singleQuote: true,
+        parser: 'babel'
+      }
+    )
+  }
+  // AST
+  const configDefaultAst = parse(configDefaultCode)
+  let moduleExports
+  traverse(configDefaultAst, {
+    AssignmentExpression (path) {
+      if (
+        path
+          .get('left')
+          .get('object')
+          .isIdentifier({ name: 'module' }) &&
+        path
+          .get('left')
+          .get('property')
+          .isIdentifier({ name: 'exports' })
+      ) {
+        console.log(`module.exports node FOUND`)
+        moduleExports = path.get('right')
+      } else {
+        console.log(`module.exports node NOT found`)
+      }
+    }
   })
+  // update AST
+  // create testConfig ObjectExpression node
+  const testConfigObjectExpression = template.ast(
+    prettier.format(`module.exports = ${JSON.stringify(testConfig)}`,
+      {
+        semi: false,
+        singleQuote: true,
+        parser: 'babel'
+      }
+    ),
+    {
+      reserveComments: true
+    }
+  ).expression.right
+  // merge two ObjectExpressions
+  function astObjectExpressionMerge (a, b) {
+    if (!a.properties) {
+      console.log(a, b)
+    }
+    const aMap = new Map(a.properties.map((o, i) => [o.key.name, i]))
+    b.properties.forEach(bOp => {
+      const key = bOp.key.name // 'mongodb'
+      if (aMap.has(key)) {
+        const aOp = a.properties[aMap.get(key)]
+        // key node exists
+        if (aOp.value.type === 'ObjectExpression' && bOp.value.type === 'ObjectExpression') {
+          astObjectExpressionMerge(aOp.value, bOp.value)
+        } else if (aOp.value.type === 'ArrayExpression' && bOp.value.type === 'ArrayExpression') {
+          if (bOp.value.elements.length !== 0) {
+            a.properties[aMap.get(key)] = bOp
+          }
+        } else {
+          // find and replace current key node
+          a.properties[aMap.get(key)] = bOp
+          // for (let i = 0; i < a.properties.length; i++) {
+          //   if (a.properties[i].key.name === key) {
+          //     a.properties[i] = bOp
+          //   }
+          // }
+        }
+      } else {
+        // no key node
+        // insert into last position
+        a.properties.push(bOp)
+      }
+    })
+  }
+  // moduleExports.node.properties[0].key
+  // testConfigObjectExpression.properties[0].key
+  // moduleExports.node.properties[4].value.properties[0].value
+  // testConfigObjectExpression.properties[0].value.properties[0].value
+  // moduleExports.node.properties[4].value.properties[0].value.elements
+  // testConfigObjectExpression.properties[0].value.properties[0].value.elements
+  astObjectExpressionMerge(moduleExports.node, testConfigObjectExpression)
 
   generator._specs._defaultJson = config
 
@@ -215,20 +315,33 @@ function writeDefaultJsonClient (generator, context) {
   //   generator.destinationPath(context.appConfigPath, 'default.json'),
   //   config
   // )
-  generator.fs.copyTpl(
-    generator.templatePath(join(__dirname, 'templates', 'json.ejs')),
-    generator.destinationPath(join(context.appConfigPath, 'default.js')),
-    Object.assign({}, context, {
-      insertFragment: insertFragment(generator.destinationPath(join(context.appConfigPath, 'default.js')))
-    }, {
-      json: prettier
-        .format('let a = ' + JSON.stringify(config), {
-          semi: false,
-          singleQuote: true,
-          parser: 'babel'
-        })
-        .slice(8)
-    })
+  // generator.fs.copyTpl(
+  //   generator.templatePath(join(__dirname, 'templates', 'json.ejs')),
+  //   generator.destinationPath(join(context.appConfigPath, 'default.js')),
+  //   Object.assign({}, context, {
+  //     insertFragment: insertFragment(generator.destinationPath(join(context.appConfigPath, 'default.js')))
+  //   }, {
+  //     json: prettier
+  //       .format('let a = ' + JSON.stringify(config), {
+  //         semi: false,
+  //         singleQuote: true,
+  //         parser: 'babel'
+  //       })
+  //       .slice(8)
+  //   })
+  // )
+  generator.fs.write(
+    configDefaultPath,
+    prettier.format(
+      generate(
+        configDefaultAst
+      ).code,
+      {
+        semi: false,
+        singleQuote: true,
+        parser: 'babel'
+      }
+    )
   )
 }
 
