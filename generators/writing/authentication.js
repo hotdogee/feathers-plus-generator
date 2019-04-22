@@ -1,4 +1,5 @@
 const crypto = require('crypto')
+const chalk = require('chalk')
 const { join } = require('path')
 const makeDebug = require('debug')
 const { inspect } = require('util')
@@ -120,7 +121,10 @@ function authentication (generator, justRegen, props, specs, context, state) {
     tmpl([srcPath, 'app.ejs'], [src, `app.${js}`])
     // todo tmpl([tpl, 'test', 'auth-local.test.ejs'], [testDir, `auth-local.test.${js}`]),
   ]
-
+  if (!src) {
+    console.log(`\n ${chalk.red.bold('ERROR: No src directory, run "generate app" first')}`)
+    process.exit()
+  }
   // Generate modules
   generatorFs(generator, context1, todos)
 
