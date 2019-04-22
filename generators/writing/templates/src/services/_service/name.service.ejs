@@ -1,6 +1,6 @@
 // Initializes the `<%= serviceName %>` service on path `/<%= path %>`. (Can be re-generated.)
 <%- tplTsOnly([`import { App } from '../../${subFolderReverse}app.interface'${sc}`, '', '']) -%>
-<%- tplImports('createService', serviceModule, 'req') %>
+<%- insertFragment('createService', `${tplImports('createService', serviceModule, 'req')}`) %>
 <%# -%>
 <%# --- if-1 starts below. -%>
 <% if(modelName) { -%>
@@ -12,16 +12,15 @@
 <%- insertFragment('init') %>
 
 <%- tplModuleExports(null, 'function (app) {', 'function (app: App) {') %>
-<% if (modelName) { %>  let Model = createModel(app)<%- sc %><% } %>
-  let paginate = app.get('paginate')<%- sc %>
+<% if (modelName) { %>  let Model = createModel(app)<%- sc + '\n' %><% } %>  let paginate = app.get('paginate')<%- sc %>
   <%- insertFragment('func_init') %>
 
   let options = {
+    <%- insertFragment('options_more') %>
 <% if (modelName) { -%>
     Model,
 <% } -%>
-    paginate,
-    <%- insertFragment('options_more') %>
+    paginate
   }<%- sc %>
   <%- insertFragment('options_change') %>
 
