@@ -183,7 +183,7 @@ module.exports = class AppGenerator extends Generator {
         name: 'environmentsAllowingSeedData',
         message:
           'Data mutating tests and seeding may run when NODE_ENV is one of (optional)',
-        default: specs.app.environmentsAllowingSeedData || '',
+        default: specs.app.environmentsAllowingSeedData || 'test',
         filter: input => {
           const envs = input.split(',')
           return envs.map(str => kebabCase(str.trim())).join(',')

@@ -172,7 +172,7 @@ module.exports = class ServiceGenerator extends Generator {
         name: 'adapter',
         message: 'What kind of service is it?',
         default () {
-          return serviceSpecs.adapter || 'nedb'
+          return serviceSpecs.adapter || 'mongodb'
         },
         choices: [
           {

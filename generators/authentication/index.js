@@ -62,12 +62,12 @@ module.exports = class AuthGenerator extends Generator {
           {
             name: 'Google',
             value: 'google',
-            checked: ifStrategy('google')
+            checked: !specs.authentication.strategies.length || ifStrategy('google')
           },
           {
             name: 'Facebook',
             value: 'facebook',
-            checked: ifStrategy('facebook')
+            checked: !specs.authentication.strategies.length || ifStrategy('facebook')
           },
           {
             name: 'GitHub',
