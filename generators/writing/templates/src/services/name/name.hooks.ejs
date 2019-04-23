@@ -19,8 +19,9 @@
 <% __validate = isJs ? [
     `// ${lintDisableNextLineUnused}`,
     `const { ${hooks.hooks.join(', ')} } = commonHooks${sc}`,
-    `// ${lintDisableNextLineUnused}`,
-    `${tplImports('{ create, update, patch, validateCreate, validateUpdate, validatePatch }', `./${kebabName}.validate`)}`
+    `/* eslint-disable no-unused-vars */`,
+    `${tplImports('{ create, update, patch, validateCreate, validateUpdate, validatePatch }',`./${kebabName}.validate`)}`,
+    `/* eslint-enables no-unused-vars */`
 ] : [
     `// ${lintDisableNextLineUnused}`,
     `const { ${hooks.hooks.join(', ')} } = commonHooks${sc}`,
