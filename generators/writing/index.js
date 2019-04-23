@@ -42,10 +42,14 @@ function abstractTs (specs) {
       return ifTs ? lines.join(EOL) : ''
     },
     tplImports: (vars, module, format, useConst = 'const') => {
-      if (!ifTs) { return `${useConst} ${vars} = require('${module || vars}')${sc}` }
+      if (!ifTs) {
+        return `${useConst} ${vars} = require('${module || vars}')${sc}`
+      }
 
       // todo [removed] if (format === 'req') return `import ${vars} = require('${module || vars}')${sc}`;
-      if (format === 'as') { return `import * as ${vars} from '${module || vars}'${sc}` }
+      if (format === 'as') {
+        return `import * as ${vars} from '${module || vars}'${sc}`
+      }
       return `import ${vars} from '${module || vars}'${sc}`
     },
     tplModuleExports: (type, value = '{', valueTs) => {

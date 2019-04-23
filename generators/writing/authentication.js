@@ -122,7 +122,11 @@ function authentication (generator, justRegen, props, specs, context, state) {
     // todo tmpl([tpl, 'test', 'auth-local.test.ejs'], [testDir, `auth-local.test.${js}`]),
   ]
   if (!src) {
-    console.log(`\n ${chalk.red.bold('ERROR: No src directory, run "generate app" first')}`)
+    console.log(
+      `\n ${chalk.red.bold(
+        'ERROR: No src directory, run "generate app" first'
+      )}`
+    )
     process.exit()
   }
   // Generate modules
