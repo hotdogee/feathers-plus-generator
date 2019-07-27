@@ -13,7 +13,6 @@ module.exports = {
     ecmaVersion: 2018
   },
   rules: {
-    'max-len': 'warn',
-    'eol-last': 'off'
+    'quote-props': ['error', 'as-needed']
   }
 }

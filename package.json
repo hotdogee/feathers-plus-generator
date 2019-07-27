@@ -72,6 +72,7 @@
     "debug": "^4.1.1",
     "diff": "^4.0.1",
     "faker": "^4.1.0",
+    "gulp-util": "^3.0.8",
     "json-schema-deref-sync": "0.10.0",
     "json-schema-seeder": "0.1.10",
     "lodash": "4.17.11",
@@ -85,6 +86,7 @@
     "traverse": "0.6.6",
     "update-notifier": "^2.5.0",
     "validate-npm-package-name": "^3.0.0",
+    "vinyl-sourcemaps-apply": "^0.2.1",
     "yeoman-generator": "3.2.0"
   },
   "devDependencies": {
