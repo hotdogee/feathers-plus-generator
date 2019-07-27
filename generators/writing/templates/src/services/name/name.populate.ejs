@@ -113,7 +113,7 @@ async function <%= serviceName %>Populate (context<%- tplTsOnly(': HookContext')
 }
 
 <%- insertFragment('more') %>
-let moduleExports = <%= serviceName %>Populate<%- sc %>
+const moduleExports = <%= serviceName %>Populate<%- sc %>
 
 <%- insertFragment('exports') %>
 <%- `${tplExport('moduleExports')}${sc}` %>

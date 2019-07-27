@@ -9,7 +9,7 @@
 <%- insertFragment('imports') %>
 <%- insertFragment('init') %>
 
-let moduleExports = merge({},
+const moduleExports = merge({},
   <%- insertFragment('model', mongooseSchemaStr.length <= 2 ? mongooseSchemaStr.split('\n').map(str => `  ${str}`).join('\n').slice(0,-1) : mongooseSchemaStr.split('\n').map(str => `  ${str}`).join('\n').slice(0,-4)) %>
   <%- insertFragment('moduleExports', '  }') %>
 )<%- sc %>

@@ -11,7 +11,7 @@
   `const ID = '${primaryKey.idType === 'number' ? 'integer' : primaryKey.idType}'${sc}`,
 ]) %>
 
-let base = merge({},
+const base = merge({},
 <% __jsonSchema = merge({}, feathersSpecs[serviceName]);
    delete __jsonSchema._extensions;
    __str = stringifyPlus(__jsonSchema).replace(/"ID"/g, 'ID')
@@ -22,39 +22,39 @@ let base = merge({},
 )<%- sc %>
 <%- insertFragment('base_change') %>
 
-let create = merge({},
+const create = merge({},
   <%- insertFragment('create_more', '  base') %>
 )<%- sc %>
 
-let update = merge({},
+const update = merge({},
   <%- insertFragment('update_more', '  base') %>
 )<%- sc %>
 
-let patch = merge({},
+const patch = merge({},
   <%- insertFragment('patch_more', '  base') %>
 )<%- sc %>
 delete patch.required<%- sc %>
 <%- insertFragment('all_change') %>
 
-let validateCreate = <%- tplJsOrTs('options', '(options?: any)') %> => {
+const validateCreate = <%- tplJsOrTs('options', '(options?: any)') %> => {
   <%- insertFragment('func_create', [
     `  return validateSchema(create, ajv, options)${sc}`,
   ]) %>
 }<%- sc %>
 
-let validateUpdate = <%- tplJsOrTs('options', '(options?: any)') %> => {
+const validateUpdate = <%- tplJsOrTs('options', '(options?: any)') %> => {
   <%- insertFragment('func_update', [
     `  return validateSchema(update, ajv, options)${sc}`,
   ]) %>
 }<%- sc %>
 
-let validatePatch = <%- tplJsOrTs('options', '(options?: any)') %> => {
+const validatePatch = <%- tplJsOrTs('options', '(options?: any)') %> => {
   <%- insertFragment('func_patch', [
     `  return validateSchema(patch, ajv, options)${sc}`,
   ]) %>
 }<%- sc %>
 
-let quickValidate = <%- tplJsOrTs('(method, data, options)', '(method: string, data: any, options?: any)') %> => {
+const quickValidate = <%- tplJsOrTs('(method, data, options)', '(method: string, data: any, options?: any)') %> => {
   try {
     if (method === 'create') { validateCreate(options)({ type: 'before', method: 'create', data }<%- tplTsOnly(' as any') -%>)<%- sc %> }
     if (method === 'update') { validateCreate(options)({ type: 'before', method: 'update', data }<%- tplTsOnly(' as any') -%>)<%- sc %> }
@@ -66,7 +66,7 @@ let quickValidate = <%- tplJsOrTs('(method, data, options)', '(method: string, d
 <%- insertFragment('validate_change') %>
 
 <%- tplTsOnly(['// tslint:disable:trailing-comma', '']) -%>
-let moduleExports = {
+const moduleExports = {
   <%- insertFragment('moduleExports', `  create,
   update,
   patch,

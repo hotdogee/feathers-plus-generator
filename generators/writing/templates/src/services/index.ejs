@@ -6,14 +6,14 @@
   __fileName = specs.services[__name].fileName || __name;
   __subFolder = getNameSpace(specs.services[__name].subFolder || '')[0];
 -%>
-<%- tplImports(__name, `./${__subFolder}${__fileName}/${__fileName}.service`, null, 'let') %>
+<%- tplImports(__name, `./${__subFolder}${__fileName}/${__fileName}.service`, null, 'const') %>
 <% }); -%>
 <%# --- forEach-1 ends above. -%>
 
 <%# -%>
 <%# --- if-1 starts below. -%>
 <% if (specs.graphql && specs.graphql.path && !specs.graphql.doNotConfigure) { -%>
-<%- tplImports('graphql', './graphql/graphql.service', null, 'let') %>
+<%- tplImports('graphql', './graphql/graphql.service', null, 'const') %>
 <% } -%>
 <%# --- if-1 ends above. -%>
 <%- insertFragment('imports') %>

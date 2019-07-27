@@ -4,14 +4,14 @@
 <%- tplImports('hooks', `./${kebabName}.hooks`) %>
 <%- tplTsOnly([`import { Db, MongoClient } from 'mongodb'${sc}`, '']) -%>
 <%- insertFragment('imports', [
-  `// ${tplImports('$jsonSchema', `./${kebabName}.mongo`, 'req', 'let')}`
+  `// ${tplImports('$jsonSchema', `./${kebabName}.mongo`, 'req', 'const')}`
 ]) %>
 <%- insertFragment('init') %>
 
 <%- tplModuleExports(null, 'function (app) {', 'function (app: App) {') %>
-  let paginate = app.get('paginate')<%- sc %>
-  let mongoClient = app.get('mongoClient')<%- tplTsOnly([' as Promise<Db>']) -%><%- sc %>
-  let options = { paginate }<%- sc %>
+  const paginate = app.get('paginate')<%- sc %>
+  const mongoClient = app.get('mongoClient')<%- tplTsOnly([' as Promise<Db>']) -%><%- sc %>
+  const options = { paginate }<%- sc %>
   <%- insertFragment('func_init') %>
 
   // Initialize our service with any options it requires
@@ -21,7 +21,7 @@
   const service = app.service('<%= path %>')<%- sc %>
 
   // eslint-disable-next-line no-unused-vars
-  let promise = mongoClient.then(db => {
+  const promise = mongoClient.then(db => {
     return db.createCollection('<%= kebabName %>', {
       <%- insertFragment('create_collection', [
         '      // validator: { $jsonSchema: $jsonSchema },',

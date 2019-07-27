@@ -53,10 +53,10 @@ function abstractTs (specs) {
       return `import ${vars} from '${module || vars}'${sc}`
     },
     tplModuleExports: (type, value = '{', valueTs) => {
-      if (!ifTs) return `let moduleExports = ${value}`
+      if (!ifTs) return `const moduleExports = ${value}`
 
-      if (type) return `let moduleExports: ${type} = ${valueTs || value}`
-      return `let moduleExports = ${valueTs || value}`
+      if (type) return `const moduleExports: ${type} = ${valueTs || value}`
+      return `const moduleExports = ${valueTs || value}`
     },
     tplExport: (value, valueTs) => {
       if (!ifTs) return `module.exports = ${value}`

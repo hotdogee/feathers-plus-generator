@@ -4,7 +4,7 @@
 <%- insertFragment('init') %>
 
 // Define the model using JSON-schema
-let schema = {
+const schema = {
   <%- insertFragment('schema_header', [
     `  title: '${__defaultGraphqlName}',`,
     `  description: '${__defaultGraphqlName} database.',`,
@@ -27,7 +27,7 @@ let schema = {
 }<%- sc %>
 
 // Define optional, non-JSON-schema extensions.
-let extensions = {
+const extensions = {
   // GraphQL generation.
   graphql: {
     <%- insertFragment('graphql_header', [
@@ -56,7 +56,7 @@ let extensions = {
 
 <%- insertFragment('more') %>
 
-let moduleExports = {
+const moduleExports = {
   <%- insertFragment('moduleExports', `  schema,
   extensions`) %>
 }<%- sc %>

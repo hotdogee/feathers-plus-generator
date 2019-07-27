@@ -6,8 +6,8 @@
 <%- insertFragment('init') %>
 
 <%- tplModuleExports(null, 'function (app) {', 'function (app: App) {') %>
-  let Model = app.get('rethinkdbClient')<%- sc %>
-  let paginate = app.get('paginate')<%- sc %>
+  const Model = app.get('rethinkdbClient')<%- sc %>
+  const paginate = app.get('paginate')<%- sc %>
   <%- insertFragment('func_init') %>
 
   const options = {

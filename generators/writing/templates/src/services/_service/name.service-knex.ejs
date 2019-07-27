@@ -7,10 +7,10 @@
 <%- insertFragment('init') %>
 
 <%- tplModuleExports(null, 'function (app) {', 'function (app: App) {') %>
-  let Model = createModel(app)<%- sc %>
-  let paginate = app.get('paginate')<%- sc %>
+  const Model = createModel(app)<%- sc %>
+  const paginate = app.get('paginate')<%- sc %>
 
-  let options = {
+  const options = {
     name: '<%= snakeName %>',
     Model,
     paginate

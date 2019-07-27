@@ -32,7 +32,7 @@
 <%# --- forEach-1b ends above. -%>
 <% } -%>
 <%# --- if-1 ends above. -%>
-let moduleExports = merge({},
+const moduleExports = merge({},
   <%- insertFragment('sequelize_model',
     sequelizeSchemaStr.length <= 2 ? sequelizeSchemaStr.split('\n').map(str => `  ${str}`).join('\n').slice(0,-1) : sequelizeSchemaStr.split('\n').map(str => `  ${str}`).join('\n').slice(0,-4) + tplTsOnly(' as DefineAttributes'))
   %>

@@ -12,10 +12,10 @@
 <%- insertFragment('init') %>
 
 <%- tplModuleExports(null, 'function (app) {', 'function (app: App) {') %>
-<% if (modelName) { %>  let Model = createModel(app)<%- sc + '\n' %><% } %>  let paginate = app.get('paginate')<%- sc %>
+<% if (modelName) { %>  const Model = createModel(app)<%- sc + '\n' %><% } %>  const paginate = app.get('paginate')<%- sc %>
   <%- insertFragment('func_init') %>
 
-  let options = {
+  const options = {
     <%- insertFragment('options_more') %>
 <% if (modelName) { -%>
     Model,

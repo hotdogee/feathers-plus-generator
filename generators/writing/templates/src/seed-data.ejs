@@ -5,13 +5,13 @@
 <%- insertFragment('imports') %>
 
 // Determine if command line argument exists for seeding data
-let ifSeedServices = ['--seed', '-s'].some((str) =>
+const ifSeedServices = ['--seed', '-s'].some((str) =>
   process.argv.slice(2).includes(str)
 )<%- sc %>
 
 // Determine if environment allows test to mutate existing DB data.
 function areDbChangesAllowed (testConfig<%- tplTsOnly(': { environmentsAllowingSeedData: string[] }') -%>) {
-  let { environmentsAllowingSeedData = [] } = testConfig<%- sc %>
+  const { environmentsAllowingSeedData = [] } = testConfig<%- sc %>
   if (process.env.NODE_ENV) {
     return environmentsAllowingSeedData.includes(process.env.NODE_ENV)<%- sc %>
   }
@@ -19,11 +19,11 @@ function areDbChangesAllowed (testConfig<%- tplTsOnly(': { environmentsAllowingS
 }
 
 // Get generated fake data
-let fakeData =
+const fakeData =
   readJsonFileSync(join(__dirname, '../seeds/fake-data.json')) || {}<%- sc %>
 
 // Get generated services
-let services = (
+const services = (
   readJsonFileSync(join(__dirname, '../feathers-gen-specs.json')) || {}
 ).services<%- sc %>
 
@@ -48,7 +48,7 @@ function sleep (ms) {
   }
 
   for (const serviceName in services) {
-    if (services.hasOwnProperty(serviceName)) {
+    if (Object.prototype.hasOwnProperty.call(services, serviceName)) {
       const { name, adapter, path } = services[serviceName]<%- sc %>
       <%- insertFragment('seed_select', [
         `      const doSeed = adapter !== 'generic'${sc}`
