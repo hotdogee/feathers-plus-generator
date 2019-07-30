@@ -2,9 +2,20 @@
 // Validation definitions for validateSchema hook for service `<%= serviceName %>`. (Can be re-generated.)
 <%- tplImports('{ validateSchema }', 'feathers-hooks-common') %>
 <%- tplImports('merge', 'lodash.merge', 'req') %>
-<%- tplImports('ajv', null, 'req') %>
+<%- tplImports('Ajv', 'ajv', 'req') %>
 <%- insertFragment('imports') %>
-<%- insertFragment('init') %>
+<%- insertFragment('init', [
+  `const ajv = new Ajv()${sc}
+require('ajv-keywords')(ajv)${sc}
+ajv.addKeyword('coerce', {
+  type: 'string',
+  modifying: true,
+  validate: (fn, data, ps, path, parent, key) => {
+    parent[key] = fn(data)${sc}
+    return true${sc}
+  }
+})${sc}`,
+]) %>
 
 <%- insertFragment('set_id_type', [
   `// ${lintDisableNextLineUnused}`,
