@@ -1,5 +1,6 @@
 // Hooks for service `<%= serviceName %>`. (Can be re-generated.)
 <%- hooks.imports.join(EOL) %>
+<%- insertFragment('auth_imports', hooks.authImports.join(EOL)) %>
 <%# -%>
 <%# --- forEach-1 starts below. -%>
 <% _hooks.forEach(__hook => { -%>

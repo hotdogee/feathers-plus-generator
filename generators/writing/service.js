@@ -445,6 +445,7 @@ function service (generator, name, props, specs, context, state, inject) {
       }
     }
 
+    const authImports = []
     if (!isAuthEntityWithAuthentication) {
       if (requiresAuth) {
         code.before.all.push("authenticate('jwt')")
@@ -453,16 +454,16 @@ function service (generator, name, props, specs, context, state, inject) {
       // The order of the hooks is important
       if (isAuthEntityWithAuthentication.strategies.indexOf('local') !== -1) {
         if (isJs) {
-          imports.push('// eslint-disable-next-line no-unused-vars')
-          imports.push(
+          authImports.push('// eslint-disable-next-line no-unused-vars')
+          authImports.push(
             `const { hashPassword, protect } = require('@feathersjs/authentication-local').hooks${sc}`
           )
         } else {
-          imports.push('// tslint:disable-next-line:no-unused-variable')
-          imports.push(
+          authImports.push('// tslint:disable-next-line:no-unused-variable')
+          authImports.push(
             `import { hooks as localAuthHooks } from '@feathersjs/authentication-local'${sc}`
           )
-          imports.push(`const { hashPassword, protect } = localAuthHooks${sc}`)
+          authImports.push(`const { hashPassword, protect } = localAuthHooks${sc}`)
         }
 
         code.before.create.push('hashPassword()')
@@ -511,6 +512,7 @@ function service (generator, name, props, specs, context, state, inject) {
 
     return {
       imports,
+      authImports,
       hooks: hooks.filter((val, i) => hooks.indexOf(val) === i), // unique
       comments,
       code,
