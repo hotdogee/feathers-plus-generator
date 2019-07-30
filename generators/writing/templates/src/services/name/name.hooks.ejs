@@ -1,6 +1,6 @@
 // Hooks for service `<%= serviceName %>`. (Can be re-generated.)
 <%- hooks.imports.join(EOL) %>
-<%- insertFragment('auth_imports', hooks.authImports.join(EOL)) %>
+<%- insertFragment('auth_imports', `${hooks.authImports.join(EOL)}`) %>
 <%# -%>
 <%# --- forEach-1 starts below. -%>
 <% _hooks.forEach(__hook => { -%>
@@ -18,21 +18,24 @@
 <%- insertFragment('imports') %>
 
 <% __validate = isJs ? [
-    `// ${lintDisableNextLineUnused}`,
-    `const { ${hooks.hooks.join(', ')} } = commonHooks${sc}`,
     `/* eslint-disable no-unused-vars */`,
+    `const { FeathersError, BadRequest, NotAuthenticated, PaymentError, Forbidden, NotFound, MethodNotAllowed, NotAcceptable, Timeout, Conflict, LengthRequired, Unprocessable, TooManyRequests, GeneralError, NotImplemented, BadGateway, Unavailable } = require('@feathersjs/errors')${sc}`,
+    `const { ${hooks.hooks.join(', ')} } = commonHooks${sc}`,
     `${tplImports('{ create, update, patch, validateCreate, validateUpdate, validatePatch }',`./${kebabName}.validate`)}`,
     `/* eslint-enables no-unused-vars */`
 ] : [
-    `// ${lintDisableNextLineUnused}`,
+    `/* eslint-disable no-unused-vars */`,
+    `const { FeathersError, BadRequest, NotAuthenticated, PaymentError, Forbidden, NotFound, MethodNotAllowed, NotAcceptable, Timeout, Conflict, LengthRequired, Unprocessable, TooManyRequests, GeneralError, NotImplemented, BadGateway, Unavailable } = require('@feathersjs/errors')${sc}`,
     `const { ${hooks.hooks.join(', ')} } = commonHooks${sc}`,
     tplImports('validate', `./${kebabName}.validate`),
-    `// ${lintDisableNextLineUnused}`,
-    `const { create, update, patch, validateCreate, validateUpdate, validatePatch } = validate${sc}`
+    `const { create, update, patch, validateCreate, validateUpdate, validatePatch } = validate${sc}`,
+    `/* eslint-enables no-unused-vars */`
 ] -%>
 <%- insertFragment('used', serviceName !== 'graphql' ? __validate : [
-      `// ${lintDisableNextLineUnused}`,
+      `/* eslint-disable no-unused-vars */`,
+      `const { FeathersError, BadRequest, NotAuthenticated, PaymentError, Forbidden, NotFound, MethodNotAllowed, NotAcceptable, Timeout, Conflict, LengthRequired, Unprocessable, TooManyRequests, GeneralError, NotImplemented, BadGateway, Unavailable } = require('@feathersjs/errors')${sc}`,
       `const { ${hooks.hooks.join(', ')} } = commonHooks${sc}`,
+      `/* eslint-enables no-unused-vars */`
     ]
 ) %>
 <%# -%>
