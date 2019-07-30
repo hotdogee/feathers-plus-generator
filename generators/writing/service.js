@@ -432,20 +432,20 @@ function service (generator, name, props, specs, context, state, inject) {
       }
     }
 
+    const authImports = []
     if (requiresAuth || isAuthEntityWithAuthentication) {
       if (isJs) {
-        imports.push(
+        authImports.push(
           `const { authenticate } = require('@feathersjs/authentication').hooks${sc}`
         )
       } else {
-        imports.push(
+        authImports.push(
           `import { hooks as authHooks } from '@feathersjs/authentication'${sc}`
         )
-        imports.push(`const { authenticate } = authHooks${sc}`)
+        authImports.push(`const { authenticate } = authHooks${sc}`)
       }
     }
 
-    const authImports = []
     if (!isAuthEntityWithAuthentication) {
       if (requiresAuth) {
         code.before.all.push("authenticate('jwt')")
@@ -509,6 +509,15 @@ function service (generator, name, props, specs, context, state, inject) {
 
       comments[type] = typeHooks
     })
+    hooks.push('keep')
+    hooks.push('discard')
+    hooks.push('disallow')
+    hooks.push('isProvider')
+    hooks.push('populate')
+    hooks.push('alterItems')
+    hooks.push('checkContext')
+    hooks.push('paramsFromClient')
+    hooks.push('paramsForServer')
 
     return {
       imports,
