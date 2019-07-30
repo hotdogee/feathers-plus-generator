@@ -3,23 +3,51 @@
 // about the logger.
 <%- tplTsOnly(`import { Hook } from '@feathersjs/feathers'${sc}${EOL}`) -%>
 <%- tplImports('logger', '../logger') %>
-<%- tplImports('util', null, 'req') %>
+<%- tplImports('pick', 'lodash.pick') %>
+<%- tplImports('merge', 'lodash.merge') %>
+<%- tplImports('safeStringify', 'fast-safe-stringify') %>
 
-// To see more detailed messages, uncomment the following line:
-// logger.level = 'debug'<%- sc %>
+function safePick (o, ...k) {
+  return JSON.parse(safeStringify(pick(o, ...k)))
+}
+
+function safeContext (context) {
+  return safePick(
+    context,
+    'type',
+    'method',
+    'path',
+    'params',
+    'id',
+    'data',
+    'result',
+    'error'
+  )
+}
+
+function safeError (context) {
+  return merge(
+    safeContext(context),
+    safePick(
+      context.error,
+      'message',
+      'name',
+      'stack',
+      'type',
+      'className',
+      'code',
+      'data',
+      'errors'
+    )
+  )
+}
 
 <%- tplExport('function () {', 'function (): Hook {') %>
   return <%- tplJsOrTs('context', '(context)') -%> => {
-    // This debugs the service call and a stringified version of the hook context
-    // You can customize the message (and logger) to your needs
-    logger.debug(`${context.type} app.service('${context.path}').${context.method}()`)<%- sc %>
-
-    if (typeof <%- tplJsOrTs('context', '(context as any)') -%>.toJSON === 'function' && logger.level === 'debug') {
-      logger.debug('Hook Context', util.inspect(context, { colors: false }))<%- sc %>
-    }
-
-    if (context.error) {
-      logger.error(context.error.stack)<%- sc %>
+    if (!context.error) {
+      logger.debug(`---${context.type.toUpperCase()} ${context.method.toUpperCase()} ${context.path.toUpperCase()}---`, safeContext(context))
+    } else {
+      logger.error(`---${context.type.toUpperCase()} ${context.method.toUpperCase()} ${context.path.toUpperCase()}---`, safeError(context))
     }
   }<%- sc %>
 }<%- tplJsOnly(sc) %>
