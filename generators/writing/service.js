@@ -20,6 +20,8 @@ const OAUTH2_STRATEGY_MAPPINGS = {
   auth0: 'passport-auth0',
   google: 'passport-google-oauth20',
   facebook: 'passport-facebook',
+  twitter: 'passport-twitter',
+  line: 'passport-line',
   github: 'passport-github'
 }
 
@@ -274,15 +276,12 @@ function service (generator, name, props, specs, context, state, inject) {
     const oauthProvider = OAUTH2_STRATEGY_MAPPINGS[strategy]
 
     if (oauthProvider) {
-      dependencies.push('@feathersjs/authentication-oauth2')
-      dependencies.push(oauthProvider)
+      dependencies.push('@feathersjs/authentication-oauth')
       context1.oauthProviders.push({
         name: strategy,
         strategyName: `${upperFirst(strategy)}Strategy`,
         module: oauthProvider
       })
-    } else {
-      dependencies.push(`@feathersjs/authentication-${strategy}`)
     }
   })
 

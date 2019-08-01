@@ -18,6 +18,8 @@ const OAUTH2_STRATEGY_MAPPINGS = {
   auth0: 'passport-auth0',
   google: 'passport-google-oauth20',
   facebook: 'passport-facebook',
+  twitter: 'passport-twitter',
+  line: 'passport-line',
   github: 'passport-github'
 }
 
@@ -162,7 +164,7 @@ function writeAuthenticationConfiguration (generator, context1) {
   }
 
   let includesOAuth = false
-  const oauthConfig = {
+  const oauthConfig = configAuth.oauth || {
     redirect: 'UI_URL',
     defaults: {
       path: '/oauth',
