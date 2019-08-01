@@ -22,11 +22,14 @@
 // <%- lintDisableNextLineUnused %>
 <%- tplModuleExports(null, 'function (app) {', 'function (app: App) {') %>
 <%# -%>
+
+app.set('serviceSetup', Promise.all([
 <%# --- forEach-2 starts below. Loop thru the services. -%>
 <% Object.keys(specs.services || {}).sort().forEach(__name => { -%>
-  app.configure(<%- __name %>)<%- sc %>
+  <%- __name %>.call(app, app),
 <% }); -%>
 <%# --- forEach-2 ends above. -%>
+]))
 <%# -%>
 <%# --- if-2 starts below. -%>
 <% if (specs.graphql && specs.graphql.name && !specs.graphql.doNotConfigure) { %>

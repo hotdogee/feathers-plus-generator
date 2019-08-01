@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 module.exports = function (generator) {
   const { _specs: specs } = generator
   const config = {

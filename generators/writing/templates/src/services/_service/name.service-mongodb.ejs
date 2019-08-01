@@ -8,31 +8,23 @@
 ]) %>
 <%- insertFragment('init') %>
 
-<%- tplModuleExports(null, 'function (app) {', 'function (app: App) {') %>
+<%- tplModuleExports(null, 'async function (app) {', 'async function (app: App) {') %>
+  const db = await app.get('mongoClient')<%- tplTsOnly([' as Db']) -%><%- sc %>
+  const Model = await db.createCollection('<%= kebabName %>', {
+    <%- insertFragment('create_collection', [
+      '      // validator: { $jsonSchema: $jsonSchema },',
+      '      // validationLevel: \'strict\', // The MongoDB default',
+      '      // validationAction: \'error\', // The MongoDB default',
+    ]) %>
+  })
   const paginate = app.get('paginate')<%- sc %>
-  const dbPromise = app.get('mongoClient')<%- tplTsOnly([' as Promise<Db>']) -%><%- sc %>
-  <%- insertFragment('func_init', `  const options = { paginate, whitelist: [ '$client' ], multi: false }${sc}`) %>
+  <%- insertFragment('func_init', `  const options = { Model, paginate, whitelist: [ '$client' ], multi: false }${sc}`) %>
 
   // Initialize our service with any options it requires
   <%- insertFragment('extend', `  app.use('/${path}', createService(options))${sc}`) %>
 
   // Get our initialized service so that we can register hooks
   const service = app.service('<%= path %>')<%- sc %>
-
-  // eslint-disable-next-line no-unused-vars
-  const promise = dbPromise.then(db => {
-    <%- insertFragment('handle_db') %>
-    return db.createCollection('<%= kebabName %>', {
-      <%- insertFragment('create_collection', [
-        '      // validator: { $jsonSchema: $jsonSchema },',
-        '      // validationLevel: \'strict\', // The MongoDB default',
-        '      // validationAction: \'error\', // The MongoDB default',
-      ]) %>
-    })<%- sc %>
-  })
-    .then(collection => {
-      <%- tplJsOrTs('service', '(service as any)') %>.Model = collection<%- sc %>
-    })<%- sc %>
 
   service.hooks(hooks)<%- sc %>
   <%- insertFragment('func_return') %>

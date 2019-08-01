@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 module.exports = function (generator, envName) {
   return {
     mongodb: `mongodb://no-connection-string-config-${envName}`,

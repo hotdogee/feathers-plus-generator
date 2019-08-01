@@ -12,6 +12,8 @@
 <%- insertFragment('imports') %>
 <%- insertFragment('init') %>
 
+;(async () => {
+await app.get('serviceSetup')
 const port = app.get('port')<%- sc %>
 const server = app.listen(port)<%- sc %>
 <%- insertFragment('init2') %>
@@ -51,3 +53,4 @@ server.on('listening', async () => {
 
 <%- insertFragment('funcs') %>
 <%- insertFragment('end') %>
+})()

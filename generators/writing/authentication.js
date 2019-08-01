@@ -146,70 +146,76 @@ function writeAuthenticationConfiguration (generator, context1) {
   configAuth.secret = generator._specs._isRunningTests
     ? '***** secret generated for tests *****'
     : configAuth.secret || crypto.randomBytes(256).toString('hex')
-  configAuth.strategies = ['jwt']
+  configAuth.authStrategies = ['jwt', 'ecdsa']
   configAuth.path = '/authentication'
+  configAuth.entity = '\\user'
   configAuth.service =
     path.substring(0, 1) !== '/' ? path : context1.servicePath.substring(1)
 
-  configAuth.jwt = configAuth.jwt || {
+  configAuth.jwtOptions = configAuth.jwtOptions || {
     header: { typ: 'access' },
-    audience: 'api',
-    subject: 'access',
-    issuer: 'feathers',
+    issuer: 'hanl.in',
     algorithm: 'HS256',
     expiresIn: '30m'
   }
 
-  if (context1.strategies.indexOf('local') !== -1) {
-    configAuth.strategies.push('local')
+  if (context1.authStrategies.indexOf('local') !== -1) {
+    configAuth.authStrategies.push('local')
     configAuth.local = configAuth.local || {
-      entity: '\\user',
-      usernameField: '\\email',
+      usernameField: 'accounts.value',
       passwordField: '\\password'
     }
   }
 
   let includesOAuth = false
+  const oauthConfig = {
+    redirect: 'UI_URL',
+    defaults: {
+      path: '/oauth',
+      host: 'API_HOST',
+      protocol: 'API_PROTOCOL'
+    }
+  }
 
   context1.strategies.forEach(strategy => {
     if (OAUTH2_STRATEGY_MAPPINGS[strategy]) {
-      const strategyConfig = {
-        clientID: `your ${strategy} client id`,
-        clientSecret: `your ${strategy} client secret`,
-        successRedirect: '/'
-      }
       includesOAuth = true
-
-      if (strategy === 'auth0') {
-        strategyConfig.domain = 'mydomain.auth0.com'
-        strategyConfig.scopes = ['profile']
-      }
-
-      if (strategy === 'facebook') {
-        strategyConfig.scope = ['public_profile', 'email']
-        strategyConfig.profileFields = [
-          'id',
-          'displayName',
-          'first_name',
-          'last_name',
-          'email',
-          'gender',
-          'profileUrl',
-          'birthday',
-          'picture',
-          'permissions'
-        ]
+      const strategyConfig = {
+        key: `your ${strategy} client id`,
+        secret: `your ${strategy} client secret`
       }
 
       if (strategy === 'google') {
         strategyConfig.scope = ['profile openid email']
+        strategyConfig.profileUrl = 'https://openidconnect.googleapis.com/v1/userinfo'
+        strategyConfig.nonce = true
+        strategyConfig.custom_params = {
+          access_type: 'offline'
+        }
+      } else if (strategy === 'facebook') {
+        strategyConfig.scope = ['public_profile', 'email']
+        strategyConfig.profileUrl = 'https://graph.facebook.com/me?fields=id,email,first_name,last_name,short_name,name,middle_name,name_format,picture,permissions'
+      } else if (strategy === 'twitter') {
+        strategyConfig.profileUrl = 'https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true&skip_status=true&include_entities=false'
+      } else if (strategy === 'line') {
+        strategyConfig.scope = ['profile openid email']
+        strategyConfig.profileUrl = 'https://api.line.me/v2/profile'
+        strategyConfig.nonce = true
+        strategyConfig.authorize_url = 'https://access.line.me/oauth2/v2.1/authorize'
+        strategyConfig.access_url = 'https://api.line.me/oauth2/v2.1/token'
+        strategyConfig.oauth = 2
+        strategyConfig.state = true
+        strategyConfig.scope_delimiter = ' '
+      } else if (strategy === 'auth0') {
+        strategyConfig.domain = 'mydomain.auth0.com'
+        strategyConfig.scopes = ['profile']
       }
-
       configAuth[strategy] = configAuth[strategy] || strategyConfig
     }
   })
 
   if (includesOAuth) {
+    configAuth.oauth = oauthConfig
     configAuth.cookie = configAuth.cookie || {
       enabled: true,
       name: 'feathers-jwt',
