@@ -21,6 +21,7 @@
 
   // eslint-disable-next-line no-unused-vars
   const promise = mongoClient.then(db => {
+    <%- insertFragment('handle_db') %>
     return db.createCollection('<%= kebabName %>', {
       <%- insertFragment('create_collection', [
         '      // validator: { $jsonSchema: $jsonSchema },',
