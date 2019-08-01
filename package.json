@@ -73,6 +73,7 @@
     "diff": "^4.0.1",
     "dotenv": "^8.0.0",
     "faker": "^4.1.0",
+    "gulp-filter": "^6.0.0",
     "gulp-util": "^3.0.8",
     "json-schema-deref-sync": "0.10.0",
     "json-schema-seeder": "0.1.10",
