@@ -55,11 +55,6 @@ module.exports = class AuthGenerator extends Generator {
               !specs.authentication.strategies.length || ifStrategy('local')
           },
           {
-            name: 'Auth0',
-            value: 'auth0',
-            checked: ifStrategy('auth0')
-          },
-          {
             name: 'Google',
             value: 'google',
             checked:
@@ -72,9 +67,24 @@ module.exports = class AuthGenerator extends Generator {
               !specs.authentication.strategies.length || ifStrategy('facebook')
           },
           {
+            name: 'Twitter',
+            value: 'twitter',
+            checked: ifStrategy('twitter')
+          },
+          {
+            name: 'LINE',
+            value: 'line',
+            checked: ifStrategy('line')
+          },
+          {
             name: 'GitHub',
             value: 'github',
             checked: ifStrategy('github')
+          },
+          {
+            name: 'Auth0',
+            value: 'auth0',
+            checked: ifStrategy('auth0')
           }
         ]
       },

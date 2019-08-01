@@ -23,13 +23,12 @@ const OAUTH2_STRATEGY_MAPPINGS = {
 
 const AUTH_TYPES = {
   local: '@types/feathersjs__authentication-local',
-  auth0: '@types/feathersjs__authentication-oauth2',
-  google: '@types/feathersjs__authentication-oauth2',
-  facebook: [
-    '@types/passport-facebook',
-    '@types/feathersjs__authentication-oauth2'
-  ],
-  github: '@types/passport-github'
+  auth0: '@types/feathersjs__authentication-oauth',
+  google: '@types/feathersjs__authentication-oauth',
+  facebook: '@types/feathersjs__authentication-oauth',
+  twitter: '@types/feathersjs__authentication-oauth',
+  line: '@types/feathersjs__authentication-oauth',
+  github: '@types/feathersjs__authentication-oauth'
 }
 
 module.exports = {
@@ -77,15 +76,13 @@ function authentication (generator, justRegen, props, specs, context, state) {
   })
 
   const dependencies = [
-    '@feathersjs/authentication',
-    '@feathersjs/authentication-jwt'
+    '@feathersjs/authentication'
   ]
 
   let devDependencies = isJs
     ? []
     : [
-      '@types/feathersjs__authentication',
-      '@types/feathersjs__authentication-jwt'
+      '@types/feathersjs__authentication'
     ]
 
   // Set up strategies and add dependencies
@@ -93,15 +90,12 @@ function authentication (generator, justRegen, props, specs, context, state) {
     const oauthProvider = OAUTH2_STRATEGY_MAPPINGS[strategy]
 
     if (oauthProvider) {
-      dependencies.push('@feathersjs/authentication-oauth2')
-      dependencies.push(oauthProvider)
+      dependencies.push('@feathersjs/authentication-oauth')
       context1.oauthProviders.push({
         name: strategy,
         strategyName: `${upperFirst(strategy)}Strategy`,
         module: oauthProvider
       })
-    } else {
-      dependencies.push(`@feathersjs/authentication-${strategy}`) // usually `local`
     }
 
     if (!isJs && AUTH_TYPES[strategy]) {

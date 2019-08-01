@@ -686,8 +686,7 @@ const grantOauth = (settings = {}) => (app) => {
   authentication.register('local', new MultiAccountLocalStrategy())<%- sc %><% } %>
 <%# -%>
 <%# --- forEach-1 starts below. -%>
-<% oauthProviders.forEach(provider => { %>
-  authentication.register('<%= provider.name %>', new MultiAccountOAuthStrategy())<%- sc %>
+<% oauthProviders.forEach(provider => { %>  authentication.register('<%= provider.name %>', new MultiAccountOAuthStrategy())<%- sc %>
 <% }); %>
   <%- insertFragment('loc_1') %>
   <%- insertFragment('user_auth', `app.use('/authentication', authentication)`) %>
