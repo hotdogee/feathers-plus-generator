@@ -128,6 +128,8 @@ app.configure(authentication)<%- sc %>
 <%# --- if-2 ends above. -%>
 // Set up our services (see `services/index.<%- js %>`)
 app.configure(services)<%- sc %>
+;(async () => {
+  await app.get('serviceSetup')
 <%# --- if-4 starts below. -%>
 <% if (hasProvider('primus') || hasProvider('socketio')) { -%>
 // Set up event channels (see channels.<%- js %>)
@@ -142,6 +144,7 @@ app.use(express.errorHandler({ logger }))<%- sc %>
 <%- insertFragment('config_end') %>
 
 app.hooks(appHooks)<%- sc %>
+})()
 
 const moduleExports = app<%- sc %>
 <%- insertFragment('exports') %>
