@@ -1,10 +1,8 @@
 // Hooks for service `<%= serviceName %>`. (Can be re-generated.)
 <%- hooks.imports.join(EOL) %>
-<%- insertFragment('auth_imports', `
-/* eslint-disable no-unused-vars */
+<%- insertFragment('auth_imports', `/* eslint-disable no-unused-vars */
 ${hooks.authImports.join(EOL)}
-/* eslint-enables no-unused-vars */
-`) %>
+/* eslint-enables no-unused-vars */`) %>
 <%# -%>
 <%# --- forEach-1 starts below. -%>
 <% _hooks.forEach(__hook => { -%>

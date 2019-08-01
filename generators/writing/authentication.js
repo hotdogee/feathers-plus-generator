@@ -210,7 +210,7 @@ function writeAuthenticationConfiguration (generator, context1) {
         strategyConfig.domain = 'mydomain.auth0.com'
         strategyConfig.scopes = ['profile']
       }
-      configAuth[strategy] = configAuth[strategy] || strategyConfig
+      oauthConfig[strategy] = oauthConfig[strategy] || strategyConfig
     }
   })
 
