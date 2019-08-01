@@ -10,7 +10,7 @@
 
 <%- tplModuleExports(null, 'function (app) {', 'function (app: App) {') %>
   const paginate = app.get('paginate')<%- sc %>
-  const mongoClient = app.get('mongoClient')<%- tplTsOnly([' as Promise<Db>']) -%><%- sc %>
+  const dbPromise = app.get('mongoClient')<%- tplTsOnly([' as Promise<Db>']) -%><%- sc %>
   <%- insertFragment('func_init', `  const options = { paginate, whitelist: [ '$client' ], multi: false }${sc}`) %>
 
   // Initialize our service with any options it requires
@@ -20,7 +20,7 @@
   const service = app.service('<%= path %>')<%- sc %>
 
   // eslint-disable-next-line no-unused-vars
-  const promise = mongoClient.then(db => {
+  const promise = dbPromise.then(db => {
     <%- insertFragment('handle_db') %>
     return db.createCollection('<%= kebabName %>', {
       <%- insertFragment('create_collection', [
@@ -30,8 +30,8 @@
       ]) %>
     })<%- sc %>
   })
-    .then(serviceModel => {
-      <%- tplJsOrTs('service', '(service as any)') %>.Model = serviceModel<%- sc %>
+    .then(collection => {
+      <%- tplJsOrTs('service', '(service as any)') %>.Model = collection<%- sc %>
     })<%- sc %>
 
   service.hooks(hooks)<%- sc %>

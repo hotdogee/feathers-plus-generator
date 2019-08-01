@@ -10,12 +10,11 @@
   let config = app.get('mongodb')<%- sc %>
   <%- insertFragment('func_init') %>
 
-  const promise = MongoClient.connect(config, { useNewUrlParser: true, useCreateIndex: true }).then(client => {
+  const db = MongoClient.connect(config, { useNewUrlParser: true }).then(client => {
     // For mongodb <= 2.2
     if (client.collection) {
       return client<%- sc %>
     }
-
     const dbName = parseConnectionString(config, () => {})<%- sc %>
     return client.db(dbName)<%- sc %>
   })
@@ -24,7 +23,7 @@
       logger.error(error)<%- sc %>
     })<%- sc %>
 
-  app.set('mongoClient', promise)<%- sc %>
+  app.set('mongoClient', db)<%- sc %>
   <%- insertFragment('more') %>
 }<%- tplJsOnly([sc]) %>
 <%- insertFragment('funcs') %>
