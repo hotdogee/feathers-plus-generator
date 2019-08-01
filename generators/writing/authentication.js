@@ -159,7 +159,7 @@ function writeAuthenticationConfiguration (generator, context1) {
     expiresIn: '30m'
   }
 
-  if (context1.authStrategies.indexOf('local') !== -1) {
+  if (context1.strategies.indexOf('local') !== -1) {
     configAuth.authStrategies.push('local')
     configAuth.local = configAuth.local || {
       usernameField: 'accounts.value',
