@@ -6,7 +6,7 @@
 <%- insertFragment('imports') %>
 <%- insertFragment('init', [
   `const ajv = new Ajv()${sc}
-require('ajv-keywords')(ajv)${sc}
+require('ajv-keywords/keywords/instanceof')(ajv)${sc}
 ajv.addKeyword('coerce', {
   type: 'string',
   modifying: true,
