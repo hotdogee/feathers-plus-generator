@@ -252,10 +252,10 @@ function writeAuthenticationConfiguration (generator, context1) {
           .get('property')
           .isIdentifier({ name: 'exports' })
       ) {
-        console.log(`module.exports node FOUND`)
+        // console.log(`module.exports node FOUND`)
         moduleExports = path.get('right')
       } else {
-        console.log(`module.exports node NOT found`)
+        // console.log(`module.exports node NOT found`)
       }
     }
   })
@@ -272,7 +272,8 @@ function writeAuthenticationConfiguration (generator, context1) {
     // find and replace current authentication node
     for (let i = 0; i < moduleExports.node.properties.length; i++) {
       if (moduleExports.node.properties[i].key.name === 'authentication') {
-        moduleExports.node.properties[i] = authenticationObjectProperty
+        // don't modify until we can do it right
+        // moduleExports.node.properties[i] = authenticationObjectProperty
       }
     }
   } else {
