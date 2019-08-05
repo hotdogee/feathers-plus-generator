@@ -25,7 +25,7 @@ ajv.addKeyword('coerce', {
 const base = merge({},
 <% __jsonSchema = merge({}, feathersSpecs[serviceName]);
    delete __jsonSchema._extensions;
-   __str = stringifyPlus(__jsonSchema).replace(/"ID"/g, 'ID')
+   __str = stringifyPlus(__jsonSchema).replace(/'ID'/g, 'ID')
      .split('\n').map(str => `  ${str}`).join('\n');
 -%>
   <%- insertFragment('base', Object.keys(__jsonSchema).length === 0 ? undefined : `${__str}`.slice(0,-4)) %>
